@@ -74,9 +74,6 @@ const protect = (req, res, next) => {
 
     } catch (error) {
 
-        console.log("JWT ERROR NAME:", error.name);
-        console.log("JWT ERROR MESSAGE:", error.message);
-
         // errorCode lets the frontend tell "token expired, renew it and retry" (ACCESS_TOKEN_EXPIRED)
         // apart from other 401s such as a wrong password
         return res.status(401).json({

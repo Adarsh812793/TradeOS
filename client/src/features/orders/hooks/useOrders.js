@@ -19,7 +19,6 @@ export default function useOrders() {
   const [error, setError] = useState("");
 
   const { page, limit } = pagination;
-  console.log(page,limit);
 
   useEffect(() => {
     let isMounted = true;
@@ -51,8 +50,6 @@ export default function useOrders() {
     });
     }
       } catch (err) {
-
-        console.log(err);
         if (isMounted) {
           setError(err.message || "Unable to load your orders.");
         }

@@ -18,10 +18,7 @@ router.post("/register",authRateLimiter,validate(registerSchema,"body"), authCon
 router.post("/login",authRateLimiter,validate(loginSchema,"body") ,authController.login);
 
 //Route for refreshing the expired cookie
-router.post("/refresh",    (req, res, next) => {
-        console.log("Refresh route reached");
-        next();
-    },authRateLimiter,checkRefreshCookie,authController.refresh);
+router.post("/refresh",authRateLimiter,checkRefreshCookie,authController.refresh);
 
 //Reoute for logout
 router.post('/logout',authController.logout);
