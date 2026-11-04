@@ -1,0 +1,276 @@
+
+/* 1. Signup Page Layout */
+.signup-page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 45% 55%;
+  overflow: hidden;
+  background: linear-gradient(110deg, #F1F5F9 0%, #F8FAFC 65%);
+  color: #172554;
+}
+
+/* 1.1 Signup Market Chart */
+.signup-page__chart {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  bottom: -12px;
+  width: 100%;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.signup-page__chart svg {
+  display: block;
+  width: 100%;
+  height: clamp(180px, 28vw, 320px);
+}
+
+/* 2. Left Panel — Branding and Product Benefits */
+.signup-page__brand {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 48px clamp(24px, 5vw, 72px);
+  overflow: hidden;
+  background: transparent;
+}
+
+/* 2.1 Brand Logo */
+.signup-page__logo {
+  position: absolute;
+  top: 36px;
+  left: clamp(24px, 5vw, 72px);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #172554;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  text-decoration: none;
+}
+
+.signup-page__logo-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #16A34A;
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* 2.2 Branding Introduction */
+.signup-page__intro {
+  max-width: 420px;
+}
+
+.signup-page__intro h1 {
+  max-width: 400px;
+  margin: 0 0 16px;
+  font-size: clamp(30px, 3vw, 44px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.signup-page__intro p {
+  max-width: 360px;
+  margin: 0;
+  color: #64748B;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* 2.3 Product Benefits */
+.signup-page__features {
+  display: grid;
+  gap: 16px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.signup-page__features li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #334155;
+  font-size: 14px;
+}
+
+.signup-page__features li::before {
+  content: "✓";
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: #DCFCE7;
+  color: #15803D;
+  font-weight: 700;
+}
+
+/* 3. Right Panel — Signup Form */
+.signup-page__form-section {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 48px clamp(24px, 5vw, 80px);
+  background: transparent;
+}
+
+/* 3.1 Signup Form Card */
+.signup-page__form-section > * {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 460px;
+}
+
+/* 3.2 Form Heading and Description */
+.signup-page__form-header {
+  margin-bottom: 24px;
+}
+
+.signup-page__form-header h2 {
+  margin: 0 0 8px;
+  color: #172554;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+
+.signup-page__form-header p {
+  margin: 0;
+  color: #64748B;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 3.3 Form Fields and Submit Button */
+.signup-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* 3.4 Sign-in Link */
+.signup-page__login-link {
+  margin: 24px 0 0;
+  color: #64748B;
+  font-size: 14px;
+  text-align: center;
+}
+
+.signup-page__login-link a {
+  color: #15803D;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signup-page__login-link a:hover {
+  text-decoration: underline;
+}
+
+/* 4. Tablet Layout */
+@media (max-width: 900px) {
+  .signup-page {
+    grid-template-columns: 40% 60%;
+  }
+
+  .signup-page__brand {
+    padding-right: 28px;
+    padding-left: 28px;
+  }
+
+  .signup-page__logo {
+    left: 28px;
+  }
+
+  .signup-page__form-section {
+    padding: 36px 28px;
+  }
+
+  .signup-page__intro h1 {
+    font-size: 32px;
+  }
+}
+
+/* 5. Mobile Layout */
+@media (max-width: 640px) {
+  .signup-page {
+    grid-template-columns: 1fr;
+  }
+
+  .signup-page__chart {
+    bottom: 0;
+    opacity: 0.45;
+  }
+
+  .signup-page__chart svg {
+    height: 200px;
+  }
+
+  .signup-page__brand {
+    min-height: auto;
+    padding: 88px 24px 28px;
+  }
+
+  .signup-page__logo {
+    top: 28px;
+    left: 24px;
+  }
+
+  .signup-page__intro h1 {
+    font-size: 28px;
+  }
+
+  .signup-page__intro p {
+    font-size: 14px;
+  }
+
+  .signup-page__features {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .signup-page__form-section {
+    align-items: flex-start;
+    padding: 28px 20px 40px;
+  }
+}
+
+/* Styling for feedback messages */
+.signup-page__error {
+  color: #B91C1C;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.signup-page__success {
+  color: #15803D;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+}

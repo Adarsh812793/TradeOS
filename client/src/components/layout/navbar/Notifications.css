@@ -1,0 +1,405 @@
+
+/* Notification container and bell */
+.notifications {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Green unread-count circle on the top-right of the bell */
+.notifications__badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  display: inline-flex;
+  min-width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  background: var(--color-success);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  box-sizing: content-box;
+  animation: notifications-badge-pop 220ms ease-out;
+}
+
+@keyframes notifications-badge-pop {
+  0% {
+    transform: scale(0.4);
+  }
+
+  70% {
+    transform: scale(1.15);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Dropdown panel */
+.notifications__dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 1000;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 12px 35px rgb(15 23 42 / 12%);
+  animation: navbar-dropdown-enter 160ms ease-out;
+}
+
+/* Dropdown header */
+.notifications__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 18px 15px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.notifications__title {
+  margin: 0;
+  color: #172554;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.notifications__subtitle {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.notifications__mark-all {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 0;
+  border: none;
+  background: transparent;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.notifications__mark-all:hover {
+  color: #166534;
+}
+
+.notifications__mark-all:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Notification list and individual items */
+.notifications__list {
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.notifications__item {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 140ms ease;
+}
+
+/* The clickable part of a row: dot + text (opens the linked page) */
+.notifications__item-main {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px 8px 15px 18px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Small tick that marks just this notification as read */
+.notifications__item-read {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 14px 0 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.notifications__item-read:hover {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.notifications__item-read:focus-visible,
+.notifications__item-main:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: -3px;
+}
+
+.notifications__item:last-child {
+  border-bottom: none;
+}
+
+.notifications__item:hover {
+  background: #f8fafc;
+}
+
+.notifications__item--unread {
+  background: #f8fcf9;
+}
+
+.notifications__item--read {
+  background: #ffffff;
+}
+
+.notifications__dot {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  margin-top: 5px;
+  border-radius: 50%;
+}
+
+.notifications__dot--success {
+  background: #16a34a;
+}
+
+.notifications__dot--info {
+  background: #2563eb;
+}
+
+.notifications__dot--warning {
+  background: var(--color-warning);
+}
+
+.notifications__dot--neutral {
+  background: #94a3b8;
+}
+
+.notifications__content {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.notifications__item-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.notifications__item-title {
+  color: #172554;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.notifications__unread-badge {
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.notifications__message {
+  color: #475569;
+  font-size: 12px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.notifications__time {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+/* Empty state and footer */
+.notifications__empty {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 34px 24px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.notifications__empty p {
+  margin: 12px 0 5px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.notifications__empty span {
+  max-width: 240px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.notifications__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 18px;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.notifications__load-more {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.notifications__load-more:hover:not(:disabled) {
+  color: #166534;
+}
+
+.notifications__load-more:disabled {
+  color: #94a3b8;
+  cursor: default;
+}
+
+/* Loading and error messages inside the list */
+.notifications__status {
+  margin: 0;
+  padding: 28px 18px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-size: 13px;
+}
+
+.notifications__status p {
+  margin: 0 0 10px;
+}
+
+.notifications__status--error {
+  color: var(--color-danger);
+}
+
+.notifications__retry {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.notifications__retry:hover {
+  background: #f8fafc;
+}
+
+/* Shown when marking as read failed */
+.notifications__banner {
+  margin: 0;
+  padding: 9px 18px;
+  border-bottom: 1px solid #fecaca;
+  background: #fef2f2;
+  color: var(--color-danger);
+  font-size: 12px;
+}
+
+/* On phones the dropdown becomes a sheet spanning the screen under the navbar (same as the search dropdown) */
+@media (max-width: 767px) {
+  .notifications__dropdown {
+    position: fixed;
+    top: 64px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-width: none;
+  }
+
+  .notifications__list {
+    max-height: calc(100dvh - 230px);
+  }
+
+  .notifications__item-main {
+    padding: 14px 8px 14px 15px;
+  }
+
+  .notifications__item-read {
+    width: 36px;
+    height: 36px;
+    margin: 8px 8px 0 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .notifications__header {
+    padding: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notifications__dropdown {
+    animation: none;
+  }
+
+  .notifications__item {
+    transition: none;
+  }
+
+  .notifications__badge {
+    animation: none;
+  }
+}
+
+
+/* @keyframes navbar-dropdown-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} */

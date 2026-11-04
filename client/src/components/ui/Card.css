@@ -1,0 +1,25 @@
+
+.card {
+  min-width: 0;
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/* Padding variants */
+.card--padding-sm {
+  padding: var(--space-3);
+}
+
+.card--padding-md {
+  padding: var(--space-4);
+}
+
+.card--padding-lg {
+  padding: var(--space-6);
+}
+
+/* Optional shadow */
+.card--shadow {
+  box-shadow: var(--shadow-sm);
+}

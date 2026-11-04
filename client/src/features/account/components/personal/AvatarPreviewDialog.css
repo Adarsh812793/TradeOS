@@ -1,0 +1,42 @@
+.avatar-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* Saved photos are 256 x 256, so show them at that size (smaller on narrow screens) rather than blowing them up */
+.avatar-preview__image {
+  display: block;
+  width: 256px;
+  max-width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-subtle);
+}
+
+.avatar-preview__small {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding-top: var(--space-4);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.avatar-preview__small p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.avatar-preview__error {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}

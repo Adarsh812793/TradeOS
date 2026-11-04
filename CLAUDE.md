@@ -1,0 +1,167 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project
+
+TradeOS is a virtual (paper) trading platform for Indian equities (NSE/BSE, INR). New users get a wallet with ₹1,00,000 of virtual money and can buy/sell stocks, track holdings, portfolio P&L, orders, transactions and a watchlist. The repo has two independent npm projects: `server/` (Express 5 + Mongoose, ESM JavaScript) and `client/` (React 19 + Vite, plain JSX, no TypeScript). `docs/RoadMap.txt` lists the development phases; backend (Phase 4) is done and frontend (Phase 5) is in progress. Per-feature plans and build checklists live in `docs/plans/` (e.g. `portfolio-page.md`).
+
+## Commands
+
+Run each from its own directory (`server/` or `client/`).
+
+Server:
+- `npm run dev`: start with nodemon (port from `PORT`, default 8080)
+- `npm start`: start without reload
+- `npm run test:run`: run all tests once (`npm test` runs vitest in watch mode)
+- `npx vitest run tests/orders.integrated.test.js`: run a single test file
+- `npx vitest run -t "should buy a stock successfully"`: run a single test by name
+- `node src/modules/stocks/stock.seed.js`: wipe and reseed the `stocks` collection with dummy data
+
+Client:
+- `npm run dev`: Vite dev server on http://localhost:5173
+- `npm run build`, `npm run lint` (ESLint), `npm run preview`
+- There are no frontend tests.
+
+## Environment
+
+- `server/src/config/env.js` loads `.env`, or `.env.test` when `NODE_ENV=test` (vitest sets this automatically). It throws at startup if `MONGODB_URI`, `JWT_ACCESS_SECRET` or `FRONTEND_URL` is missing. Import config from this module rather than reading `process.env` directly.
+- Client needs `VITE_API_BASE_URL` (backend origin) in `client/.env`.
+- The backend CORS origin is hard-coded to `http://localhost:5173` in `server/src/app.js` (it does not use `FRONTEND_URL`).
+- MongoDB must support multi-document transactions (replica set / Atlas). Order placement and registration depend on it.
+
+## Backend architecture (`server/src`)
+
+Modular monolith architecture is being followed
+- `app.js` builds the Express app (middleware, routes under `/api/<module>`, then 404 handler, then the central error handler). `server.js` connects to MongoDB and listens. Tests import `app.js` directly with supertest.
+- Feature modules live in `modules/<name>/` with a consistent layering: `*.routes.js` → `*.controller.js` → `*.service.js` → `*.model.js`, plus optional `*.validation.js` (Joi schemas). Controllers stay thin (read `req.user.userId` / body / query, call the service, send the response); business logic lives in services. Services export a default object of functions.
+- Route chain pattern: `protect` (JWT auth) → `validate(schema, "body" | "query" | "params")` → controller wrapped with `asyncWrap`.
+- Errors: throw `new AppError(message, statusCode, ERROR_CODES.X)` (`utils/AppError.js`, `utils/errorCodes.js`). `middleware/error.middleware.js` returns `{ success: false, message, errorCode }` for these; anything else becomes a generic 500. The frontend relies on `errorCode`, so add new codes to `errorCodes.js`.
+- Success responses use `{ success: true, message, data }`. Paginated lists return `data: { items, pagination: { page, limit, totalItems, totalPages, hasNextPage, hasPreviousPage } }`; query params are validated with `utils/pagination.validation.js`.
+- Shared Joi rules live in `utils/validation.js` (`objectIdSchema`, `nameSchema`). The `validate()` middleware strips unknown fields, so a route only ever sees the fields its schema lists.
+- Gotcha: many server files (the users, auth and utils modules, for example) use Windows (CRLF) line endings, so a multi-line text replacement can fail to match. Check with `grep -c $'\r' file` and preserve the endings when rewriting.
+- **Trading flow** (`orders/order.service.js`): buy/sell run inside a Mongoose session transaction that atomically creates the Order (status `EXECUTED`), updates the Wallet balance, upserts or deletes the Holding (weighted average buy price on buy), and writes a Transaction record. Orders execute at `Stock.currentPrice` from the database, **not** the live FYERS price. Portfolio P&L (`portfolio.service.js`) is likewise computed from `Stock.currentPrice` on the fly.
+- **Auth** (`modules/auth`): argon2 password hashes; registration creates the User and Wallet in one transaction. 15-minute JWT access token (payload `{ userId, role }`) sent as `Authorization: Bearer`. Refresh token is a random string stored hashed in `RefreshSession` with a `familyId`, delivered as an httpOnly `refreshToken` cookie and rotated on every `/api/auth/refresh`. Rotation is atomic (the old token is claimed with one `findOneAndUpdate`, the new session is created first). Reusing an old refresh token revokes the whole family (`REFRESH_TOKEN_REUSE`), EXCEPT within a 10 second grace period after a normal rotation (`rotatedAt` on `RefreshSession`; covers two tabs and lost responses, and only while the login still has a live token, so a logout cannot be undone). `protect` answers an expired access token with 401 `ACCESS_TOKEN_EXPIRED` (bad signature: `ACCESS_TOKEN_INVALID`); the frontend renews on exactly those two codes. Auth routes are rate-limited by `authRateLimiter` (currently `limit: 100` per 15 minutes, although the comment in `rateLimit.middleware.js` says 10).
+- **Change password** (`PATCH /api/auth/password`, protected): verifies the current password, saves the new hash and revokes the user's other refresh sessions in one transaction; the device whose refresh cookie accompanies the request keeps its login (no cookie means all sessions are revoked). Only failed attempts are rate-limited (`passwordChangeRateLimiter`, 5 per user per 15 min, in-memory). Signed-out devices keep a working access token until it expires (up to 15 min) but cannot renew it; an instant cut-off would need a `passwordChangedAt` check in `protect`.
+- **Delete account** (`DELETE /api/users/me`, protected, body `{ password }`): re-checks the password (400 `INVALID_PASSWORD`; `accountDeletionRateLimiter`, 5 failed attempts per user per 15 min), then in one transaction deletes the user's transactions, orders, holdings, watchlist, wallet, login sessions and the user; the Cloudinary photo is deleted afterwards (best effort) and the login cookie is cleared. Stocks and the FYERS token are shared and stay. After deletion the old access token passes `protect` for up to 15 min: reads and updates answer 404 and orders fail, and `addToWatchlist` checks the user exists so it cannot leave orphaned entries. Any NEW endpoint that creates user-owned data must also check that the user (or their wallet) still exists.
+- **Profile photos** (`modules/users`): `POST /api/users/me/avatar` (multipart field `avatar`, JPG/PNG/WebP, max 2 MB) and `DELETE /api/users/me/avatar`. `middleware/upload.middleware.js` reads the file in memory with `multer` and checks its real first bytes (`utils/imageType.js`); `utils/cloudinary.js` uploads it as a 256x256 square under the fixed id `tradeos/avatars/<userId>`, so a new upload replaces the old one. MongoDB stores only `avatar.url` and `avatar.publicId`. The three `CLOUDINARY_*` variables live in `server/.env` and are optional in `config/env.js`; without them the upload answers 503 `IMAGE_UPLOAD_UNAVAILABLE`. `uploadRateLimiter` allows 20 uploads per hour per IP.
+- **Notifications** (`modules/notifications`, plan in `docs/plans/notifications.md`): four types (`ORDER_EXECUTED`, `WELCOME`, `LOW_BALANCE`, `PASSWORD_CHANGED`), deleted after 30 days by a TTL index on `createdAt`. Always create one through `notificationService.createNotification(userId, template(...), { session })` inside the caller's transaction (wording lives in `notification.templates.js`); order, registration and password-change already do. Endpoints: `GET /api/notifications`, `GET /api/notifications/unread-count` (the one the frontend polls), `PATCH /api/notifications/read-all`, `PATCH /api/notifications/:id/read`. Delete account removes them. `database/connection.js` runs `model.init()` for every model before the server accepts requests; without it, the first transaction to write into a brand-new collection can fail with a 500.
+- Express 5 makes `req.query` a read-only getter, so `validate()` redefines it as an own property on the request (`Object.defineProperty`). Because of that, controllers receive validated query values: Joi defaults applied (`page=1`, `limit=20`) and numbers converted. Do not go back to `Object.assign(req.query, ...)`.
+- **Market data** (`modules/market`): live quotes and indices (NIFTY 50, SENSEX) come from the FYERS API. The FYERS OAuth tokens are stored in a single-document `FyersToken` collection; the access token expires daily at 6:30 AM IST, after which `connectionStatus` becomes `reauthorization_required` and an admin must re-authorize via `GET /api/market/fyers/login`. Only the symbols in `market.constants.js` are supported. `scripts/test-fyers-refresh.js` is a manual script for testing token refresh.
+
+## Frontend architecture (`client/src`)
+
+- `app/router.jsx` defines routes: everything except `/login`, `/signup` and `/` is nested under `ProtectedRoute` → `AppLayout` (sidebar + navbar).
+- Feature-sliced: `features/<name>/` holds a `<name>.api.js` (calls to the backend), `components/`, and optionally `hooks/` and `utils/`. `pages/` compose feature components; `components/ui/` holds shared primitives (Button, Card, Modal, ...); design tokens are in `styles/tokens.css`. Each component has a co-located `.css` file (plain CSS, no CSS framework).
+- All HTTP goes through `lib/api.js` (a fetch wrapper with `credentials: "include"`). It attaches the access token from `AuthContext` via `setAccessTokenProvider`, unwraps JSON, and throws an `Error` with `.status` and `.data` (the backend error body) for non-2xx responses.
+- `features/auth/AuthContext.jsx` keeps the access token only in memory (in state AND a ref that is set instantly, because the API client reads the ref); on app load it renews through `refreshSession()` (using the cookie) to restore the session.
+- **Automatic token renewal** (`lib/api.js`): when a request fails with 401 `ACCESS_TOKEN_EXPIRED` / `ACCESS_TOKEN_INVALID`, the client calls `refreshSession()` and repeats the request ONCE. All requests that fail meanwhile share ONE renewal (a refresh token works only once; reusing it looks like theft), and `navigator.locks` (Web Locks) makes browser tabs take turns. If the renewal answers 401 the login is over (`onSessionExpired` -> AuthContext ends the session, reason `expired`); a 429, 5xx or network failure keeps the user logged in and the original request just fails. A wrong password (401 `INVALID_CREDENTIALS`) never triggers a renewal. `configureAuth({ getAccessToken, onTokenRefreshed, onSessionExpired })` wires AuthContext in; do not call `/api/auth/refresh` yourself, use `refreshSession()`. Logout waits for a renewal in progress (`waitForPendingRefresh`).
+- **Idle timeout** (`features/auth/useIdleTimeout.js`, `idleActivity.js`): 30 minutes without user activity signs the user out (reason `idle`; the refresh token is revoked and the login page explains why via `location.state.sessionEndReason`). Activity = pointer, mouse move, key, wheel, scroll, touch and back/forward; polling and other background requests do NOT count. The last activity time is kept in `localStorage` (`tradeos-last-activity`) so other tabs count, a sleeping laptop is caught on wake, and reopening the app after 30+ minutes ends the login instead of restoring it. Change `IDLE_LIMIT_MS` in `idleActivity.js` to adjust (use 1 minute to test by hand).
+- Forms use react-hook-form with zod schemas (`*.validation.schema.js`); icons come from `lucide-react`.
+- Shared helpers live in `client/src/utils/` (`currency.utils.js`: `formatCurrency`, `formatCompactCurrency`; `date.utils.js`: `formatDateTime`); feature-specific helpers stay in `features/<name>/utils/`. All currency display goes through `formatCurrency` (do not write a local `Intl.NumberFormat`); the one exception is `WatchlistTable`, which still prints `INR 1,420.50` instead of `₹1,420.50` (left unchanged so the screen does not change; switch it to `formatCurrency` if you want it consistent). Shared list UI: `components/ui/Pagination.jsx` takes the backend `pagination` object plus an `itemLabel` (used by Orders and Transactions).
+- `styles/tokens.css` holds status colours (`--color-success`, `--color-danger`, `--color-info`, each with a `-tint`) and a chart palette (`--color-chart-1..5`, `--color-chart-other`). Use tokens rather than hex values in new CSS.
+- Lint gotcha: the `react-hooks/set-state-in-effect` rule rejects an effect that calls a function which sets state. Define the fetch function inside the `useEffect` (see `useOrders`, `usePortfolio`), and to refetch on demand bump a `refreshKey` state the effect depends on.
+- Responsive pattern: wide-screen tables become cards on narrow screens. Both are rendered and CSS shows one (Orders and Stocks at about 768px, Transactions at 1000px, Portfolio holdings at 1100px because nine columns need the room).
+- **Portfolio** (`pages/PortfolioPage.jsx`, `features/portfolio/`): `usePortfolio` loads `GET /api/portfolio` once (`refresh()` reloads quietly). The page shows summary cards, a hand-built SVG allocation donut (no chart library), a "Portfolio Value (7D)" placeholder, and `HoldingsSection` (search, sort, table or cards). Allocation, filter and sort logic is in `portfolio.utils.js`. Buy/Sell on a holding link to `/stocks/:id`; `?action=sell` opens `StockDetailsPage` on the Sell form.
+- **Transactions** (`pages/TransactionsPage.jsx`, `features/transactions/`): read-only ledger from `GET /api/transactions` (10 per page), laid out like Orders. BUY amounts show as `-₹…`, SELL as `+₹…`. `useTransactions` keeps the requested page separate from the server's `pagination`, so a failed page change keeps the old rows and shows a banner. No filters or totals yet (they need backend support); see `docs/plans/transactions-page.md`.
+- **Account** (`pages/AccountPage.jsx`, `features/account/`, route `/account`): five collapsible sections (Personal Information, Security, Trading Account, Preferences, Danger Zone) built on the shared `AccountSection` (all start closed, several can be open, closed panels are `inert`). Being built one section at a time; the plan and checklist are in `docs/plans/account-page.md`. Sections not built yet show `SectionPlaceholder`. `CurrentUserProvider` (mounted in `router.jsx` around `AppLayout`, so only for logged-in users) loads `GET /api/users/me` once and shares `{ user, setUser, loading, error, retry }` through `useCurrentUser()`; the Account page and the navbar `ProfileMenu` both use it, so an edited name or photo shows everywhere at once. Personal Information (`personal/PersonalInformation.jsx`) switches between `ProfileOverview` (with `AvatarUploader` for the photo) and `ProfileEditForm` (name only; email is read-only for now). A chosen photo opens `AvatarCropDialog` (hand-built square crop on a canvas, maths in `utils/avatarCrop.utils.js`, no library) and only the cropped JPEG is uploaded; the original may be up to 10 MB, the cropped file must be under the server's 2 MB. Clicking a saved photo opens `AvatarPreviewDialog` (full-size quick view with a "Change photo" shortcut). Security (`security/SecurityPanel.jsx`) holds change password (`ChangePasswordForm`), a disabled "Forgot password, coming soon" row and Log out. Trading Account (`trading/TradingAccountDetails.jsx`) is read-only: "Paper Trading", the balance from `GET /api/wallet` (fetched when the section is first opened) and an "Active" badge for everyone. Danger Zone (`danger/DeleteAccountPanel.jsx` + `DeleteAccountDialog.jsx`) deletes the account after a password re-check; on success it must `await navigate("/login", { flushSync: true, state })` BEFORE calling `logout()`, otherwise `ProtectedRoute`'s own redirect overrides it and the "account deleted" message is lost. Shared `components/ui/Avatar.jsx` shows the photo, else the initial. `lib/api.js` sends `FormData` bodies untouched (needed for the photo upload).
+- **Notifications** (`features/notifications/`, `NotificationsProvider` mounted in `router.jsx` inside `CurrentUserProvider`; `useNotifications()` gives `{ unreadCount, items, pagination, markRead, markAllRead, refresh, ... }`): the provider **polls** `GET /api/notifications/unread-count` every 60 s (skipped while the tab is hidden, repeated at once when the tab returns) for the green count badge on the navbar bell (`components/layout/navbar/Notifications.jsx`, shows `99+` above 99). The list loads when the dropdown is first opened and is then kept fresh by the same polling tick. Mark one / mark all read are optimistic (screen first, undone with a banner if the request fails). Call `refresh()` after anything that creates a notification (already done after placing an order and changing the password). `formatRelativeTime` in `utils/date.utils.js` makes the "5 min ago" text. Polling goes through the same API client, so it gets renewed tokens like every other request, and it does not count as user activity for the idle timeout.
+- **Navbar search** (`components/layout/navbar/StockSearch.jsx`, `useStockSearch.js`): loads `GET /api/stocks` each time the dropdown opens and filters in the browser with `matchesStockSearch` (shared with the Stocks page). Clicking a result, or highlighting one with the arrow keys and pressing Enter, opens `/stocks/:id`. Enter with nothing highlighted (or the "See all results" footer link) opens `/stocks?search=<text>`; `StocksPage` keeps its search text in that URL parameter. `/` or Ctrl/Cmd+K focuses the box.
+- **Watchlist toggling** on the Stocks page goes through `features/watchlist/hooks/useWatchlistToggle.js` (loads the watchlist once; a 409 on add or 404 on remove just syncs the UI).
+
+## Tests
+
+`server/tests/*.test.js` are integration tests that hit a real MongoDB (the `MONGODB_URI` in `.env.test`) through supertest; `server/test/setup.js` connects and disconnects. `tests/helpers/tradeosTestUtils.js` provides `createAuthenticatedUser()` (registers and logs in a unique user) and `createTestStock(price)`. Test data is not cleaned up between runs. `users.avatar.live.test.js` does a real Cloudinary upload and is skipped unless the three `CLOUDINARY_*` values are in the test process's environment (`.env.test` does not have them), so it is skipped in normal runs; to run it, pass those values to a single run without printing them or editing any env file. Test file names are inconsistent (`*.integration.test.js` / `*.integrated.test.js`), so match by path when running one.
+
+## Current Status 
+
+Backend
+- All currently required backend routes have been implemented.
+- Additional routes may be introduced when required by future features.
+- Inspect existing backend functionality before adding or modifying routes.
+- Orders use stored stocks price not real price fetched from a data source
+
+Frontend
+- Implemented: login/signup, dashboard, stocks list and stock details (buy/sell, watchlist add/remove), orders, watchlist, the portfolio page (summary cards, allocation donut, holdings table/cards with search and sort), and the transactions ledger.
+- Portfolio "Value (7D)" chart is only a placeholder: there is no value history yet. It needs live prices synced into `Stock.currentPrice` plus a daily `PortfolioSnapshot` and a history endpoint (see `docs/plans/portfolio-page.md`).
+- Account section: personal information (view, edit name, profile photo with crop and quick view), Security (change password, log out), Trading Account (read-only) and Danger Zone (delete account) are done. Still open: "Forgot password" waits for the email OTP system, and Preferences is a placeholder (contents to be decided). Transactions filters (type, date, search) and summary totals (bought / sold / net cash flow) are not built; both need backend additions first.
+- Frontend integration with backend endpoints is still in progress.
+
+Known issues (not yet fixed)
+- `StocksPage.jsx`: `setCurrentPage(1)` inside an effect (ESLint error); page size is fixed at 3 (`const itemsPerPage = 3`); `StocksPage.css` uses a `--space-5` token that does not exist.
+- `StockDetailsPage.jsx`, `useOrders.js` and `WatchlistPage.jsx` read errors from `err.response?.data?.message` (axios style). `lib/api.js` throws plain `Error`s, so they always fall back to the generic message; use `err.message`.
+- `npm run lint` in `client/` reports 4 errors, all in older files: `MarketOverview.jsx`, `RecentActivity.jsx`, `WatchlistPreview.jsx` and `StocksPage.jsx` (setState called directly inside an effect). New code should lint clean.
+- `npm audit --omit=dev` in `server/` reports 4 findings in older dependencies (`body-parser`, `ip-address`, `joi`, `qs`); fixes are available but `npm audit fix` has not been run.
+
+## Next Up 
+- Pick one of the five saved candidates in `docs/plans/next-up.md` (lint errors, duplicate currency formatters, `err.response` error reading, retry on 401 in `lib/api.js`, navbar search Enter-to-`/stocks?search=`).
+- Finish the Account section: decide what Preferences should contain, and build the email-OTP forgot-password flow when chosen.
+- Connect any remaining frontend pages to their backend endpoints.
+- Clear the known issues listed above.
+- Verify API integration, loading states, error handling, and data flow.
+- Polish the application incrementally, improving UI/UX, responsiveness, performance, and code quality.
+
+## Rules for Claude
+
+- Act as a senior developer and mentor. Help me understand, not just copy code.
+- Inspect existing code before making changes. Never guess.
+- Follow modular architecture, separation of concerns, and existing conventions.
+- Explain the design and implementation plan before coding.
+- Implement incrementally; avoid unnecessary rewrites and abstractions.
+- Use JavaScript, not TypeScript.
+- Reuse existing APIs, components, utilities, and design tokens.
+- Ask before adding dependencies or modifying `.env` files.
+- Consider security, edge cases, and data consistency.
+- Test changes and explain what was verified.
+- Summarize what I learned after significant features.
+- For every new backend endpoint, put a one-line comment above the route in its `*.routes.js` saying what it reads from or writes to the database and what it returns to the frontend.
+- Give every important function (services, controllers, hooks, utils, main components) a one-line comment stating its purpose.
+- Prioritize correctness, maintainability, and my understanding.
+
+## Conventions
+
+- Frontend uses React with Vite.
+- Backend uses Node.js, Express, MongoDB, and Mongoose.
+- API routes are organized under /api.
+- Use async/await for asynchronous operations.
+- Used Joi at backend and zod in frontend for validation
+- Use the project's existing API client and response conventions.
+- Follow existing naming and folder conventions.
+- Reuse components are under `client/src/components` consider then whenever needed
+- Use the exitsing style tokens under `client/src/styles/tokens.css`
+
+
+## Things to consider in future
+
+### 1.UI/UX Design Direction
+
+- I am not satisfied with the current UI/UX flow of TradeOS.
+- Re-evaluate the existing layouts, navigation, user flows, and visual hierarchy.
+- Aim for a modern, polished, professional trading-platform experience.
+- Prioritize usability, responsiveness, accessibility, and consistency.
+- Explore smooth animations, micro-interactions, and tasteful 3D graphics.
+- Avoid excessive animations that negatively affect performance or usability.
+- Before making major UI changes, analyze the existing design and propose improvements.
+- Do not redesign the entire application without discussing the approach first.
+
+### 2.Future Engineering Roadmap
+
+The following are planned improvements, not necessarily implemented features.
+
+- Real-time stock prices using WebSockets.(Finding real time market-data provider is a issue)
+- Portfolio value history chart (needs prices that actually change, a daily `PortfolioSnapshot` collection, and `GET /api/portfolio/history`; a chart library such as recharts could be considered then).
+- Forgot-password and password-reset flow using email OTP verification.
+- Redis for caching, performance optimization, and suitable temporary data.
+- Improved UI/UX with smooth animations and micro-interactions.
+- Interactive 3D graphics where they provide meaningful value.
+- Better performance, scalability, security, and testing.
+- Production-quality architecture and engineering practices.
+
+#### Roadmap Rules
+
+- Do not implement roadmap features automatically.
+- When I choose a feature, inspect the existing architecture first.
+- Explain the problem, design, trade-offs, and implementation plan.
+- Break complex features into modular steps.
+- Ask before adding dependencies or making major architectural changes.
+- Update the roadmap status only after implementation and verification.

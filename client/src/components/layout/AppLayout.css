@@ -1,0 +1,59 @@
+
+.app-layout {
+  min-height: 100vh;
+}
+
+/* Main content beside the desktop sidebar */
+.app-layout__content {
+  min-width: 0;
+  min-height: 100vh;
+  margin-left: 240px;
+  transition: margin-left 200ms ease;
+}
+
+.app-layout--collapsed .app-layout__content {
+  margin-left: 72px;
+}
+
+/* Page content spacing */
+.app-layout__page {
+  min-width: 0;
+  padding: var(--space-6);
+}
+
+/* Mobile backdrop is hidden on desktop */
+.app-layout__backdrop {
+  display: none;
+  padding: 0;
+  border: none;
+}
+
+/* Mobile layout: sidebar overlays content instead of pushing it */
+@media (max-width: 767px) {
+  .app-layout__content,
+  .app-layout--collapsed .app-layout__content {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+  }
+
+  .app-layout__page {
+    padding: 16px;
+  }
+
+  .app-layout__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    display: block;
+    background: rgb(15 23 42 / 45%);
+    cursor: pointer;
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .app-layout__content {
+    transition: none;
+  }
+}

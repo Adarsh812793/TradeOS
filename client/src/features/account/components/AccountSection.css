@@ -1,0 +1,118 @@
+.account-section {
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.account-section__heading {
+  margin: 0;
+}
+
+/* The whole header row is the toggle button */
+.account-section__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-4) var(--space-6);
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.account-section__header:hover {
+  background: var(--color-surface-subtle);
+}
+
+.account-section__header:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: -2px;
+}
+
+.account-section__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--color-success-tint);
+  color: var(--color-success);
+}
+
+.account-section--danger .account-section__icon {
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
+}
+
+.account-section__title {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+}
+
+.account-section__hint {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.account-section__chevron {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  transition: transform 200ms ease;
+}
+
+.account-section__header[aria-expanded="true"] .account-section__chevron {
+  transform: rotate(180deg);
+}
+
+/* Open / close animation: the panel grows from 0 to its natural height */
+.account-section__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 250ms ease;
+}
+
+.account-section__panel--open {
+  grid-template-rows: 1fr;
+}
+
+.account-section__panel-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.account-section__body {
+  padding: var(--space-6);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-section__panel,
+  .account-section__chevron {
+    transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .account-section__header {
+    padding: var(--space-4);
+  }
+
+  /* The right-hand hint would crowd the title on phones */
+  .account-section__hint {
+    display: none;
+  }
+
+  .account-section__body {
+    padding: var(--space-4);
+  }
+}

@@ -1,0 +1,144 @@
+.avatar-crop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.avatar-crop__hint {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+/* The square the picture is cropped to (260px, matches CROP_VIEW_SIZE in avatarCrop.utils.js) */
+.avatar-crop__viewport {
+  position: relative;
+  flex-shrink: 0;
+  width: 260px;
+  height: 260px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-subtle);
+  cursor: grab;
+  touch-action: none; /* lets a finger drag the photo instead of scrolling the page */
+  user-select: none;
+}
+
+.avatar-crop__viewport:active {
+  cursor: grabbing;
+}
+
+.avatar-crop__viewport:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* max-width: none matters, the page-wide rule img { max-width: 100% } would squash the photo */
+.avatar-crop__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+  transform-origin: 0 0;
+}
+
+/* Round guide: the huge shadow darkens everything outside the circle */
+.avatar-crop__mask {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--color-surface);
+  border-radius: 50%;
+  box-shadow: 0 0 0 400px rgb(15 23 42 / 55%);
+  pointer-events: none;
+}
+
+.avatar-crop__zoom {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 260px;
+  max-width: 100%;
+  color: var(--color-text-secondary);
+}
+
+/* Slider drawn by hand so it matches the light theme: green up to the thumb, light grey after it */
+.avatar-crop__slider {
+  --zoom-fill: 0%; /* set from the component, how far along the slider is */
+
+  flex: 1;
+  min-width: 0;
+  height: 20px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.avatar-crop__slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-primary) var(--zoom-fill),
+    var(--color-border) var(--zoom-fill)
+  );
+}
+
+.avatar-crop__slider::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-border);
+}
+
+.avatar-crop__slider::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-primary);
+}
+
+.avatar-crop__slider::-webkit-slider-thumb {
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  margin-top: -6px;
+  border: 2px solid var(--color-surface);
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.avatar-crop__slider::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-surface);
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.avatar-crop__slider:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 4px;
+}
+
+.avatar-crop__slider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.avatar-crop__error {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}

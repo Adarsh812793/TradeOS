@@ -1,0 +1,318 @@
+
+/* 1. Login page foundation */
+.login-page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 45% 55%;
+  overflow: hidden;
+  background: linear-gradient(110deg, #F1F5F9 0%, #F8FAFC 65%);
+  color: #172554;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* 2. Shared decorative market chart */
+.login-page__chart {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  bottom: -12px;
+  width: 100%;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.login-page__chart svg {
+  display: block;
+  width: 100%;
+  height: clamp(180px, 28vw, 320px);
+}
+
+/* 3. Left panel: Branding and benefits */
+.login-page__brand {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 36px;
+  padding: 64px clamp(28px, 5vw, 80px);
+  background: transparent;
+}
+
+.login-page__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  color: #172554;
+  font-size: 24px;
+  font-weight: 750;
+  letter-spacing: -0.8px;
+  text-decoration: none;
+}
+
+.login-page__logo-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #16A34A;
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.login-page__intro {
+  max-width: 490px;
+}
+
+.login-page__intro h1 {
+  margin: 0 0 18px;
+  font-size: clamp(32px, 3.4vw, 48px);
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+  font-weight: 750;
+}
+
+.login-page__intro p {
+  max-width: 430px;
+  margin: 0;
+  color: #64748B;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.login-page__features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.login-page__features li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.login-page__features li::before {
+  content: "✓";
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #DCFCE7;
+  color: #15803D;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* 4. Right panel: Login card */
+.login-page__form-section {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 48px clamp(24px, 5vw, 80px);
+  background: transparent;
+}
+
+.login-page__form-section > * {
+  width: 100%;
+  max-width: 460px;
+}
+
+.login-page__form-header {
+  margin-bottom: 28px;
+}
+
+.login-page__form-header h2 {
+  margin: 0 0 8px;
+  color: #172554;
+  font-size: 28px;
+  font-weight: 750;
+  letter-spacing: -0.8px;
+}
+
+.login-page__form-header p {
+  margin: 0;
+  color: #64748B;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 5. Form fields and actions */
+.login-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.login-page__password-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-page__forgot-link {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -2px;
+}
+
+.login-page__forgot-link a {
+  color: #15803D;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-page__forgot-link a:hover {
+  color: #166534;
+  text-decoration: underline;
+}
+
+.login-page__forgot-link a:focus-visible,
+.login-page__signup-link a:focus-visible,
+.login-page__logo:focus-visible {
+  outline: 2px solid #16A34A;
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+/* 6. Signup navigation */
+.login-page__signup-link {
+  margin: 24px 0 0;
+  color: #64748B;
+  font-size: 13px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.login-page__signup-link a {
+  color: #15803D;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.login-page__signup-link a:hover {
+  color: #166534;
+  text-decoration: underline;
+}
+
+/* 7. Responsive layout */
+@media (max-width: 900px) {
+  .login-page {
+    grid-template-columns: 40% 60%;
+  }
+
+  .login-page__brand {
+    padding: 48px 28px;
+    gap: 28px;
+  }
+
+  .login-page__form-section {
+    padding: 40px 28px;
+  }
+
+  .login-page__intro h1 {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 640px) {
+  .login-page {
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .login-page__brand {
+    gap: 24px;
+    padding: 32px 24px 12px;
+  }
+
+  .login-page__intro h1 {
+    max-width: 420px;
+    font-size: 32px;
+    letter-spacing: -1px;
+  }
+
+  .login-page__intro p {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .login-page__features {
+    gap: 10px;
+  }
+
+  .login-page__features li {
+    font-size: 13px;
+  }
+
+  .login-page__form-section {
+    align-items: flex-start;
+    padding: 20px 20px 40px;
+  }
+
+  .login-page__form-header {
+    margin-bottom: 24px;
+  }
+
+  .login-page__form-header h2 {
+    font-size: 25px;
+  }
+
+  .login-page__chart {
+    bottom: 0;
+    opacity: 0.45;
+  }
+
+  .login-page__chart svg {
+    height: 200px;
+  }
+}
+
+/* 4. Form feedback messages */
+.login-page__success {
+  padding: 12px 14px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 14px;
+}
+
+/* Neutral heads-up: the app signed the user out (inactivity or expired session) */
+.login-page__notice {
+  padding: 12px 14px;
+  border: 1px solid var(--color-warning);
+  border-radius: 8px;
+  background: var(--color-warning-tint);
+  color: #92400e;
+  font-size: 14px;
+}
+
+.login-page__error {
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 14px;
+}

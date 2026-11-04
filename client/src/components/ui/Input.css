@@ -1,0 +1,114 @@
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.form-field__label {
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.form-field__input {
+  width: 100%;
+  min-height: 42px;
+  padding: var(--space-2) var(--space-3);
+
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+
+  outline: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.form-field__input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.form-field__input:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgb(22 163 74 / 12%);
+}
+
+.form-field__input:disabled {
+  background: var(--color-surface-subtle);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.form-field__input--error {
+  border-color: var(--color-danger);
+}
+
+.form-field__input--error:focus {
+  box-shadow: 0 0 0 3px rgb(220 38 38 / 12%);
+}
+
+.form-field__error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-xs);
+}
+
+/* Button for unhide hide password */
+
+/* Input and password toggle positioning */
+.form-field__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Reserve space for the toggle inside password fields */
+.form-field__input-wrapper .form-field__input {
+  width: 100%;
+  min-width: 0;
+}
+
+.form-field__input-wrapper .form-field__input[type="password"],
+.form-field__input-wrapper .form-field__input[type="text"] {
+  padding-right: 68px;
+}
+
+/* Password visibility button inside the input */
+.form-field__password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 6px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #64748B;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-field__password-toggle:hover {
+  color: #15803D;
+}
+
+.form-field__password-toggle:focus-visible {
+  outline: 2px solid #16A34A;
+  outline-offset: 2px;
+}
+
+.form-field__password-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

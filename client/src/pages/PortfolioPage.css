@@ -1,0 +1,44 @@
+.portfolio-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.portfolio-page__error {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
+  border-radius: var(--radius-md);
+}
+
+/* Error with a retry button (when the first load failed) */
+.portfolio-page__error--blocking {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.portfolio-page__error--blocking p {
+  margin: 0;
+}
+
+.portfolio-page__loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-8) 0;
+}
+
+/* Allocation and value chart sit side by side, stacking when there is not enough room */
+.portfolio-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .portfolio-page {
+    padding: var(--space-3);
+  }
+}

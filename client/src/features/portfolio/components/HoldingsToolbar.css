@@ -1,0 +1,102 @@
+.holdings-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.holdings-toolbar__title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.holdings-toolbar__controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* Search */
+.holdings-toolbar__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 280px;
+  max-width: 100%;
+}
+
+.holdings-toolbar__search-icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.holdings-toolbar__search-input {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  padding: 0 var(--space-3) 0 40px;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+}
+
+.holdings-toolbar__search-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.holdings-toolbar__search-input:focus,
+.holdings-toolbar__select:focus {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 1px;
+}
+
+/* Sort */
+.holdings-toolbar__sort {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.holdings-toolbar__select {
+  height: 40px;
+  padding: 0 var(--space-3);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+/* Phones: controls take the full width, search on its own row */
+@media (max-width: 600px) {
+  .holdings-toolbar__controls {
+    width: 100%;
+  }
+
+  .holdings-toolbar__search {
+    width: 100%;
+  }
+
+  .holdings-toolbar__sort {
+    width: 100%;
+  }
+
+  .holdings-toolbar__select {
+    flex: 1;
+    min-width: 0;
+  }
+}

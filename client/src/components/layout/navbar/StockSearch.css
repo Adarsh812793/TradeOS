@@ -1,0 +1,334 @@
+
+/* ========================================
+   Stock Search Container
+======================================== */
+
+.navbar__search-section {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  max-width: 560px;
+}
+
+/* Search Input Box */
+
+.navbar__search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  height: 40px;
+  padding: 0 12px;
+
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.navbar__search:focus-within {
+  background-color: #ffffff;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgb(22 163 74 / 10%);
+}
+
+.navbar__search-icon {
+  flex-shrink: 0;
+  color: #64748b;
+}
+
+.navbar__search-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+
+  padding: 0;
+  border: none;
+  outline: none;
+
+  background: transparent;
+  color: #172554;
+
+  font-size: 13px;
+}
+
+.navbar__search-input::placeholder {
+  color: #94a3b8;
+}
+
+.navbar__search-input::-webkit-search-cancel-button {
+  display: none;
+}
+
+/* Clear Search Button */
+
+.navbar__search-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 24px;
+  height: 24px;
+  padding: 0;
+
+  color: #64748b;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.navbar__search-clear:hover {
+  color: #172554;
+  background-color: #e2e8f0;
+}
+
+/* Search Hint */
+
+.navbar__search-shortcut {
+  flex-shrink: 0;
+  padding: 3px 6px;
+
+  color: #64748b;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+
+  font-family: inherit;
+  font-size: 10px;
+}
+
+/* ========================================
+   Search Results Dropdown
+======================================== */
+
+.navbar__search-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 110;
+
+  width: 100%;
+  min-width: 320px;
+  max-height: 420px;
+  overflow-y: auto;
+
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgb(15 23 42 / 12%);
+
+  animation: navbar-dropdown-enter 0.15s ease-out;
+}
+
+.navbar__dropdown-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 13px 16px;
+
+  color: #64748b;
+  border-bottom: 1px solid #f1f5f9;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.navbar__dropdown-heading svg {
+  color: #16a34a;
+}
+
+/* Individual Stock Result */
+
+.navbar__stock-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  width: 100%;
+  padding: 12px 16px;
+
+  text-align: left;
+  color: #172554;
+  background-color: #ffffff;
+  border: none;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+
+  transition: background-color 0.15s ease;
+}
+
+.navbar__stock-result:last-of-type {
+  border-bottom: none;
+}
+
+.navbar__stock-result:hover,
+.navbar__stock-result--active {
+  background-color: #f0fdf4;
+}
+
+.navbar__stock-info,
+.navbar__stock-price {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.navbar__stock-symbol {
+  color: #172554;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.navbar__stock-name {
+  overflow: hidden;
+  color: #64748b;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Stock Price and Percentage Change */
+
+.navbar__stock-price {
+  flex-shrink: 0;
+  align-items: flex-end;
+
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.navbar__stock-exchange {
+  padding: 1px 6px;
+
+  color: var(--color-text-secondary);
+  background-color: #f1f5f9;
+  border-radius: 4px;
+
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Loading and error messages */
+
+.navbar__search-status {
+  padding: 20px 16px;
+  margin: 0;
+
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-size: 13px;
+}
+
+.navbar__search-status p {
+  margin: 0 0 10px;
+}
+
+.navbar__search-status--error {
+  color: var(--color-danger);
+}
+
+.navbar__search-retry {
+  padding: 6px 12px;
+
+  color: var(--color-text-primary);
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.navbar__search-retry:hover {
+  background-color: #f8fafc;
+}
+
+/* Empty Search Results */
+
+.navbar__empty-result {
+  padding: 20px 16px;
+  margin: 0;
+
+  color: #64748b;
+  text-align: center;
+  font-size: 13px;
+}
+
+.navbar__search-footer {
+  position: sticky;
+  bottom: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 11px 16px;
+
+  color: #15803d;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.navbar__search-footer:hover {
+  background-color: #f0fdf4;
+}
+
+/* Responsive Search */
+
+@media (max-width: 768px) {
+  .navbar__search-shortcut {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar__search {
+    gap: 7px;
+    padding: 0 9px;
+  }
+
+  /* 16px stops iOS from zooming into the field on focus */
+  .navbar__search-input {
+    font-size: 16px;
+  }
+}
+
+/* On phones the dropdown spans the screen under the navbar instead of hanging off the search box */
+@media (max-width: 767px) {
+  .navbar__search-dropdown {
+    position: fixed;
+    top: 64px;
+    right: 10px;
+    left: 10px;
+
+    width: auto;
+    min-width: 0;
+    max-height: calc(100dvh - 80px);
+  }
+
+  .navbar__stock-result {
+    padding: 14px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar__search-dropdown {
+    animation: none;
+  }
+}

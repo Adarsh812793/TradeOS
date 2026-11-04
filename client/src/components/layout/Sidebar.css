@@ -1,0 +1,248 @@
+
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--color-surface);
+  border-right: var(--border-width) solid var(--color-border);
+
+  padding: var(--space-4) var(--space-3);
+  gap: var(--space-3);
+
+  transition: width 200ms ease;
+}
+
+/* Branding */
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 48px;
+  padding: 0 var(--space-2);
+}
+
+.sidebar__brand-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+
+  display: grid;
+  place-items: center;
+
+  color: var(--color-primary);
+  background: var(--color-success-tint);
+  border-radius: var(--radius-md);
+}
+
+.sidebar__brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+
+.sidebar__brand-name {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.sidebar__brand-subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+}
+
+/* Collapse toggle */
+.sidebar__toggle {
+  align-self: flex-end;
+  display: grid;
+  place-items: center;
+
+  width: 32px;
+  height: 32px;
+
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.sidebar__toggle:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-subtle);
+}
+
+.sidebar__toggle:focus-visible,
+.sidebar__link:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Main navigation */
+.sidebar__navigation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-top: var(--space-2);
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+
+  color: var(--color-text-body);
+  text-decoration: none;
+
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.sidebar__link:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-subtle);
+}
+
+.sidebar__link--active {
+  color: var(--color-primary-hover);
+  background: var(--color-success-tint);
+  font-weight: var(--font-weight-semibold);
+}
+
+.sidebar__link--active:hover {
+  background: var(--color-success-tint);
+}
+
+.sidebar__link svg {
+  flex-shrink: 0;
+}
+
+.sidebar__link-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Bottom actions */
+
+/* Collapsed state */
+.sidebar--collapsed {
+  width: 72px;
+  padding-right: var(--space-2);
+  padding-left: var(--space-2);
+}
+
+.sidebar--collapsed .sidebar__brand {
+  justify-content: center;
+  padding: 0;
+}
+
+.sidebar--collapsed .sidebar__toggle {
+  align-self: center;
+}
+
+.sidebar--collapsed .sidebar__link {
+  justify-content: center;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebar__link {
+    transition: none;
+  }
+}
+
+
+/* Mobile drawer behavior */
+@media (max-width: 767px) {
+  .sidebar {
+    width: min(280px, 85vw);
+    height: 100vh;
+    height: 100dvh;
+    z-index: 200;
+
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition:
+      transform 200ms ease,
+      visibility 200ms ease;
+    box-shadow: none;
+  }
+
+  .sidebar.sidebar--mobile-open {
+    width: min(280px, 85vw);
+    transform: translateX(0);
+    visibility: visible;
+    box-shadow: 12px 0 30px rgb(15 23 42 / 12%);
+  }
+
+  /* A collapsed desktop preference must not shrink the mobile drawer */
+  .sidebar.sidebar--collapsed,
+  .sidebar.sidebar--collapsed.sidebar--mobile-open {
+    width: min(280px, 85vw);
+    padding-right: var(--space-3);
+    padding-left: var(--space-3);
+  }
+
+  /* Always show branding and labels inside the mobile drawer */
+  .sidebar--collapsed .sidebar__brand {
+    justify-content: flex-start;
+    padding: 0 var(--space-2);
+  }
+
+  .sidebar--collapsed .sidebar__brand-text {
+    display: flex;
+  }
+
+  .sidebar--collapsed .sidebar__link {
+    justify-content: flex-start;
+    padding-right: var(--space-3);
+    padding-left: var(--space-3);
+  }
+
+  .sidebar--collapsed .sidebar__link-label {
+    display: inline;
+  }
+
+  /* Hide the desktop collapse button on phones */
+  .sidebar__toggle {
+    display: none;
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar {
+    transition: none;
+  }
+}

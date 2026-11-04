@@ -1,0 +1,88 @@
+/* Identity on the left, Edit Profile button on the right (wraps below on narrow screens) */
+.profile-overview__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.profile-overview__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.profile-overview__avatar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-success-tint);
+  color: var(--color-primary);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.profile-overview__text {
+  min-width: 0;
+}
+
+.profile-overview__name {
+  margin: 0 0 var(--space-1);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  overflow-wrap: anywhere;
+}
+
+.profile-overview__email {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  overflow-wrap: anywhere;
+}
+
+.profile-overview__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin: var(--space-6) 0 0;
+  padding-top: var(--space-6);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.profile-overview__field {
+  min-width: 0;
+}
+
+.profile-overview__field dt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.profile-overview__field dt svg {
+  flex-shrink: 0;
+}
+
+.profile-overview__field dd {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .profile-overview__fields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+}

@@ -1,0 +1,219 @@
+/* ==========================================
+   Stock Details Page
+========================================== */
+
+.stock-details-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+
+  width: 100%;
+  min-width: 0;
+
+  padding: var(--space-6);
+
+  box-sizing: border-box;
+  background: var(--color-background);
+}
+
+/* ==========================================
+   Stock Header
+========================================== */
+
+.stock-details-page__header {
+  width: 100%;
+  min-width: 0;
+}
+.stock-header__watchlist-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+   Main Trading Layout
+========================================== */
+
+.stock-details-page__main {
+  display: grid;
+
+  /*
+    Primary content takes more space.
+    Sidebar remains wide enough for the order form.
+  */
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
+
+  align-items: start;
+  gap: var(--space-6);
+
+  width: 100%;
+  min-width: 0;
+}
+
+/* ==========================================
+   Primary Column
+========================================== */
+
+.stock-details-page__primary {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-4);
+
+  min-width: 0;
+}
+
+/* ==========================================
+   Sidebar
+========================================== */
+
+.stock-details-page__sidebar {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Keep the order card aligned with the top
+   of the main content on desktop. */
+
+.stock-details-page__sidebar .place-order-card {
+  position: sticky;
+  top: calc(var(--navbar-height) + var(--space-4));
+}
+
+/* ==========================================
+   Bottom Section
+========================================== */
+
+.stock-details-page__bottom {
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+
+  align-items: stretch;
+  gap: var(--space-4);
+
+  min-width: 0;
+}
+
+/* Prevent children from expanding beyond grid */
+
+.stock-details-page__bottom > * {
+  min-width: 0;
+}
+
+/* ==========================================
+   Order Success
+========================================== */
+
+.stock-details-page__success {
+  margin: 0;
+
+  padding: var(--space-3) var(--space-4);
+
+  border: 1px solid var(--color-success);
+  border-radius: var(--radius-md);
+
+  background: var(--color-success-tint);
+  color: var(--color-success);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ==========================================
+   Watchlist Error
+========================================== */
+
+.stock-details-page__error {
+  margin: 0;
+
+  padding: var(--space-3) var(--space-4);
+
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-md);
+
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ==========================================
+   Tablet
+========================================== */
+
+@media (max-width: 1100px) {
+  .stock-details-page {
+    padding: var(--space-4);
+    gap: var(--space-4);
+  }
+
+  .stock-details-page__main {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: var(--space-4);
+  }
+
+  .stock-details-page__bottom {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================
+   Small Tablet
+========================================== */
+
+@media (max-width: 850px) {
+  .stock-details-page__main {
+    grid-template-columns: 1fr;
+  }
+
+  .stock-details-page__sidebar {
+    order: 2;
+  }
+
+  .stock-details-page__primary {
+    order: 1;
+  }
+
+  .stock-details-page__sidebar .place-order-card {
+    position: static;
+  }
+
+  .stock-details-page__bottom {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================
+   Mobile
+========================================== */
+
+@media (max-width: 600px) {
+  .stock-details-page {
+    padding: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  .stock-details-page__main {
+    gap: var(--space-3);
+  }
+
+  .stock-details-page__primary {
+    gap: var(--space-3);
+  }
+
+  .stock-details-page__bottom {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}
+
+/* ==========================================
+   Very Small Mobile
+========================================== */
+
+@media (max-width: 380px) {
+  .stock-details-page {
+    padding: var(--space-2);
+  }
+}

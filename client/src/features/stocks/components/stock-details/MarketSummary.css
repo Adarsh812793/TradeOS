@@ -1,0 +1,131 @@
+
+/* 1. Main section */
+.market-summary {
+  padding: var(--space-4);
+
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+
+  min-width: 0;
+}
+
+/* 2. Section heading */
+.market-summary__title {
+  margin: 0 0 var(--space-4);
+
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* 3. Responsive card grid */
+.market-summary__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+/* 4. Individual summary card */
+.market-summary__item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+
+  min-width: 0;
+  padding: var(--space-3);
+
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+/* 5. Card header */
+.market-summary__item-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  min-width: 0;
+}
+
+/* 6. Icon container */
+.market-summary__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+
+  background: var(--color-success-tint);
+  border-radius: var(--radius-sm);
+  color: var(--color-primary);
+}
+
+/* 7. Card label */
+.market-summary__label {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+}
+
+/* 8. Card content */
+.market-summary__item-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  min-width: 0;
+}
+
+/* 9. Main value */
+.market-summary__value {
+  margin: 0;
+
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.4;
+
+  overflow-wrap: anywhere;
+}
+
+/* 10. Supporting description */
+.market-summary__description {
+  margin: 0;
+
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+}
+
+/* 11. Tablet layout */
+@media (max-width: 900px) {
+  .market-summary__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 12. Mobile layout */
+@media (max-width: 600px) {
+  .market-summary {
+    padding: var(--space-3);
+  }
+
+  .market-summary__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .market-summary__item {
+    gap: var(--space-3);
+  }
+
+  .market-summary__value {
+    font-size: var(--font-size-base);
+  }
+}

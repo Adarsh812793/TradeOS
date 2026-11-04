@@ -1,0 +1,61 @@
+/* A centred column keeps the forms readable on wide screens */
+.account-page {
+  width: 100%;
+  max-width: 880px;
+  min-width: 0;
+  margin: 0 auto;
+}
+
+.account-page__header {
+  margin-bottom: var(--space-6);
+}
+
+.account-page__title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.account-page__subtitle {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.account-page__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.account-page__loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-8) 0;
+}
+
+.account-page__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
+  border-radius: var(--radius-md);
+}
+
+.account-page__error p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .account-page {
+    padding: var(--space-3);
+  }
+
+  .account-page__title {
+    font-size: var(--font-size-xl);
+  }
+}

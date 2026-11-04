@@ -1,0 +1,162 @@
+
+/* Main navbar layout */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 28px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+/* Right-side navbar actions */
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Shared action buttons: notifications and profile */
+.navbar__action-button {
+  position: relative;
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #475569;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.navbar__action-button:hover {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+  color: #172554;
+}
+
+.navbar__action-button--active {
+  border-color: #dcfce7;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.navbar__action-button:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 2px;
+}
+
+/* Shared dropdown animation */
+@keyframes navbar-dropdown-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tablet and smaller screens */
+@media (max-width: 768px) {
+  .navbar {
+    min-height: 64px;
+    gap: 16px;
+    padding: 0 18px;
+  }
+
+  .navbar__actions {
+    gap: 8px;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 480px) {
+  .navbar {
+    min-height: 60px;
+    gap: 10px;
+    padding: 0 12px;
+  }
+
+  .navbar__actions {
+    gap: 4px;
+  }
+
+  .navbar__action-button {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .navbar__action-button {
+    transition: none;
+  }
+}
+
+
+/* Hidden on tablet and desktop */
+.navbar__mobile-menu {
+  display: none;
+}
+
+/* Dynamic behaviour ,the toggle btn appears when width is <767 */
+@media (max-width: 767px) {
+  .navbar {
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 0 12px;
+  }
+
+  .navbar__mobile-menu {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #334155;
+    cursor: pointer;
+  }
+
+  .navbar__mobile-menu:focus-visible {
+    outline: 2px solid #16a34a;
+    outline-offset: 2px;
+  }
+
+  .navbar > .navbar__search-section {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .navbar__actions {
+    flex: 0 0 auto;
+    gap: 2px;
+  }
+
+  .navbar__action-button {
+    width: 34px;
+    height: 36px;
+  }
+}

@@ -1,0 +1,150 @@
+/* Table is for wide screens; below 1100px the cards are shown instead (see the end of this file).
+   The wrapper still scrolls sideways as a safety net. */
+.holdings-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.holdings-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.holdings-table thead {
+  background: var(--color-surface-subtle);
+}
+
+.holdings-table th {
+  padding: var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.holdings-table td {
+  padding: var(--space-4);
+  border-top: var(--border-width) solid var(--color-border);
+  color: var(--color-text-body);
+  font-size: var(--font-size-sm);
+}
+
+.holdings-table tbody tr:hover {
+  background: var(--color-surface-subtle);
+}
+
+/* Numbers line up on the right, with equal-width digits */
+.holdings-table__num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.holdings-table__actions {
+  text-align: right;
+}
+
+/* Stock cell */
+.holding-stock {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.holding-stock__avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-surface-subtle);
+  border: var(--border-width) solid var(--color-border);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.holding-stock__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.holding-stock__symbol {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.holding-stock__name {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.holding-value {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-medium);
+}
+
+/* Profit / loss colours */
+.holding-pnl {
+  font-weight: var(--font-weight-medium);
+}
+
+.holding-pnl--profit {
+  color: var(--color-success) !important;
+}
+
+.holding-pnl--loss {
+  color: var(--color-danger) !important;
+}
+
+/* Buy / Sell links (reuse the base .btn look from Button.css) */
+.holding-actions {
+  display: inline-flex;
+  gap: var(--space-2);
+}
+
+.holding-action {
+  background: var(--color-surface);
+  text-decoration: none;
+}
+
+.holding-action--buy {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.holding-action--buy:hover {
+  background: var(--color-success-tint);
+}
+
+.holding-action--sell {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.holding-action--sell:hover {
+  background: var(--color-danger-tint);
+}
+
+/* Cards are hidden on wide screens */
+.holdings-cards {
+  display: none;
+}
+
+/* 2 cards per row on tablets, 1 on phones */
+@media (max-width: 1100px) {
+  .holdings-table-wrapper {
+    display: none;
+  }
+
+  .holdings-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-3);
+  }
+}

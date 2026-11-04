@@ -1,0 +1,261 @@
+
+/* 1. Main Stock Header container */
+.stock-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+
+  padding: var(--space-6);
+
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+
+  min-width: 0;
+}
+
+/* 2. Stock identity section */
+.stock-header__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+
+  flex: 1;
+  min-width: 0;
+}
+
+/* 3. Stock symbol badge */
+.stock-header__symbol-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+  color: var(--color-primary);
+
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+/* 4. Company details */
+.stock-header__details {
+  min-width: 0;
+}
+
+.stock-header__company-name {
+  margin: 0;
+
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.4;
+
+  overflow-wrap: anywhere;
+}
+
+/* 5. Stock metadata badges */
+.stock-header__metadata {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+
+  margin-top: var(--space-2);
+}
+
+.stock-header__badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: var(--space-1) var(--space-3);
+
+  background: var(--color-surface-subtle);
+  border-radius: var(--radius-sm);
+
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* 6. Watchlist button */
+.stock-header__watchlist-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.stock-header__watchlist-button:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.stock-header__watchlist-button--active {
+  color: var(--color-primary);
+  background: var(--color-success-tint);
+  border-color: var(--color-primary);
+}
+
+/* 7. Price and action section */
+.stock-header__trading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+
+  flex-shrink: 0;
+}
+
+/* 8. Stock price */
+.stock-header__price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+}
+
+.stock-header__price-value {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.stock-header__price-caption {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+/* 9. Buy and Sell buttons */
+.stock-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.stock-header__action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 80px;
+  min-height: 40px;
+  padding: var(--space-2) var(--space-4);
+
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-md);
+
+  color: #FFFFFF;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.stock-header__action-button--buy {
+  background: var(--color-primary);
+}
+
+.stock-header__action-button--buy:hover {
+  background: var(--color-primary-hover);
+}
+
+.stock-header__action-button--sell {
+  background: var(--color-danger);
+}
+
+.stock-header__action-button--sell:hover {
+  background: #B91C1C;
+}
+
+/* 10. Tablet layout */
+@media (max-width: 900px) {
+  .stock-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+  }
+
+  .stock-header__trading {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+}
+
+/* 11. Mobile layout */
+@media (max-width: 600px) {
+  .stock-header {
+    padding: var(--space-4);
+  }
+
+  .stock-header__identity {
+    gap: var(--space-3);
+  }
+
+  .stock-header__symbol-badge {
+    width: 48px;
+    height: 48px;
+
+    font-size: var(--font-size-lg);
+  }
+
+  .stock-header__company-name {
+    font-size: var(--font-size-lg);
+  }
+
+  .stock-header__trading {
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .stock-header__price {
+    align-items: flex-start;
+  }
+
+  .stock-header__price-value {
+    font-size: var(--font-size-xl);
+  }
+
+  .stock-header__actions {
+    flex: 1;
+  }
+
+  .stock-header__action-button {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* 12. Very narrow screens */
+@media (max-width: 380px) {
+  .stock-header__trading {
+    flex-direction: column;
+  }
+
+  .stock-header__actions {
+    width: 100%;
+  }
+}

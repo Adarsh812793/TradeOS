@@ -1,0 +1,214 @@
+.stock-position-details {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    color: #111827;
+}
+
+/* -------------------------
+   Tabs
+------------------------- */
+
+.position-tabs {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 0 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.position-tabs button {
+    position: relative;
+    padding: 18px 0;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.position-tabs button:hover {
+    color: #111827;
+}
+
+.position-tabs button.active {
+    color: #111827;
+    font-weight: 600;
+}
+
+.position-tabs button.active::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #2563eb;
+    border-radius: 2px 2px 0 0;
+}
+
+/* -------------------------
+   Position Content
+------------------------- */
+
+.position-content,
+.recent-orders-content {
+    padding: 24px;
+}
+
+.position-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px 24px;
+}
+
+.position-grid div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.position-grid span {
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.position-grid strong {
+    color: #111827;
+    font-size: 15px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+/* Profit and Loss */
+
+.position-grid .profit {
+    color: #16a34a;
+}
+
+.position-grid .loss {
+    color: #dc2626;
+}
+
+/* -------------------------
+   Empty and Error States
+------------------------- */
+
+.position-empty {
+    margin: 0;
+    padding: 24px 12px;
+    color: #6b7280;
+    font-size: 14px;
+    text-align: center;
+}
+
+.position-error {
+    margin: 0;
+    padding: 24px;
+    color: #dc2626;
+    font-size: 14px;
+}
+
+/* -------------------------
+   Recent Orders Table
+------------------------- */
+
+.orders-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.orders-table th,
+.orders-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.orders-table th {
+    background: #f8fafc;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.orders-table td {
+    color: #374151;
+}
+
+.orders-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.orders-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* BUY and SELL labels */
+
+.orders-table .buy,
+.orders-table .sell {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.orders-table .buy {
+    background: #ecfdf5;
+    color: #15803d;
+}
+
+.orders-table .sell {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+/* -------------------------
+   Responsive
+------------------------- */
+
+@media (max-width: 768px) {
+    .position-tabs {
+        gap: 22px;
+        padding: 0 16px;
+    }
+
+    .position-content,
+    .recent-orders-content {
+        padding: 16px;
+    }
+
+    .position-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px 16px;
+    }
+
+    .position-grid strong {
+        font-size: 14px;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 420px) {
+    .position-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}

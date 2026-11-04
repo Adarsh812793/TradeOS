@@ -1,0 +1,84 @@
+/* Table is for wide screens; below 1000px the cards are shown instead (end of this file).
+   The wrapper still scrolls sideways as a safety net. */
+.transactions-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.transactions-table thead {
+  background: var(--color-surface-subtle);
+}
+
+.transactions-table th {
+  padding: var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.transactions-table td {
+  padding: var(--space-4);
+  border-top: var(--border-width) solid var(--color-border);
+  color: var(--color-text-body);
+  font-size: var(--font-size-sm);
+}
+
+.transactions-table tbody tr:hover {
+  background: var(--color-surface-subtle);
+}
+
+/* Numbers line up on the right, with equal-width digits */
+.transactions-table__num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.transactions-table__amount {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Stock cell */
+.transaction-stock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.transaction-stock__symbol {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.transaction-stock__name {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+/* Cards are hidden on wide screens */
+.transactions-cards {
+  display: none;
+}
+
+/* 2 cards per row on tablets, 1 on phones */
+@media (max-width: 1000px) {
+  .transactions-table-wrapper {
+    display: none;
+  }
+
+  .transactions-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-3);
+  }
+}

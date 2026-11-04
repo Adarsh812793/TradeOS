@@ -1,0 +1,207 @@
+
+/* 1. Table container */
+.stock-table-wrapper {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/* 2. Table structure */
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--color-text-body);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  text-align: left;
+}
+
+/* 3. Headers and cells */
+.stock-table th,
+.stock-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--color-border);
+  vertical-align: middle;
+}
+
+.stock-table th {
+  background: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.stock-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.stock-table tbody tr:hover {
+  background: var(--color-surface-subtle);
+}
+
+/* 4. Stock identity */
+.stock-table__stock-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.stock-table__stock-link:hover .stock-table__symbol {
+  text-decoration: underline;
+}
+
+.stock-table__symbol-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.stock-table__symbol {
+  font-weight: var(--font-weight-semibold);
+}
+
+/* 5. Company name */
+.stock-table__company {
+  color: var(--color-text-secondary);
+}
+
+/* 6. Price */
+.stock-table__price {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.stock-table__price-heading {
+  text-align: right;
+}
+
+/* 7. Exchange badge */
+.stock-table__exchange,
+.stock-table__exchange-heading {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.stock-table__exchange-badge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+/* 8. Actions — fixed alignment */
+.stock-table__actions,
+.stock-table__actions-heading {
+  width: 112px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.stock-table__actions-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.stock-table__bookmark,
+.stock-table__details-link {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.stock-table__bookmark {
+  cursor: pointer;
+}
+
+.stock-table__bookmark:hover:not(:disabled) {
+  background: var(--color-surface-subtle);
+  color: var(--color-text-primary);
+}
+
+/* In the watchlist: filled icon (same look as the mobile card) */
+.stock-table__bookmark--saved {
+  background: var(--color-surface-subtle);
+  color: var(--color-text-primary);
+}
+
+.stock-table__bookmark:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.stock-table__bookmark:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.stock-table__details-link {
+  text-decoration: none;
+}
+
+.stock-table__details-link:hover {
+  background: var(--color-surface-subtle);
+  color: var(--color-text-primary);
+}
+
+.stock-table__details-link:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* 9. Empty state */
+.stock-table__empty {
+  padding: var(--space-8);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+/* 10. Smaller desktop/tablet widths */
+@media (max-width: 900px) {
+  .stock-table th,
+  .stock-table td {
+    padding: var(--space-3);
+  }
+
+  .stock-table__symbol-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .stock-table__actions,
+  .stock-table__actions-heading {
+    width: 100px;
+  }
+}

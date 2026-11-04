@@ -1,0 +1,22 @@
+.personal-information__notice {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.personal-information__notice--success {
+  background: var(--color-success-tint);
+  color: var(--color-success);
+}
+
+.personal-information__notice--error {
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
+}
+
+.personal-information__notice--info {
+  background: var(--color-info-tint);
+  color: var(--color-info);
+}

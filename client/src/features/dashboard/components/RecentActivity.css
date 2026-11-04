@@ -1,0 +1,280 @@
+
+/* 1. Recent Activity Container */
+.recent-activity {
+  width: 100%;
+  color: #172554;
+}
+
+.recent-activity__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.recent-activity__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.recent-activity__subtitle {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* 2. View All and Retry Actions */
+.recent-activity__view-all,
+.recent-activity__retry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #172554;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.recent-activity__view-all:hover,
+.recent-activity__retry:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.recent-activity__view-all:focus-visible,
+.recent-activity__retry:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 2px;
+}
+
+/* 3. Recent Orders List */
+.recent-activity__list {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.recent-activity__item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  transition: background-color 160ms ease;
+}
+
+.recent-activity__item + .recent-activity__item {
+  border-top: 1px solid #f1f5f9;
+}
+
+.recent-activity__item:hover {
+  background: #f8fafc;
+}
+
+/* 4. Order Type Indicator */
+.recent-activity__type {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.recent-activity__type--buy {
+  color: #15803d;
+  background: #dcfce7;
+}
+
+.recent-activity__type--sell {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+/* 5. Stock and Trade Details */
+.recent-activity__details {
+  flex: 1;
+  min-width: 0;
+}
+
+.recent-activity__stock-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.recent-activity__symbol {
+  color: #172554;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.recent-activity__trade-type {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.recent-activity__trade-type--buy {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.recent-activity__trade-type--sell {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.recent-activity__company {
+  margin: 6px 0 0;
+  overflow: hidden;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 6. Order Value and Status */
+.recent-activity__right {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.recent-activity__price {
+  margin: 0;
+  color: #172554;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.recent-activity__status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.recent-activity__status--success {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.recent-activity__status--warning {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.recent-activity__status--danger {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.recent-activity__status--neutral {
+  color: #475569;
+  background: #f1f5f9;
+}
+
+/* 7. Loading, Error, and Empty States */
+.recent-activity__message,
+.recent-activity__error {
+  margin: 0;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 14px;
+}
+
+.recent-activity__message {
+  color: #64748b;
+}
+
+.recent-activity__error {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.recent-activity__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 20px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.recent-activity__empty-title {
+  margin: 0;
+  color: #172554;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.recent-activity__empty-description {
+  margin: 8px 0 18px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* 8. Responsive Layout */
+@media (max-width: 520px) {
+  .recent-activity__header {
+    align-items: flex-start;
+  }
+
+  .recent-activity__item {
+    gap: 10px;
+    padding: 15px 12px;
+  }
+
+  .recent-activity__type {
+    width: 36px;
+    height: 36px;
+    font-size: 19px;
+  }
+
+  .recent-activity__price {
+    font-size: 12px;
+  }
+
+  .recent-activity__status {
+    padding: 4px 6px;
+    font-size: 9px;
+  }
+
+  .recent-activity__company {
+    max-width: 180px;
+  }
+}

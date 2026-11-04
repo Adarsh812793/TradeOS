@@ -1,0 +1,183 @@
+
+/* 1. Account Summary Layout */
+.account-summary {
+  width: 100%;
+  color: #172554;
+}
+
+.account-summary__header {
+  margin-bottom: 20px;
+}
+
+.account-summary__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.account-summary__subtitle {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* 2. Summary Cards Grid */
+.account-summary__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.account-summary__card {
+  min-width: 0;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.account-summary__card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgb(15 23 42 / 5%);
+}
+
+/* 3. Card Content */
+.account-summary__card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.account-summary__label {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.account-summary__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.account-summary__icon--green {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.account-summary__icon--blue {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.account-summary__icon--purple {
+  color: #7e22ce;
+  background: #f3e8ff;
+}
+
+.account-summary__icon--red {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.account-summary__value {
+  margin: 20px 0 8px;
+  overflow-wrap: anywhere;
+  color: #172554;
+  font-size: clamp(19px, 1.6vw, 25px);
+  font-weight: 650;
+  letter-spacing: -0.6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.account-summary__value--green {
+  color: #16a34a;
+}
+
+.account-summary__value--red {
+  color: #dc2626;
+}
+
+.account-summary__description {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* 4. Loading and Error States */
+.account-summary__message,
+.account-summary__error {
+  margin: 0;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 14px;
+}
+
+.account-summary__message {
+  color: #64748b;
+}
+
+.account-summary__error {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.account-summary__retry {
+  margin-top: 12px;
+  padding: 9px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #172554;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.account-summary__retry:hover {
+  background: #f1f5f9;
+}
+
+/* 5. Responsive Layout */
+@media (max-width: 1100px) {
+  .account-summary__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .account-summary__header {
+    margin-bottom: 16px;
+  }
+
+  .account-summary__grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .account-summary__card {
+    padding: 16px;
+  }
+
+  .account-summary__value {
+    margin-top: 14px;
+    font-size: 23px;
+  }
+}

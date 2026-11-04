@@ -1,0 +1,114 @@
+
+/* 1. Filter container */
+.stock-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 200px 200px;
+  align-items: center;
+  gap: var(--space-3);
+
+  width: 100%;
+  padding: var(--space-3);
+
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/* 2. Search input */
+.stock-filters__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.stock-filters__search-icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.stock-filters__search-input {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+
+  padding: 0 var(--space-3) 0 40px;
+
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+}
+
+.stock-filters__search-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.stock-filters__search-input:focus {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 1px;
+}
+
+/* 3. Exchange and sort fields */
+.stock-filters__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.stock-filters__field label {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.stock-filters__select {
+  width: 100%;
+  height: 40px;
+  padding: 0 var(--space-3);
+
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.stock-filters__select:focus {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 1px;
+}
+
+/* 4. Responsive layout */
+@media (max-width: 900px) {
+  .stock-filters {
+    grid-template-columns: minmax(0, 1fr) minmax(140px, 180px);
+  }
+
+  .stock-filters__search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .stock-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .stock-filters__search {
+    grid-column: auto;
+  }
+}
+
+.stock-filters {
+  margin-bottom: var(--space-4);
+}

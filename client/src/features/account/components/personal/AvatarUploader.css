@@ -1,0 +1,124 @@
+.avatar-uploader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.avatar-uploader__picture {
+  position: relative;
+  width: 72px;
+  height: 72px;
+}
+
+/* The saved photo is a button (opens the quick view); it should look like the picture itself */
+.avatar-uploader__view {
+  display: block;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  cursor: zoom-in;
+  transition: box-shadow 150ms ease;
+}
+
+.avatar-uploader__view:hover:not(:disabled) {
+  box-shadow: 0 0 0 3px var(--color-success-tint);
+}
+
+.avatar-uploader__view:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.avatar-uploader__view:disabled {
+  cursor: default;
+}
+
+/* Small round camera button on the corner of the picture */
+.avatar-uploader__camera {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 2px solid var(--color-surface);
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-surface);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.avatar-uploader__camera:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.avatar-uploader__camera:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.avatar-uploader__camera:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Faded cover with a spinning ring while a photo is uploading or being removed */
+.avatar-uploader__spinner {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 70%);
+}
+
+.avatar-uploader__spinner::after {
+  content: "";
+  position: absolute;
+  inset: 24px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: avatar-uploader-spin 0.8s linear infinite;
+}
+
+@keyframes avatar-uploader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar-uploader__spinner::after {
+    animation-duration: 2s;
+  }
+}
+
+.avatar-uploader__remove {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-xs);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.avatar-uploader__remove:hover:not(:disabled) {
+  color: var(--color-danger);
+}
+
+.avatar-uploader__remove:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.avatar-uploader__remove:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
