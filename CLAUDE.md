@@ -118,6 +118,18 @@ Known issues (not yet fixed)
 - Give every important function (services, controllers, hooks, utils, main components) a one-line comment stating its purpose.
 - Prioritize correctness, maintainability, and my understanding.
 
+## Git and GitHub workflow
+
+The remote is https://github.com/Adarsh812793/TradeOS.git and the default branch is `main`. Changes reach `main` only through a pull request that the user reviews and merges on GitHub.
+
+- **One branch per piece of work.** Never work directly on `main`. For every separate task (a bug-fix batch, a feature, a larger implementation) create a new branch from an up-to-date `main`, named by purpose, e.g. `feature/fixing-small-bugs`, `feature/<name>`, `fix/<name>`, `docs/<name>`.
+- **Commits: allowed on my own, but say what they will be.** Claude may commit on the working branch without asking. Before committing, tell the user which commits are planned (one logical change per commit, e.g. "bug fixes", "lint cleanup", "dependency updates", "docs") and keep the messages descriptive. Check the staged files for secrets first, and never commit `.env*` files.
+- **Pushing always needs the user's say-so.** Never push to `main` or to any other branch (including the first push of a new branch) without asking, every time. Approval for one push does not carry over to the next. Ask, wait for the answer, then push.
+- **Never close or delete branches** (local or remote) unless the user says so. Finished branches stay, because the user may come back to them to do more work related to that same feature.
+- **When the work is done:** leave the branch as it is (do not delete it), `git switch main`, then `git pull origin main` to get the merged code. Start the next task on a new branch.
+- **Never** merge into `main` locally, force-push, rewrite published history, `git reset --hard` or skip hooks without being asked. The user does the review and the merge on GitHub.
+- Commit messages end with the attribution line given in the session's system reminder.
+
 ## Conventions
 
 - Frontend uses React with Vite.
