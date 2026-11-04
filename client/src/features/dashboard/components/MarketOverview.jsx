@@ -1,5 +1,5 @@
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getMarketIndices } from "../dashboard.api.js";
 import { formatCurrency } from "../../../utils/currency.utils.js";
 import "./MarketOverview.css";
@@ -25,33 +25,54 @@ export default function MarketOverview() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    /* 3.1 Fetch Market Indices */
-    const loadIndices = useCallback(async () => {
-        setLoading(true);
-        setError("");
+    // Changing this number re-runs the effect below, which reloads the indices (Refresh / retry buttons)
+    const [refreshKey, setRefreshKey] = useState(0);
 
-        try {
-            const result = await getMarketIndices();
-
-            setIndices(result.indices ?? []);
-
-            if (!result.success) {
-                setError("Market data could not be loaded.");
-            } else if (result.indices?.length === 0) {
-                setError("No market data is currently available.");
-            }
-        } catch (err) {
-            setError(err.message || "Failed to load market data.");
-            setIndices([]);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    /* 3.2 Load Data When Component Mounts */
+    /* 3.1 Load the indices when the component mounts and whenever refreshKey changes */
     useEffect(() => {
+        // Prevents state updates after the component has been left
+        let isMounted = true;
+
+        // Fetches the indices and fills the list (or the error message)
+        async function loadIndices() {
+            setLoading(true);
+            setError("");
+
+            try {
+                const result = await getMarketIndices();
+
+                if (!isMounted) return;
+
+                setIndices(result.indices ?? []);
+
+                if (!result.success) {
+                    setError("Market data could not be loaded.");
+                } else if (result.indices?.length === 0) {
+                    setError("No market data is currently available.");
+                }
+            } catch (err) {
+                if (!isMounted) return;
+
+                setError(err.message || "Failed to load market data.");
+                setIndices([]);
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        }
+
         loadIndices();
-    }, [loadIndices]);
+
+        return () => {
+            isMounted = false;
+        };
+    }, [refreshKey]);
+
+    // 3.2 Asks for a fresh load (used by the Refresh and retry buttons)
+    function handleRefresh() {
+        setRefreshKey((key) => key + 1);
+    }
 
     /* 3.3 Render Market Overview */
     return (
@@ -69,7 +90,7 @@ export default function MarketOverview() {
                 <button
                     className="market-overview__refresh"
                     type="button"
-                    onClick={loadIndices}
+                    onClick={handleRefresh}
                     disabled={loading}
                 >
                     {loading ? "Loading..." : "↻ Refresh"}
@@ -83,7 +104,7 @@ export default function MarketOverview() {
             ) : error && indices.length === 0 ? (
                 <div className="market-overview__status market-overview__status--error">
                     <p>{error}</p>
-                    <button type="button" onClick={loadIndices}>
+                    <button type="button" onClick={handleRefresh}>
                         Try again
                     </button>
                 </div>

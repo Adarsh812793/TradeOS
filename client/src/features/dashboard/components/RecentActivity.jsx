@@ -19,26 +19,44 @@ export default function RecentActivity() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Changing this number re-runs the effect below, which reloads the orders (Retry button)
+  const [refreshKey, setRefreshKey] = useState(0);
+
   const navigate = useNavigate();
 
-  // 4.1 Fetch the latest orders when the component mounts.
-  async function loadOrders() {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await getRecentOrders();
-      setOrders(response.data.items);
-    } catch (err) {
-      setError(err.message || "Unable to load recent activity.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
+  // 4.1 Fetch the latest orders when the component mounts and whenever refreshKey changes.
   useEffect(() => {
+    // Prevents state updates after the component has been left
+    let isMounted = true;
+
+    // Fetches the latest orders and fills the list (or the error message)
+    async function loadOrders() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await getRecentOrders();
+
+        if (isMounted) {
+          setOrders(response.data.items);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || "Unable to load recent activity.");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
     loadOrders();
-  }, []);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [refreshKey]);
 
   // 4.2 Display the loading state.
   if (loading) {
@@ -59,7 +77,7 @@ export default function RecentActivity() {
 
         <button
           className="recent-activity__retry"
-          onClick={loadOrders}
+          onClick={() => setRefreshKey((key) => key + 1)}
         >
           Retry
         </button>
