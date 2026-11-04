@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import watchlistApi from "../watchlist.api";
+import { formatCurrency } from "../../../utils/currency.utils.js";
 import "./WatchlistTable.css";
 
 export default function WatchlistTable({ watchlist, setWatchlist }) {
@@ -22,8 +23,7 @@ export default function WatchlistTable({ watchlist, setWatchlist }) {
       );
     } catch (err) {
       setError(
-        err.response?.data?.message ||
-          "Unable to remove this stock from your watchlist."
+        err.message || "Unable to remove this stock from your watchlist."
       );
     } finally {
       setRemovingId(null);
@@ -77,11 +77,7 @@ export default function WatchlistTable({ watchlist, setWatchlist }) {
                 </td>
 
                 <td className="watchlist-price">
-                  {stock.currency}{" "}
-                  {Number(stock.currentPrice).toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+                  {formatCurrency(stock.currentPrice, stock.currency)}
                 </td>
 
                 <td>

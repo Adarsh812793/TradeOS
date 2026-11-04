@@ -36,7 +36,7 @@ export default function StocksPage() {
 
   // Current Page and items per page :Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3; // fixed page size (nothing changes it)
+  const itemsPerPage = 10; // fixed page size (nothing changes it)
 
   // Watchlist: which stocks are saved, and add / remove
   const {
@@ -101,10 +101,16 @@ export default function StocksPage() {
     );
   }, [filteredStocks, currentPage, itemsPerPage]);
 
-    // 7. Reset pagination when search or exchange changes
-    useEffect(() => {
-      setCurrentPage(1);
-    }, [searchTerm, selectedExchange]);
+  // 7. Go back to page 1 when the search text or exchange changes. This also covers the navbar search, which
+  // changes ?search= from outside this page. React allows setting state while rendering when it is guarded
+  // like this: it re-renders at once, so the wrong page is never shown (an effect would show it for one frame).
+  const filterKey = `${searchTerm}|${selectedExchange}`;
+  const [lastFilterKey, setLastFilterKey] = useState(filterKey);
+
+  if (filterKey !== lastFilterKey) {
+    setLastFilterKey(filterKey);
+    setCurrentPage(1);
+  }
 
   // 8. Render the page
 return (

@@ -50,8 +50,6 @@ export default function SignupPage() {
           response.message || "User registered successfully"
         );
 
-        console.log("Registered user:", response.data);
-
         // Redirect to Login after briefly displaying success.
         navigate("/login", {
           state: { registrationSuccess: true },

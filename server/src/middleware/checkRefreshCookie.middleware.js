@@ -7,7 +7,6 @@ const checkRefreshCookie = (req, res, next) => {
 
     // 1. Check whether refresh token cookie exists
     if (!refreshToken) {
-        console.log("Refresh cookie missing — rejecting with 401");
         return next(
             new AppError("Refresh token missing. Please log in again.", 401,ERROR_CODES.REFRESH_TOKEN_MISSING)
         );

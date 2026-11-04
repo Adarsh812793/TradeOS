@@ -3,7 +3,7 @@ import express from "express";
 import authController from "./auth.controller.js";
 
 import validate from "../../middleware/validate.middleware.js";
-import authRateLimiter, { passwordChangeRateLimiter } from "../../middleware/rateLimit.middleware.js";
+import authRateLimiter, { passwordChangeRateLimiter, refreshRateLimiter } from "../../middleware/rateLimit.middleware.js";
 import protect from "../../middleware/auth.middleware.js";
 import checkRefreshCookie from "../../middleware/checkRefreshCookie.middleware.js";
 import {registerSchema,loginSchema,changePasswordSchema} from "./auth.validation.js";
@@ -18,10 +18,7 @@ router.post("/register",authRateLimiter,validate(registerSchema,"body"), authCon
 router.post("/login",authRateLimiter,validate(loginSchema,"body") ,authController.login);
 
 //Route for refreshing the expired cookie
-router.post("/refresh",    (req, res, next) => {
-        console.log("Refresh route reached");
-        next();
-    },authRateLimiter,checkRefreshCookie,authController.refresh);
+router.post("/refresh",refreshRateLimiter,checkRefreshCookie,authController.refresh);
 
 //Reoute for logout
 router.post('/logout',authController.logout);

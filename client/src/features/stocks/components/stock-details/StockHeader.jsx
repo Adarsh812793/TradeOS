@@ -78,8 +78,7 @@ export default function StockHeader({
           </span>
 
           <span className="stock-header__price-caption">
-            current-prev close<br></br>
-            P & L percent
+            Current price
           </span>
 
         </div>

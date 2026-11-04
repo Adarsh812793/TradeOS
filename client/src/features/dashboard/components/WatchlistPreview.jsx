@@ -12,26 +12,44 @@ export default function WatchlistPreview() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Changing this number re-runs the effect below, which reloads the watchlist (Retry button)
+  const [refreshKey, setRefreshKey] = useState(0);
+
   const navigate = useNavigate();
 
-  // 3.1 Fetch the user's watchlist.
-  async function loadWatchlist() {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await getWatchlist();
-      setStocks(response.data);
-    } catch (err) {
-      setError(err.message || "Unable to load your watchlist.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
+  // 3.1 Fetch the user's watchlist when the component mounts and whenever refreshKey changes.
   useEffect(() => {
+    // Prevents state updates after the component has been left
+    let isMounted = true;
+
+    // Fetches the watchlist and fills the list (or the error message)
+    async function loadWatchlist() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await getWatchlist();
+
+        if (isMounted) {
+          setStocks(response.data);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || "Unable to load your watchlist.");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
     loadWatchlist();
-  }, []);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [refreshKey]);
 
   // 3.2 Display loading and error states.
   if (loading) {
@@ -51,7 +69,7 @@ export default function WatchlistPreview() {
 
         <button
           className="watchlist-preview__button"
-          onClick={loadWatchlist}
+          onClick={() => setRefreshKey((key) => key + 1)}
         >
           Retry
         </button>
