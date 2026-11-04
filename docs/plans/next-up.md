@@ -1,6 +1,9 @@
 # Next up (saved 2026-11-03, updated 2026-11-04)
 
-## Pick up here
+## Status 2026-11-05
+Done on branch `feature/fixing-small-bugs` (4 commits after the initial commit): error messages, placeholder text, 10 stocks per page, `--space-6`, watchlist `₹`, the last lint errors (client lint is 0), debug logs removed, auth rate limit back to 10 per 15 minutes (refresh has its own limit of 100), `npm audit fix` + `npm update` in both projects. Remaining from this list: choose a bigger direction (point 3 below), and decide whether to upgrade `@hookform/resolvers` 5 -> 7 and the dev-only `--force` audit findings.
+
+## Pick up here (original)
 1. **Set up Git** (not a repository yet): `git init`, a `.gitignore` covering `.env` files and `node_modules`, check for secrets, first commit. Ask before creating the repo and committing.
 2. **Finish the small bugs**: item 3 below (error messages), the last 4 lint errors, the placeholder text "current-prev close / P & L percent" in `StockHeader`, the `console.log(page, limit)` in `useOrders` and the debug logs on the refresh route, the Stocks page size of 3, the missing `--space-5` token, and `WatchlistTable` printing `INR` instead of `₹`.
 3. **Choose a bigger direction**: UI/UX review (recommended, one page at a time, propose before changing), live prices (needs a data provider), forgot password by email OTP (needs an email service), or deployment (hard-coded CORS origin and cross-site cookies will need attention).
