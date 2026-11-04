@@ -100,8 +100,7 @@ export default function StockDetailsPage() {
       } catch (error) {
         if (isMounted) {
           setWatchlistError(
-            error.response?.data?.message ||
-              "Unable to load watchlist status."
+            error.message || "Unable to load watchlist status."
           );
         }
       }
@@ -171,10 +170,7 @@ export default function StockDetailsPage() {
         setIsInWatchlist(true);
       }
     } catch (error) {
-      setWatchlistError(
-        error.response?.data?.message ||
-          "Unable to update watchlist."
-      );
+      setWatchlistError(error.message || "Unable to update watchlist.");
     } finally {
       setIsWatchlistLoading(false);
     }

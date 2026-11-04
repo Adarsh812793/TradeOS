@@ -54,10 +54,7 @@ export default function useOrders() {
 
         console.log(err);
         if (isMounted) {
-          setError(
-            err.response?.data?.message ||
-              "Unable to load your orders."
-          );
+          setError(err.message || "Unable to load your orders.");
         }
       } finally {
         if (isMounted) {

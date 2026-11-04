@@ -26,10 +26,7 @@ export default function WatchlistPage() {
         }
       } catch (err) {
         if (isMounted) {
-          setError(
-            err.response?.data?.message ||
-              "Unable to load your watchlist."
-          );
+          setError(err.message || "Unable to load your watchlist.");
         }
       } finally {
         if (isMounted) {

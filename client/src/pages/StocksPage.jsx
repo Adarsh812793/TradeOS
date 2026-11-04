@@ -36,7 +36,7 @@ export default function StocksPage() {
 
   // Current Page and items per page :Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3; // fixed page size (nothing changes it)
+  const itemsPerPage = 10; // fixed page size (nothing changes it)
 
   // Watchlist: which stocks are saved, and add / remove
   const {
