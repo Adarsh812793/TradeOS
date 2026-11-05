@@ -94,7 +94,7 @@ Known issues (not yet fixed)
 - The Stocks page shows 10 stocks per page (`const itemsPerPage = 10` in `StocksPage.jsx`).
 
 ## Next Up 
-- See `docs/plans/next-up.md`: the small-bug list is done (branch `feature/fixing-small-bugs`); next is choosing a bigger direction (UI/UX review, live prices, forgot password by email OTP, or deployment).
+- **UI redesign in progress: follow `docs/plans/ui-redesign.md`** (decisions, nine phases with one PR each, and the regression checklist to run after every phase). End each phase with a short "what is worth learning here" summary for the user.
 - Finish the Account section: decide what Preferences should contain, and build the email-OTP forgot-password flow when chosen.
 - Connect any remaining frontend pages to their backend endpoints.
 - Clear the known issues listed above.
