@@ -159,7 +159,7 @@ async function runViewport(browser, viewportName, viewport, stockId) {
   });
   await attempt("order-details", async () => {
     await page.goto(`${BASE}/orders`);
-    await page.locator("button", { hasText: "View" }).first().click();
+    await page.locator("button:visible", { hasText: "View" }).first().click({ timeout: 5000 });
     await page.waitForSelector("[role=dialog]");
     await shoot(page, "open-order-details", viewportName);
   });
