@@ -1,3 +1,4 @@
+/* Global base styles. Colours, fonts and sizes come from styles/tokens.css. */
 
 * {
     box-sizing: border-box;
@@ -9,11 +10,28 @@ body,
     min-height: 100%;
 }
 
+html {
+    /* Dark scrollbars and form controls, and no white flash while the page loads */
+    background: var(--color-background);
+    color-scheme: dark;
+    scrollbar-color: var(--color-border-strong) var(--color-background);
+}
+
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f5f7fb;
-    color: #172033;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    background: var(--color-background);
+    color: var(--color-text-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--font-display);
 }
 
 button,
@@ -25,4 +43,9 @@ select {
 
 a {
     color: inherit;
+}
+
+::selection {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
 }

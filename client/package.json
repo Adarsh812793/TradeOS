@@ -11,6 +11,9 @@
     "screenshots": "node scripts/screenshots.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/instrument-sans": "^5.3.0",
+    "@fontsource-variable/spline-sans-mono": "^5.3.0",
     "@hookform/resolvers": "^5.9.2",
     "lucide-react": "^1.57.0",
     "react": "^19.2.8",
