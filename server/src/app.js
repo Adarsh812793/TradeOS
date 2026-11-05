@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import helmet from "helmet"
+import config from "./config/env.js";
 
 //routes
 import authRoutes from './modules/auth/auth.routes.js'
@@ -27,7 +28,7 @@ const app=express();
 //3. Global Middlewares ->CONFIGS 
 app.use(express.json({limit:"10kb"})); //Size of json payload for any route cannot exceed 10 kb
 app.use(cors({
-    origin:'http://localhost:5173',
+    origin:config.CORS_ORIGIN,
     credentials:true
 }));
 app.use(cookieParser())
