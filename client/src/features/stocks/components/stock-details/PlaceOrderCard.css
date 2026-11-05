@@ -6,11 +6,11 @@
   width: 100%;
   min-width: 0;
   padding: 20px;
-  background: #ffffff;
-  border: 1px solid #e2eaf4;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(15, 35, 75, 0.04);
-  color: #0b1f5e;
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text-primary);
   box-sizing: border-box;
 }
 
@@ -26,14 +26,14 @@
   margin: 0;
   font-size: 18px;
   font-weight: 700;
-  color: #0b1f5e;
+  color: var(--color-text-primary);
 }
 
 .place-order-card__header span {
   padding: 5px 9px;
   border-radius: 6px;
-  background: #f1f5fb;
-  color: #526789;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
   font-size: 12px;
   font-weight: 600;
 }
@@ -48,8 +48,8 @@
   gap: 6px;
   margin-bottom: 20px;
   padding: 4px;
-  background: #f3f6fb;
-  border: 1px solid #e2eaf4;
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
 }
 
@@ -58,7 +58,7 @@
   border: 1px solid transparent;
   border-radius: 6px;
   background: transparent;
-  color: #526789;
+  color: var(--color-text-secondary);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -69,19 +69,19 @@
 }
 
 .place-order-card__tabs button:hover {
-  background: #e8eef7;
+  background: var(--color-surface-subtle);
 }
 
 .place-order-card__tabs button.active.buy {
-  background: #0da65b;
-  color: #ffffff;
-  box-shadow: 0 2px 5px rgba(13, 166, 91, 0.18);
+  background: var(--color-success);
+  color: var(--color-on-solid);
+  box-shadow: 0 2px 5px var(--color-success-tint);
 }
 
 .place-order-card__tabs button.active.sell {
-  background: #ff5b5b;
-  color: #ffffff;
-  box-shadow: 0 2px 5px rgba(255, 91, 91, 0.18);
+  background: var(--color-danger);
+  color: var(--color-on-solid);
+  box-shadow: 0 2px 5px var(--color-danger-tint);
 }
 
 /* ==========================================
@@ -95,7 +95,7 @@
 }
 
 .place-order-card form label {
-  color: #526789;
+  color: var(--color-text-secondary);
   font-size: 13px;
   font-weight: 500;
 }
@@ -105,10 +105,10 @@
   min-height: 42px;
   padding: 10px 12px;
   box-sizing: border-box;
-  border: 1px solid #dce5f1;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: #ffffff;
-  color: #0b1f5e;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
   font-size: 14px;
   outline: none;
   transition:
@@ -117,12 +117,12 @@
 }
 
 .place-order-card input[type="number"]::placeholder {
-  color: #8a9bb7;
+  color: var(--color-text-muted);
 }
 
 .place-order-card input[type="number"]:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
 }
 
 /* ==========================================
@@ -136,16 +136,16 @@
   margin-top: 12px;
   padding: 14px;
   border-radius: 8px;
-  background: #f1f5fa;
+  background: var(--color-surface-subtle);
 }
 
 .place-order-card__estimate span {
-  color: #526789;
+  color: var(--color-text-secondary);
   font-size: 12px;
 }
 
 .place-order-card__estimate strong {
-  color: #0b1f5e;
+  color: var(--color-text-primary);
   font-size: 20px;
   font-weight: 700;
   overflow-wrap: anywhere;
@@ -162,7 +162,7 @@
   padding: 11px 14px;
   border: none;
   border-radius: 8px;
-  color: #ffffff;
+  color: var(--color-on-solid);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -173,19 +173,19 @@
 }
 
 .place-order-card__submit.buy {
-  background: #0da65b;
+  background: var(--color-success);
 }
 
 .place-order-card__submit.buy:hover:not(:disabled) {
-  background: #07894a;
+  background: color-mix(in srgb, var(--color-success) 85%, black);
 }
 
 .place-order-card__submit.sell {
-  background: #ff5b5b;
+  background: var(--color-danger);
 }
 
 .place-order-card__submit.sell:hover:not(:disabled) {
-  background: #e84646;
+  background: color-mix(in srgb, var(--color-danger) 85%, black);
 }
 
 .place-order-card__submit:active:not(:disabled) {
@@ -204,17 +204,17 @@
 .place-order-card__error {
   margin: 4px 0;
   padding: 10px 12px;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--color-danger-border);
   border-radius: 7px;
-  background: #fef2f2;
-  color: #b91c1c;
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
   font-size: 13px;
   line-height: 1.5;
 }
 
 .place-order-card__note {
   margin: 14px 0 0;
-  color: #7183a2;
+  color: var(--color-text-muted);
   font-size: 11px;
   line-height: 1.6;
 }

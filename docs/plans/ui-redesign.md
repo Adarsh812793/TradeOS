@@ -41,7 +41,8 @@ A full visual redesign of TradeOS plus a new landing page, done in phases so tha
 This plan and the regression checklist. **Done when** the user has confirmed the checklist is complete.
 *Learn:* regression checklists, keeping a baseline, why large changes ship as small PRs.
 
-### Phase 1. Foundation (`feature/ui-foundation`)
+### Phase 1. Foundation (`feature/ui-foundation`) - DONE 2026-11-05 (awaiting PR)
+Built: Indigo Desk tokens, self-hosted fonts, all 346 hard-coded colours replaced by role, page title and favicon, a screenshot tool (`npm run screenshots`), and an optional `CORS_ORIGIN` server setting. Checked with 32 before and after screenshots and a contrast check (all text pairs pass 4.5:1). Bundle: JS 572 kB (unchanged), CSS 112 kB to 122 kB, fonts load as separate files only when used. Original scope:
 Self-hosted fonts, Indigo Desk tokens with a proper type and spacing scale, replace hard-coded colours and font sizes, remove the Arial and `#f5f7fb` defaults in `index.css`, set the page title and favicon. **Done when** the whole app is dark, every page works, and no hex values remain outside `tokens.css`.
 *Learn:* design tokens, semantic versus raw colour names, type scales, colour contrast.
 
@@ -76,6 +77,13 @@ Orders, transactions, watchlist, account, 404. **Done when** those sections pass
 ### Phase 9. Polish (`feature/ui-polish`)
 Motion, phone and tablet layouts, accessibility, performance, the full checklist one last time. **Done when** the whole checklist passes.
 *Learn:* motion principles, Lighthouse, keyboard testing.
+
+## Findings carried to later phases
+
+- **Phase 2:** `<Button block>` passes `block` to the DOM and React warns ("non-boolean attribute"); make it a proper prop.
+- **Phase 3:** the Sidebar's collapse arrow button goes away with the icon rail; Login's "Forgot password?" links to a page that does not exist.
+- **Phase 6:** the Stocks page pagination lists every page number and scrolls sideways once there are many pages (found with 34 pages); it needs ellipsis truncation. The header Buy button is marigold while the Place Order panel's Buy is green: pick one meaning (green = buy).
+- **All phases:** prices, tables and big numbers should use `--font-mono` / `--font-display` as each page is rebuilt; Phase 1 only changed the base fonts.
 
 ## Open questions
 

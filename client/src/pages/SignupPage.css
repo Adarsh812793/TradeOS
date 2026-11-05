@@ -7,8 +7,8 @@
   display: grid;
   grid-template-columns: 45% 55%;
   overflow: hidden;
-  background: linear-gradient(110deg, #F1F5F9 0%, #F8FAFC 65%);
-  color: #172554;
+  background: linear-gradient(110deg, var(--color-surface-subtle) 0%, var(--color-surface-subtle) 65%);
+  color: var(--color-text-primary);
 }
 
 /* 1.1 Signup Market Chart */
@@ -50,7 +50,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #172554;
+  color: var(--color-text-primary);
   font-size: 19px;
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -63,8 +63,8 @@
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: #16A34A;
-  color: #FFFFFF;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0;
@@ -88,7 +88,7 @@
 .signup-page__intro p {
   max-width: 360px;
   margin: 0;
-  color: #64748B;
+  color: var(--color-text-secondary);
   font-size: 15px;
   line-height: 1.7;
 }
@@ -106,7 +106,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #334155;
+  color: var(--color-text-body);
   font-size: 14px;
 }
 
@@ -118,8 +118,8 @@
   width: 26px;
   height: 26px;
   border-radius: 8px;
-  background: #DCFCE7;
-  color: #15803D;
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
   font-weight: 700;
 }
 
@@ -150,14 +150,14 @@
 
 .signup-page__form-header h2 {
   margin: 0 0 8px;
-  color: #172554;
+  color: var(--color-text-primary);
   font-size: 24px;
   letter-spacing: -0.02em;
 }
 
 .signup-page__form-header p {
   margin: 0;
-  color: #64748B;
+  color: var(--color-text-secondary);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -172,13 +172,13 @@
 /* 3.4 Sign-in Link */
 .signup-page__login-link {
   margin: 24px 0 0;
-  color: #64748B;
+  color: var(--color-text-secondary);
   font-size: 14px;
   text-align: center;
 }
 
 .signup-page__login-link a {
-  color: #15803D;
+  color: var(--color-primary);
   font-weight: 600;
   text-decoration: none;
 }
@@ -258,18 +258,18 @@
 
 /* Styling for feedback messages */
 .signup-page__error {
-  color: #B91C1C;
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
+  color: var(--color-danger);
+  background: var(--color-danger-tint);
+  border: 1px solid var(--color-danger-border);
   border-radius: 6px;
   padding: 10px 12px;
   font-size: 13px;
 }
 
 .signup-page__success {
-  color: #15803D;
-  background: #F0FDF4;
-  border: 1px solid #BBF7D0;
+  color: var(--color-success);
+  background: var(--color-success-tint);
+  border: 1px solid var(--color-success-border);
   border-radius: 6px;
   padding: 10px 12px;
   font-size: 13px;

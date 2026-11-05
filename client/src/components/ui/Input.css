@@ -38,7 +38,7 @@
 
 .form-field__input:focus {
   border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 3px rgb(22 163 74 / 12%);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
 }
 
 .form-field__input:disabled {
@@ -52,7 +52,7 @@
 }
 
 .form-field__input--error:focus {
-  box-shadow: 0 0 0 3px rgb(220 38 38 / 12%);
+  box-shadow: 0 0 0 3px var(--color-danger-tint);
 }
 
 .form-field__error {
@@ -92,7 +92,7 @@
   border: none;
   border-radius: 4px;
   background: transparent;
-  color: #64748B;
+  color: var(--color-text-secondary);
   font: inherit;
   font-size: 12px;
   font-weight: 600;
@@ -100,11 +100,11 @@
 }
 
 .form-field__password-toggle:hover {
-  color: #15803D;
+  color: var(--color-primary);
 }
 
 .form-field__password-toggle:focus-visible {
-  outline: 2px solid #16A34A;
+  outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }
 

@@ -203,7 +203,7 @@
     width: min(280px, 85vw);
     transform: translateX(0);
     visibility: visible;
-    box-shadow: 12px 0 30px rgb(15 23 42 / 12%);
+    box-shadow: var(--shadow-md);
   }
 
   /* A collapsed desktop preference must not shrink the mobile drawer */

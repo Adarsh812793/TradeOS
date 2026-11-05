@@ -30,6 +30,8 @@ export default {
     MONGODB_URI: process.env.MONGODB_URI,
     JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
     FRONTEND_URL: process.env.FRONTEND_URL,
+    // Optional: the one website address allowed to call this API (CORS). Defaults to the local Vite dev server.
+    CORS_ORIGIN: process.env.CORS_ORIGIN || "http://localhost:5173",
     INDIAN_API_KEY: process.env.INDIAN_API_KEY,
     FYERS_APP_ID: process.env.FYERS_APP_ID,
     FYERS_APP_SECRET: process.env.FYERS_APP_SECRET,

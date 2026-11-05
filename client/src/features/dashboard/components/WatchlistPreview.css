@@ -2,7 +2,7 @@
 .watchlist-preview {
   width: 100%;
   min-width: 0;
-  color: #172554;
+  color: var(--color-text-primary);
 }
 
 /* 2. Header */
@@ -19,24 +19,24 @@
   font-size: 20px;
   font-weight: 600;
   line-height: 1.4;
-  color: #172554;
+  color: var(--color-text-primary);
 }
 
 .watchlist-preview__subtitle {
   margin: 5px 0 0;
   font-size: 14px;
   line-height: 1.5;
-  color: #64748b;
+  color: var(--color-text-secondary);
 }
 
 /* 3. Action Button */
 .watchlist-preview__button {
   flex-shrink: 0;
   padding: 9px 13px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 7px;
-  background-color: #ffffff;
-  color: #172554;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -46,21 +46,21 @@
 }
 
 .watchlist-preview__button:hover {
-  background-color: #f8fafc;
-  border-color: #cbd5e1;
+  background-color: var(--color-surface-subtle);
+  border-color: var(--color-border-strong);
 }
 
 .watchlist-preview__button:focus-visible {
-  outline: 2px solid #16a34a;
+  outline: 2px solid var(--color-border-focus);
   outline-offset: 3px;
 }
 
 /* 4. Watchlist List */
 .watchlist-preview__list {
   overflow: hidden;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
 }
 
 .watchlist-preview__item {
@@ -72,11 +72,11 @@
 }
 
 .watchlist-preview__item + .watchlist-preview__item {
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .watchlist-preview__item:hover {
-  background-color: #f8fafc;
+  background-color: var(--color-surface-subtle);
 }
 
 /* 5. Stock Icon */
@@ -88,8 +88,8 @@
   width: 42px;
   height: 42px;
   border-radius: 10px;
-  background-color: #f0fdf4;
-  color: #16a34a;
+  background-color: var(--color-success-tint);
+  color: var(--color-success);
   font-size: 21px;
   font-weight: 600;
 }
@@ -103,7 +103,7 @@
 .watchlist-preview__symbol {
   display: block;
   overflow: hidden;
-  color: #172554;
+  color: var(--color-text-primary);
   font-size: 14px;
   font-weight: 600;
   text-overflow: ellipsis;
@@ -113,7 +113,7 @@
 .watchlist-preview__company {
   overflow: hidden;
   margin: 4px 0 0;
-  color: #64748b;
+  color: var(--color-text-secondary);
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -123,7 +123,7 @@
 .watchlist-preview__price {
   flex-shrink: 0;
   margin: 0;
-  color: #172554;
+  color: var(--color-text-primary);
   font-size: 14px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -133,22 +133,22 @@
 /* 8. Empty, Loading, and Error States */
 .watchlist-preview__empty {
   padding: 32px 20px;
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed var(--color-border-strong);
   border-radius: 12px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   text-align: center;
 }
 
 .watchlist-preview__empty-title {
   margin: 0;
-  color: #172554;
+  color: var(--color-text-primary);
   font-size: 15px;
   font-weight: 600;
 }
 
 .watchlist-preview__empty-description {
   margin: 8px 0 18px;
-  color: #64748b;
+  color: var(--color-text-secondary);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -157,22 +157,22 @@
 .watchlist-preview__error {
   margin: 0;
   padding: 20px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   font-size: 14px;
   line-height: 1.5;
 }
 
 .watchlist-preview__message {
-  color: #64748b;
+  color: var(--color-text-secondary);
 }
 
 .watchlist-preview__error {
   margin-bottom: 12px;
-  border-color: #fecaca;
-  background-color: #fef2f2;
-  color: #b91c1c;
+  border-color: var(--color-danger-border);
+  background-color: var(--color-danger-tint);
+  color: var(--color-danger);
 }
 
 /* 9. Responsive Layout */

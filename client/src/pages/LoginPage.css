@@ -7,8 +7,8 @@
   display: grid;
   grid-template-columns: 45% 55%;
   overflow: hidden;
-  background: linear-gradient(110deg, #F1F5F9 0%, #F8FAFC 65%);
-  color: #172554;
+  background: linear-gradient(110deg, var(--color-surface-subtle) 0%, var(--color-surface-subtle) 65%);
+  color: var(--color-text-primary);
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -47,7 +47,7 @@
   align-items: center;
   gap: 10px;
   width: fit-content;
-  color: #172554;
+  color: var(--color-text-primary);
   font-size: 24px;
   font-weight: 750;
   letter-spacing: -0.8px;
@@ -60,8 +60,8 @@
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: #16A34A;
-  color: #FFFFFF;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0;
@@ -82,7 +82,7 @@
 .login-page__intro p {
   max-width: 430px;
   margin: 0;
-  color: #64748B;
+  color: var(--color-text-secondary);
   font-size: 16px;
   line-height: 1.8;
 }
@@ -100,7 +100,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #334155;
+  color: var(--color-text-body);
   font-size: 14px;
   font-weight: 500;
 }
@@ -113,8 +113,8 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #DCFCE7;
-  color: #15803D;
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
   font-size: 13px;
   font-weight: 700;
 }
@@ -142,7 +142,7 @@
 
 .login-page__form-header h2 {
   margin: 0 0 8px;
-  color: #172554;
+  color: var(--color-text-primary);
   font-size: 28px;
   font-weight: 750;
   letter-spacing: -0.8px;
@@ -150,7 +150,7 @@
 
 .login-page__form-header p {
   margin: 0;
-  color: #64748B;
+  color: var(--color-text-secondary);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -175,21 +175,21 @@
 }
 
 .login-page__forgot-link a {
-  color: #15803D;
+  color: var(--color-primary);
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
 }
 
 .login-page__forgot-link a:hover {
-  color: #166534;
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
 .login-page__forgot-link a:focus-visible,
 .login-page__signup-link a:focus-visible,
 .login-page__logo:focus-visible {
-  outline: 2px solid #16A34A;
+  outline: 2px solid var(--color-border-focus);
   outline-offset: 4px;
   border-radius: 3px;
 }
@@ -197,20 +197,20 @@
 /* 6. Signup navigation */
 .login-page__signup-link {
   margin: 24px 0 0;
-  color: #64748B;
+  color: var(--color-text-secondary);
   font-size: 13px;
   line-height: 1.7;
   text-align: center;
 }
 
 .login-page__signup-link a {
-  color: #15803D;
+  color: var(--color-primary);
   font-weight: 650;
   text-decoration: none;
 }
 
 .login-page__signup-link a:hover {
-  color: #166534;
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
@@ -291,10 +291,10 @@
 /* 4. Form feedback messages */
 .login-page__success {
   padding: 12px 14px;
-  border: 1px solid #bbf7d0;
+  border: 1px solid var(--color-success-border);
   border-radius: 8px;
-  background: #f0fdf4;
-  color: #166534;
+  background: var(--color-success-tint);
+  color: var(--color-success);
   font-size: 14px;
 }
 
@@ -304,15 +304,15 @@
   border: 1px solid var(--color-warning);
   border-radius: 8px;
   background: var(--color-warning-tint);
-  color: #92400e;
+  color: var(--color-warning);
   font-size: 14px;
 }
 
 .login-page__error {
   padding: 12px 14px;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--color-danger-border);
   border-radius: 8px;
-  background: #fef2f2;
-  color: #b91c1c;
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
   font-size: 14px;
 }

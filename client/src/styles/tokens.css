@@ -1,86 +1,119 @@
-/* This file contains the design tokens that are reused everywhere in other css files .
-Benifits: Tommorow if we have to chnage the entire theme will just modify this file
-Contains info about : Color, Borer ,Size, topology ..etc */
+/* Design tokens for the "Indigo Desk" theme (dark). Every colour, size and font in the app comes from here,
+   so changing the look of the whole app (or adding a light theme later) means editing this file.
 
+   Colour rules:
+   - Marigold (--color-primary) is the brand and action colour: main buttons, active menu item, focus.
+   - Green (--color-success) and red (--color-danger) mean ONLY "up / profit" and "down / loss".
+   - Use --color-on-primary / --color-on-solid for text that sits on a solid marigold, green or red fill. */
 
 :root {
-  /* Brand colors */
-  --color-primary: #16A34A;
-  --color-primary-hover: #15803D;
+  color-scheme: dark;
 
-  /* Backgrounds and surfaces */
-  --color-background: #F8FAFC;
-  --color-surface: #FFFFFF;
-  --color-surface-subtle: #F1F5F9;
+  /* Brand / action */
+  --color-primary: #F6B631;
+  --color-primary-hover: #FFC84D;
+  --color-primary-tint: rgb(246 182 49 / 14%);
+  --color-on-primary: #1E1502;
+
+  /* Backgrounds and surfaces, from the page (deepest) up to menus and dialogs (highest) */
+  --color-background: #12173A;
+  --color-surface: #1A2150;
+  --color-surface-subtle: #212A63;
+  --color-surface-raised: #283270;
 
   /* Text colors */
-  --color-text-primary: #172554;
-  --color-text-body: #334155;
-  --color-text-secondary: #64748B;
+  --color-text-primary: #EEF0FA;
+  --color-text-body: #D5D9EF;
+  --color-text-secondary: #A9AFD6;
+  --color-text-muted: #8F96C6;
 
   /* Borders */
-  --color-border: #E2E8F0;
+  --color-border: #2D3672;
+  --color-border-subtle: #252E68; /* faint dividers inside tables and lists */
+  --color-border-strong: #404B8E;
+  --color-border-focus: #F6B631;
 
-  /* Status colors */
-  --color-success: #16A34A;
-  --color-danger: #DC2626;
-  --color-warning: #F59E0B;
-  --color-info: #2563EB;
+  /* Status colors: green = up / profit, red = down / loss */
+  --color-success: #3DDCA0;
+  --color-danger: #FF8273;
+  --color-warning: #FF9F43;
+  --color-info: #6EA8FF;
+  --color-on-solid: #10142F; /* text on a solid success / danger / warning / info fill */
 
-  /* Soft status backgrounds */
-  --color-info-tint: #DBEAFE;
+  /* Soft status backgrounds (translucent, so they work on any surface) */
+  --color-success-tint: rgb(61 220 160 / 14%);
+  --color-danger-tint: rgb(255 130 115 / 14%);
+  --color-warning-tint: rgb(255 159 67 / 14%);
+  --color-info-tint: rgb(110 168 255 / 14%);
+
+  /* Soft borders that go with the tints above */
+  --color-primary-border: rgb(246 182 49 / 40%);
+  --color-success-border: rgb(61 220 160 / 35%);
+  --color-danger-border: rgb(255 130 115 / 35%);
+  --color-warning-border: rgb(255 159 67 / 35%);
+  --color-info-border: rgb(110 168 255 / 35%);
 
   /* Chart palette (portfolio allocation). Every slice also has a text label, so colour is never the only cue */
-  --color-chart-1: #2563EB;
-  --color-chart-2: #7C3AED;
-  --color-chart-3: #16A34A;
-  --color-chart-4: #F59E0B;
-  --color-chart-5: #EC4899;
-  --color-chart-other: #94A3B8;
-  --color-success-tint: #DCFCE7;
-  --color-danger-tint: #FEE2E2;
-  --color-warning-tint: #FEF3C7;
+  --color-chart-1: #6EA8FF;
+  --color-chart-2: #A78BFA;
+  --color-chart-3: #3DDCA0;
+  --color-chart-4: #F6B631;
+  --color-chart-5: #F472B6;
+  --color-chart-other: #8F96C6;
 
-  
-/* Typography */
---font-sans: Inter, ui-sans-serif, system-ui, -apple-system,
-  BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* Dark layer behind dialogs */
+  --color-overlay: rgb(5 8 25 / 72%);
 
---font-size-xs: 12px;
---font-size-sm: 14px;
---font-size-base: 16px;
---font-size-lg: 18px;
---font-size-xl: 24px;
---font-size-2xl: 28px;
+  /* Typography: display for headings and big numbers, sans for everything else, mono for prices and tables */
+  --font-display: "Bricolage Grotesque Variable", "Instrument Sans Variable", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-mono: "Spline Sans Mono Variable", ui-monospace, "Cascadia Mono", Consolas, monospace;
 
---font-weight-normal: 400;
---font-weight-medium: 500;
---font-weight-semibold: 600;
---font-weight-bold: 700;
+  --font-size-2xs: 11px;
+  --font-size-xs: 12px;
+  --font-size-13: 13px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-20: 20px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 28px;
+  --font-size-3xl: 36px;
+  --font-size-4xl: 48px;
 
-/* Spacing */
---space-1: 4px;
---space-2: 8px;
---space-3: 12px;
---space-4: 16px;
---space-6: 24px;
---space-8: 32px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
-/* Borders */
---border-width: 1px;
---color-border-focus: #16A34A;
+  /* Spacing (4px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
 
-/* Corner radius */
---radius-sm: 6px;
---radius-md: 8px;
---radius-lg: 12px;
+  /* Borders */
+  --border-width: 1px;
 
-/* Layout */
---sidebar-width: 240px;
---navbar-height: 64px;
+  /* Corner radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
 
-/* Shadows */
---shadow-sm: 0 1px 2px rgb(15 23 42 / 5%);
---shadow-md: 0 4px 12px rgb(15 23 42 / 8%);
+  /* Layout */
+  --sidebar-width: 240px;
+  --navbar-height: 64px;
 
+  /* Shadows: on a dark page they are deeper and only used for things that float (menus, dialogs) */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-md: 0 10px 28px rgb(2 4 18 / 50%);
 }
