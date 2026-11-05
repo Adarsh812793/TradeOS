@@ -1,6 +1,6 @@
 # UI redesign
 
-A full visual redesign of TradeOS plus a new landing page, done in phases so that the app keeps working the whole way through. Visual reference: https://claude.ai/artifact/MPPddLBZ5BzHjAdb4RJ2yG (direction A).
+A full visual redesign of TradeOS plus a new landing page, done in phases so that the app keeps working the whole way through. Visual reference: `docs/visuals/NewTheme.png` and https://claude.ai/artifact/MPPddLBZ5BzHjAdb4RJ2yG (direction A). These only set the style; the actual page designs are worked out phase by phase.
 
 ## Decisions
 
@@ -14,7 +14,9 @@ A full visual redesign of TradeOS plus a new landing page, done in phases so tha
 | Navigation | Icon rail, plus a top market strip with search, notifications and profile |
 | Themes | Dark first. A light theme toggle comes later, which the token work makes possible |
 | Stock prices | **Simulated** and clearly labelled "Simulated", until a licensed vendor is chosen |
-| Market hours | Prices move only during market hours. Outside them prices hold still, so P&L holds still too |
+| Market hours | Prices move only during market hours (9:15 AM to 3:30 PM IST, weekdays). Outside them prices hold still, so P&L holds still too |
+| Exchange holidays | Prices also stop on exchange holidays, from a yearly list in one config file |
+| Orders when closed | Blocked, with a clear "Market closed" message. After-market orders are a possible later feature |
 | NIFTY 50 / SENSEX | Stay real, from FYERS |
 | Delivery | One branch and one PR per phase |
 
@@ -22,7 +24,7 @@ A full visual redesign of TradeOS plus a new landing page, done in phases so tha
 
 - **Appearance only.** Page phases change JSX structure and CSS. Hooks, API calls, validation and business logic stay as they are, unless the phase says otherwise.
 - **`main` always works.** Each phase is merged on its own and can be reverted on its own.
-- **After every phase:** `npm run lint` and `npm run build` in `client/`, `npm run test:run` in `server/` when the backend changed, then the user runs the checklist below for the pages touched. Claude cannot open a browser in this environment unless a browser tool is connected.
+- **After every phase:** `npm run lint` and `npm run build` in `client/`, `npm run test:run` in `server/` when the backend changed, then the user runs the checklist below for the pages touched. Claude also checks the pages itself with screenshots from a headless browser (desktop and phone width), which catches layout problems but not how motion feels.
 - **Commits** are announced first; the last commit of each branch updates the docs. **Pushing** is always asked for first, and nothing is ever pushed to `main` (see CLAUDE.md).
 - **Teaching:** every phase ends with a short "what is worth learning here" summary for the user.
 
@@ -52,7 +54,7 @@ Icon rail instead of the sidebar, market strip, restyled navbar dropdowns, mobil
 *Learn:* CSS grid app layouts, route-level code splitting, accessible navigation.
 
 ### Phase 4. Simulated market (`feature/simulated-market`)
-Backend: a market-hours module, a provider module that a real vendor can replace later, a price job that moves `Stock.currentPrice` only while the market is open, previous close and daily change, stored candles with backfilled history, tests. Frontend: polling hook and "Simulated" badge. **Done when** prices move during market hours and hold outside them, and orders and P&L stay correct.
+Backend: a market-hours module, a provider module that a real vendor can replace later, a price job that moves `Stock.currentPrice` only while the market is open, a holiday list, orders rejected while the market is closed, previous close and daily change, stored candles with backfilled history, tests. Frontend: polling hook and "Simulated" badge. **Done when** prices move during market hours and hold outside them, and orders and P&L stay correct.
 *Learn:* random-walk price models, background jobs, time zones (IST), the provider pattern, polling costs.
 
 ### Phase 5. Landing and auth (`feature/landing-page`)
@@ -77,11 +79,12 @@ Motion, phone and tablet layouts, accessibility, performance, the full checklist
 
 ## Open questions
 
-1. **Orders outside market hours.** Block them with a clear "Market closed" message, or allow them at the closing price? (Phase 4)
-2. **Market holidays.** Weekends are simple; exchange holidays need a list kept up to date each year. (Phase 4)
-3. **FYERS re-authorization.** The FYERS token expires daily at 6:30 AM IST and needs an admin to re-authorize, so the market strip needs a clear "unavailable" state on days that was not done. (Phase 3)
-4. **FYERS licensing.** Public display of the real indices should be checked against the vendor's terms before going public.
-5. **Chart library.** Agree on one in Phase 6.
+1. **FYERS licensing.** Public display of the real indices should be checked against the vendor's terms before going public.
+2. **Chart library.** Agree on one in Phase 6.
+
+## Known and left for later
+
+- **FYERS re-authorization.** The token expires daily at 6:30 AM IST and needs an admin to log in again. The user knows and will fix this separately, so the redesign adds no special handling for it.
 
 ## Regression checklist
 
