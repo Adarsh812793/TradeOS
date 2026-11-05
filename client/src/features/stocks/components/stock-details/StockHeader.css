@@ -167,7 +167,7 @@
   border: var(--border-width) solid transparent;
   border-radius: var(--radius-md);
 
-  color: #FFFFFF;
+  color: var(--color-on-solid);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
 
@@ -188,7 +188,7 @@
 }
 
 .stock-header__action-button--sell:hover {
-  background: #B91C1C;
+  background: var(--color-danger);
 }
 
 /* 10. Tablet layout */

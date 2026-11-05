@@ -20,8 +20,8 @@
   height: 40px;
   padding: 0 12px;
 
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
 
   transition:
@@ -31,14 +31,14 @@
 }
 
 .navbar__search:focus-within {
-  background-color: #ffffff;
-  border-color: #16a34a;
-  box-shadow: 0 0 0 3px rgb(22 163 74 / 10%);
+  background-color: var(--color-surface-raised);
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
 }
 
 .navbar__search-icon {
   flex-shrink: 0;
-  color: #64748b;
+  color: var(--color-text-secondary);
 }
 
 .navbar__search-input {
@@ -51,13 +51,13 @@
   outline: none;
 
   background: transparent;
-  color: #172554;
+  color: var(--color-text-primary);
 
   font-size: 13px;
 }
 
 .navbar__search-input::placeholder {
-  color: #94a3b8;
+  color: var(--color-text-muted);
 }
 
 .navbar__search-input::-webkit-search-cancel-button {
@@ -76,7 +76,7 @@
   height: 24px;
   padding: 0;
 
-  color: #64748b;
+  color: var(--color-text-secondary);
   background: transparent;
   border: none;
   border-radius: 4px;
@@ -84,8 +84,8 @@
 }
 
 .navbar__search-clear:hover {
-  color: #172554;
-  background-color: #e2e8f0;
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-subtle);
 }
 
 /* Search Hint */
@@ -94,9 +94,9 @@
   flex-shrink: 0;
   padding: 3px 6px;
 
-  color: #64748b;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
   border-radius: 4px;
 
   font-family: inherit;
@@ -118,10 +118,10 @@
   max-height: 420px;
   overflow-y: auto;
 
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
-  box-shadow: 0 12px 32px rgb(15 23 42 / 12%);
+  box-shadow: var(--shadow-md);
 
   animation: navbar-dropdown-enter 0.15s ease-out;
 }
@@ -133,15 +133,15 @@
 
   padding: 13px 16px;
 
-  color: #64748b;
-  border-bottom: 1px solid #f1f5f9;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border-subtle);
 
   font-size: 12px;
   font-weight: 600;
 }
 
 .navbar__dropdown-heading svg {
-  color: #16a34a;
+  color: var(--color-primary);
 }
 
 /* Individual Stock Result */
@@ -156,10 +156,10 @@
   padding: 12px 16px;
 
   text-align: left;
-  color: #172554;
-  background-color: #ffffff;
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-raised);
   border: none;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--color-border-subtle);
   cursor: pointer;
 
   transition: background-color 0.15s ease;
@@ -171,7 +171,7 @@
 
 .navbar__stock-result:hover,
 .navbar__stock-result--active {
-  background-color: #f0fdf4;
+  background-color: var(--color-primary-tint);
 }
 
 .navbar__stock-info,
@@ -183,14 +183,14 @@
 }
 
 .navbar__stock-symbol {
-  color: #172554;
+  color: var(--color-text-primary);
   font-size: 13px;
   font-weight: 700;
 }
 
 .navbar__stock-name {
   overflow: hidden;
-  color: #64748b;
+  color: var(--color-text-secondary);
   font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -211,7 +211,7 @@
   padding: 1px 6px;
 
   color: var(--color-text-secondary);
-  background-color: #f1f5f9;
+  background-color: var(--color-surface-subtle);
   border-radius: 4px;
 
   font-size: 10px;
@@ -242,7 +242,7 @@
   padding: 6px 12px;
 
   color: var(--color-text-primary);
-  background: #ffffff;
+  background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
   border-radius: 6px;
   cursor: pointer;
@@ -252,7 +252,7 @@
 }
 
 .navbar__search-retry:hover {
-  background-color: #f8fafc;
+  background-color: var(--color-surface-subtle);
 }
 
 /* Empty Search Results */
@@ -261,7 +261,7 @@
   padding: 20px 16px;
   margin: 0;
 
-  color: #64748b;
+  color: var(--color-text-secondary);
   text-align: center;
   font-size: 13px;
 }
@@ -276,9 +276,9 @@
 
   padding: 11px 16px;
 
-  color: #15803d;
-  background-color: #f8fafc;
-  border-top: 1px solid #e2e8f0;
+  color: var(--color-primary);
+  background-color: var(--color-surface-subtle);
+  border-top: 1px solid var(--color-border);
 
   font-size: 12px;
   font-weight: 600;
@@ -286,7 +286,7 @@
 }
 
 .navbar__search-footer:hover {
-  background-color: #f0fdf4;
+  background-color: var(--color-primary-tint);
 }
 
 /* Responsive Search */

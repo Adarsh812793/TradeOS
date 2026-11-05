@@ -52,7 +52,7 @@
   inset: 0;
   border: 2px solid var(--color-surface);
   border-radius: 50%;
-  box-shadow: 0 0 0 400px rgb(15 23 42 / 55%);
+  box-shadow: 0 0 0 400px var(--color-overlay);
   pointer-events: none;
 }
 

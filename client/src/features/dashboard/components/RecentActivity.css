@@ -2,7 +2,7 @@
 /* 1. Recent Activity Container */
 .recent-activity {
   width: 100%;
-  color: #172554;
+  color: var(--color-text-primary);
 }
 
 .recent-activity__header {
@@ -22,7 +22,7 @@
 
 .recent-activity__subtitle {
   margin: 6px 0 0;
-  color: #64748b;
+  color: var(--color-text-secondary);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -35,10 +35,10 @@
   justify-content: center;
   gap: 8px;
   padding: 9px 13px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 7px;
-  background: #ffffff;
-  color: #172554;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
   font: inherit;
   font-size: 13px;
   font-weight: 500;
@@ -51,21 +51,21 @@
 
 .recent-activity__view-all:hover,
 .recent-activity__retry:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
+  background: var(--color-surface-subtle);
+  border-color: var(--color-border-strong);
 }
 
 .recent-activity__view-all:focus-visible,
 .recent-activity__retry:focus-visible {
-  outline: 2px solid #16a34a;
+  outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }
 
 /* 3. Recent Orders List */
 .recent-activity__list {
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
 }
 
@@ -78,11 +78,11 @@
 }
 
 .recent-activity__item + .recent-activity__item {
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .recent-activity__item:hover {
-  background: #f8fafc;
+  background: var(--color-surface-subtle);
 }
 
 /* 4. Order Type Indicator */
@@ -99,13 +99,13 @@
 }
 
 .recent-activity__type--buy {
-  color: #15803d;
-  background: #dcfce7;
+  color: var(--color-success);
+  background: var(--color-success-tint);
 }
 
 .recent-activity__type--sell {
-  color: #b91c1c;
-  background: #fee2e2;
+  color: var(--color-danger);
+  background: var(--color-danger-tint);
 }
 
 /* 5. Stock and Trade Details */
@@ -122,7 +122,7 @@
 }
 
 .recent-activity__symbol {
-  color: #172554;
+  color: var(--color-text-primary);
   font-size: 14px;
   font-weight: 600;
 }
@@ -136,19 +136,19 @@
 }
 
 .recent-activity__trade-type--buy {
-  color: #166534;
-  background: #dcfce7;
+  color: var(--color-success);
+  background: var(--color-success-tint);
 }
 
 .recent-activity__trade-type--sell {
-  color: #b91c1c;
-  background: #fee2e2;
+  color: var(--color-danger);
+  background: var(--color-danger-tint);
 }
 
 .recent-activity__company {
   margin: 6px 0 0;
   overflow: hidden;
-  color: #64748b;
+  color: var(--color-text-secondary);
   font-size: 12px;
   line-height: 1.5;
   text-overflow: ellipsis;
@@ -166,7 +166,7 @@
 
 .recent-activity__price {
   margin: 0;
-  color: #172554;
+  color: var(--color-text-primary);
   font-size: 14px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -183,23 +183,23 @@
 }
 
 .recent-activity__status--success {
-  color: #166534;
-  background: #dcfce7;
+  color: var(--color-success);
+  background: var(--color-success-tint);
 }
 
 .recent-activity__status--warning {
-  color: #92400e;
-  background: #fef3c7;
+  color: var(--color-warning);
+  background: var(--color-warning-tint);
 }
 
 .recent-activity__status--danger {
-  color: #b91c1c;
-  background: #fee2e2;
+  color: var(--color-danger);
+  background: var(--color-danger-tint);
 }
 
 .recent-activity__status--neutral {
-  color: #475569;
-  background: #f1f5f9;
+  color: var(--color-text-body);
+  background: var(--color-surface-subtle);
 }
 
 /* 7. Loading, Error, and Empty States */
@@ -207,20 +207,20 @@
 .recent-activity__error {
   margin: 0;
   padding: 20px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--color-surface);
   font-size: 14px;
 }
 
 .recent-activity__message {
-  color: #64748b;
+  color: var(--color-text-secondary);
 }
 
 .recent-activity__error {
-  color: #b91c1c;
-  background: #fef2f2;
-  border-color: #fecaca;
+  color: var(--color-danger);
+  background: var(--color-danger-tint);
+  border-color: var(--color-danger-border);
 }
 
 .recent-activity__empty {
@@ -228,22 +228,22 @@
   flex-direction: column;
   align-items: center;
   padding: 36px 20px;
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed var(--color-border-strong);
   border-radius: 12px;
-  background: #ffffff;
+  background: var(--color-surface);
   text-align: center;
 }
 
 .recent-activity__empty-title {
   margin: 0;
-  color: #172554;
+  color: var(--color-text-primary);
   font-size: 15px;
   font-weight: 600;
 }
 
 .recent-activity__empty-description {
   margin: 8px 0 18px;
-  color: #64748b;
+  color: var(--color-text-secondary);
   font-size: 13px;
   line-height: 1.6;
 }

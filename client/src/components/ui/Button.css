@@ -48,7 +48,7 @@
 }
 
 .btn--danger:hover:not(:disabled) {
-  background: #B91C1C;
+  background: var(--color-danger);
 }
 
 /* Disabled state */

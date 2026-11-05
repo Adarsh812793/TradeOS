@@ -74,8 +74,8 @@ export default function SignupPage() {
         >
           <defs>
             <linearGradient id="chartArea" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#22C55E" stopOpacity="0.14" />
-              <stop offset="100%" stopColor="#22C55E" stopOpacity="0" />
+              <stop offset="0%" stopColor="var(--color-success)" stopOpacity="0.14" />
+              <stop offset="100%" stopColor="var(--color-success)" stopOpacity="0" />
             </linearGradient>
 
             {/* Fade the chart as it approaches the form */}
@@ -106,7 +106,7 @@ export default function SignupPage() {
                  L420 110 L500 145 L590 75 L670 115
                  L760 45 L840 80 L920 25 L1000 55"
               fill="none"
-              stroke="#16A34A"
+              stroke="var(--color-success)"
               strokeWidth="3"
               strokeLinecap="round"
               strokeLinejoin="round"

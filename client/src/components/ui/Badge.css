@@ -17,19 +17,19 @@
 /* Successful or completed state */
 .badge--success {
   background: var(--color-success-tint);
-  color: #166534;
+  color: var(--color-success);
 }
 
 /* Pending or awaiting action */
 .badge--warning {
   background: var(--color-warning-tint);
-  color: #92400E;
+  color: var(--color-warning);
 }
 
 /* Failed, rejected, or negative state */
 .badge--danger {
   background: var(--color-danger-tint);
-  color: #991B1B;
+  color: var(--color-danger);
 }
 
 /* Default or unspecified state */
@@ -40,6 +40,6 @@
 
 /* Informational state */
 .badge--info {
-  background: #DBEAFE;
-  color: #1D4ED8;
+  background: var(--color-info-tint);
+  color: var(--color-info);
 }

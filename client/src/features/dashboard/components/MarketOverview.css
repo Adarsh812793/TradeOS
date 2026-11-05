@@ -90,7 +90,7 @@
 
 
 .market-card:hover {
-  border-color: #cbd5e1;
+  border-color: var(--color-border-strong);
   box-shadow: var(--shadow-md);
 }
 
@@ -123,9 +123,9 @@
   justify-content: center;
   width: 42px;
   height: 42px;
-  border: 1px solid #bbf7d0;
+  border: 1px solid var(--color-success-border);
   border-radius: 10px;
-  background: #f0fdf4;
+  background: var(--color-primary-tint);
   color: var(--color-primary);
   font-size: 18px;
   font-weight: var(--font-weight-bold);
@@ -197,9 +197,9 @@
 }
 
 .market-overview__status--error {
-  border-color: #fecaca;
-  background: #fef2f2;
-  color: #b91c1c;
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
 }
 
 .market-overview__status p {
