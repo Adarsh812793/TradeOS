@@ -12,6 +12,7 @@ import LoadingSpinner from "../../components/ui/LoadingSpinner.jsx";
 import Modal from "../../components/ui/Modal.jsx";
 import Pagination from "../../components/ui/Pagination.jsx";
 import ResultState from "../../components/ui/ResultState.jsx";
+import SegmentedControl from "../../components/ui/SegmentedControl.jsx";
 import Select from "../../components/ui/Select.jsx";
 
 import "./UiGalleryPage.css";
@@ -31,6 +32,8 @@ export default function UiGalleryPage() {
   const [dialog, setDialog] = useState(null); // null | "confirm" | "success" | "error"
   const [page, setPage] = useState(3);
   const [exchange, setExchange] = useState("all");
+  const [side, setSide] = useState("buy");
+  const [range, setRange] = useState("1D");
 
   const pagination = {
     page,
@@ -110,6 +113,28 @@ export default function UiGalleryPage() {
             ]}
           />
         </div>
+      </Section>
+
+      <Section id="segmented" title="SegmentedControl" note="Arrow keys change the selection. Tone success / danger for Buy / Sell.">
+        <div className="ui-gallery__field">
+          <SegmentedControl
+            label="Order type"
+            fill
+            value={side}
+            onChange={setSide}
+            options={[
+              { value: "buy", label: "Buy", tone: "success" },
+              { value: "sell", label: "Sell", tone: "danger" },
+            ]}
+          />
+        </div>
+        <SegmentedControl
+          label="Time range"
+          size="sm"
+          value={range}
+          onChange={setRange}
+          options={["1D", "1W", "1M", "3M", "1Y", "ALL"].map((value) => ({ value, label: value }))}
+        />
       </Section>
 
       <Section id="badges" title="Badge">

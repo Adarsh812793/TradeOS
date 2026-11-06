@@ -10,6 +10,7 @@ import "./Input.css";
 export default function Input({
   label,
   name,
+  id, // optional: overrides the default id (input-<name>)
   type = "text",
   placeholder = "",
   value,
@@ -22,7 +23,7 @@ export default function Input({
   ref,
   ...rest
 }) {
-  const inputId = `input-${name}`;
+  const inputId = id ?? `input-${name}`;
   const isPassword = type === "password";
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);

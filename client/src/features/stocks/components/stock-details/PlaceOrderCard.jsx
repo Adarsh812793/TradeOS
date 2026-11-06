@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../../../../components/ui/Modal.jsx";
 import Button from "../../../../components/ui/Button.jsx";
+import Input from "../../../../components/ui/Input.jsx";
 import ResultState from "../../../../components/ui/ResultState.jsx";
+import SegmentedControl from "../../../../components/ui/SegmentedControl.jsx";
 
 import { formatCurrency } from "../../../../utils/currency.utils.js";
 import "./PlaceOrderCard.css";
@@ -111,29 +113,22 @@ export default function PlaceOrderCard({
                 <span>{stock.symbol}</span>
             </div>
 
-            <div className="place-order-card__tabs">
-                <button
-                    type="button"
-                    className={isBuy ? "active buy" : ""}
-                    onClick={() => onOrderTypeChange("buy")}
-                >
-                    Buy
-                </button>
-
-                <button
-                    type="button"
-                    className={!isBuy ? "active sell" : ""}
-                    onClick={() => onOrderTypeChange("sell")}
-                >
-                    Sell
-                </button>
-            </div>
+            <SegmentedControl
+                label="Order type"
+                fill
+                value={selectedOrderType}
+                onChange={onOrderTypeChange}
+                options={[
+                    { value: "buy", label: "Buy", tone: "success" },
+                    { value: "sell", label: "Sell", tone: "danger" },
+                ]}
+            />
 
             <form onSubmit={handleSubmit}>
-                <label htmlFor="order-quantity">Quantity</label>
-
-                <input
+                <Input
+                    label="Quantity"
                     id="order-quantity"
+                    name="order-quantity"
                     type="number"
                     min="1"
                     step="1"
@@ -143,6 +138,7 @@ export default function PlaceOrderCard({
                         setError("");
                     }}
                     placeholder="Enter quantity"
+                    error={error}
                 />
 
                 <div className="place-order-card__estimate">
@@ -153,23 +149,17 @@ export default function PlaceOrderCard({
                     <strong>{formattedTotal}</strong>
                 </div>
 
-                {error && (
-                    <p className="place-order-card__error">
-                        {error}
-                    </p>
-                )}
-
-                <button
+                <Button
                     type="submit"
-                    className={`place-order-card__submit ${
-                        isBuy ? "buy" : "sell"
-                    }`}
-                    disabled={isSubmitting}
+                    block
+                    size="lg"
+                    variant={isBuy ? "success" : "danger"}
+                    loading={isSubmitting}
                 >
                     {isSubmitting
-                        ? "Processing..."
+                        ? "Placing order"
                         : `Place ${isBuy ? "Buy" : "Sell"} Order`}
-                </button>
+                </Button>
             </form>
 
             <p className="place-order-card__note">

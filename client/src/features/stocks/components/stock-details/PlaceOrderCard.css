@@ -39,93 +39,6 @@
 }
 
 /* ==========================================
-   Buy / Sell Tabs
-========================================== */
-
-.place-order-card__tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin-bottom: 20px;
-  padding: 4px;
-  background: var(--color-surface-subtle);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-}
-
-.place-order-card__tabs button {
-  padding: 10px 12px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--color-text-secondary);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.place-order-card__tabs button:hover {
-  background: var(--color-surface-subtle);
-}
-
-.place-order-card__tabs button.active.buy {
-  background: var(--color-success);
-  color: var(--color-on-solid);
-  box-shadow: 0 2px 5px var(--color-success-tint);
-}
-
-.place-order-card__tabs button.active.sell {
-  background: var(--color-danger);
-  color: var(--color-on-solid);
-  box-shadow: 0 2px 5px var(--color-danger-tint);
-}
-
-/* ==========================================
-   Quantity Input
-========================================== */
-
-.place-order-card form {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-
-.place-order-card form label {
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.place-order-card input[type="number"] {
-  width: 100%;
-  min-height: 42px;
-  padding: 10px 12px;
-  box-sizing: border-box;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  font-size: 14px;
-  outline: none;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.place-order-card input[type="number"]::placeholder {
-  color: var(--color-text-muted);
-}
-
-.place-order-card input[type="number"]:focus {
-  border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 3px var(--color-primary-tint);
-}
-
-/* ==========================================
    Estimated Total
 ========================================== */
 
@@ -152,65 +65,8 @@
 }
 
 /* ==========================================
-   Submit Button
-========================================== */
-
-.place-order-card__submit {
-  width: 100%;
-  min-height: 42px;
-  margin-top: 5px;
-  padding: 11px 14px;
-  border: none;
-  border-radius: 8px;
-  color: var(--color-on-solid);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease,
-    opacity 0.2s ease;
-}
-
-.place-order-card__submit.buy {
-  background: var(--color-success);
-}
-
-.place-order-card__submit.buy:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-success) 85%, black);
-}
-
-.place-order-card__submit.sell {
-  background: var(--color-danger);
-}
-
-.place-order-card__submit.sell:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-danger) 85%, black);
-}
-
-.place-order-card__submit:active:not(:disabled) {
-  transform: scale(0.99);
-}
-
-.place-order-card__submit:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-/* ==========================================
    Error and Note
 ========================================== */
-
-.place-order-card__error {
-  margin: 4px 0;
-  padding: 10px 12px;
-  border: 1px solid var(--color-danger-border);
-  border-radius: 7px;
-  background: var(--color-danger-tint);
-  color: var(--color-danger);
-  font-size: 13px;
-  line-height: 1.5;
-}
 
 .place-order-card__note {
   margin: 14px 0 0;
@@ -302,4 +158,9 @@
   background: var(--color-danger-tint);
   color: var(--color-danger);
   font-size: var(--font-size-sm);
+}
+
+/* Space between the Buy / Sell control and the form */
+.place-order-card > .segmented {
+  margin-bottom: var(--space-4);
 }
