@@ -236,3 +236,70 @@
     font-size: 18px;
   }
 }
+/* ==========================================
+   Order dialog (confirm and success views)
+========================================== */
+
+.order-confirmation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.order-confirmation p {
+  margin: 0;
+  color: var(--color-text-body);
+  line-height: 1.6;
+}
+
+.order-confirmation strong {
+  color: var(--color-text-primary);
+}
+
+/* Label on the left, figure on the right (also used by the success view) */
+.order-confirmation__rows {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-subtle);
+}
+
+.order-confirmation__rows > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+.order-confirmation__rows > div + div {
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.order-confirmation__rows dt {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.order-confirmation__rows dd {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.order-confirmation .order-confirmation__note {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.order-confirmation .order-confirmation__error {
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--color-danger-border);
+  border-radius: var(--radius-md);
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+}

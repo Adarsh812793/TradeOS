@@ -11,6 +11,7 @@ import Input from "../../components/ui/Input.jsx";
 import LoadingSpinner from "../../components/ui/LoadingSpinner.jsx";
 import Modal from "../../components/ui/Modal.jsx";
 import Pagination from "../../components/ui/Pagination.jsx";
+import ResultState from "../../components/ui/ResultState.jsx";
 import Select from "../../components/ui/Select.jsx";
 
 import "./UiGalleryPage.css";
@@ -27,7 +28,7 @@ function Section({ id, title, note, children }) {
 }
 
 export default function UiGalleryPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [dialog, setDialog] = useState(null); // null | "confirm" | "success" | "error"
   const [page, setPage] = useState(3);
   const [exchange, setExchange] = useState("all");
 
@@ -126,20 +127,42 @@ export default function UiGalleryPage() {
         <Card padding="lg" shadow>Large padding with shadow</Card>
       </Section>
 
-      <Section id="modal" title="Modal">
-        <Button onClick={() => setIsModalOpen(true)}>Open dialog</Button>
+      <Section id="result" title="ResultState" note="Animated tick for success, cross for failure. Used in the order dialog.">
+        <Card padding="lg">
+          <ResultState kind="success" title="Bought 2 × RELIANCE" description="Your order was executed." />
+        </Card>
+        <Card padding="lg">
+          <ResultState kind="error" title="Order failed" description="Insufficient wallet balance." />
+        </Card>
+      </Section>
+
+      <Section id="modal" title="Modal" note="Focus moves in, Tab stays inside, Esc closes, focus returns.">
+        <Button onClick={() => setDialog("confirm")}>Open dialog</Button>
+        <Button variant="secondary" onClick={() => setDialog("success")}>Success view</Button>
+        <Button variant="secondary" onClick={() => setDialog("error")}>Error view</Button>
         <Modal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          title="Confirm buy order"
+          isOpen={dialog !== null}
+          onClose={() => setDialog(null)}
+          size="sm"
+          title={dialog === "confirm" ? "Confirm buy order" : dialog === "success" ? "Order placed" : "Order failed"}
           footer={
             <>
-              <Button variant="secondary" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-              <Button onClick={() => setIsModalOpen(false)}>Confirm order</Button>
+              <Button variant="secondary" onClick={() => setDialog(null)}>
+                {dialog === "confirm" ? "Cancel" : "Close"}
+              </Button>
+              {dialog === "confirm" && (
+                <Button variant="success" onClick={() => setDialog("success")}>Confirm order</Button>
+              )}
             </>
           }
         >
-          <p>You are about to buy 2 shares of RELIANCE.</p>
+          {dialog === "confirm" && <p>You are about to buy 2 shares of RELIANCE.</p>}
+          {dialog === "success" && (
+            <ResultState kind="success" title="Bought 2 × RELIANCE" description="Your order was executed." />
+          )}
+          {dialog === "error" && (
+            <ResultState kind="error" title="Order failed" description="Insufficient wallet balance." />
+          )}
         </Modal>
       </Section>
 

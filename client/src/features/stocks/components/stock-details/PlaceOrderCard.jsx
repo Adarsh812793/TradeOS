@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Modal from "../../../../components/ui/Modal.jsx";
 import Button from "../../../../components/ui/Button.jsx";
+import ResultState from "../../../../components/ui/ResultState.jsx";
 
 import { formatCurrency } from "../../../../utils/currency.utils.js";
 import "./PlaceOrderCard.css";
@@ -18,6 +20,9 @@ export default function PlaceOrderCard({
     const [quantity, setQuantity] = useState("1");
     const [error, setError] = useState("");
     const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+    const [orderResult, setOrderResult] = useState(null); // set when the order went through (drives the success view)
+    const [orderError, setOrderError] = useState(""); // shown inside the dialog when the order fails
+    const navigate = useNavigate();
 
     // ==========================================
     // 2. Derived values
@@ -54,24 +59,46 @@ export default function PlaceOrderCard({
     // 4. Confirm order
     // ==========================================
     const handleConfirmOrder = async () => {
-        setError("");
+        setOrderError("");
 
         try {
-            await onSubmit({
+            const response = await onSubmit({
                 stockId: stock._id,
                 quantity: numericQuantity,
                 ordertype: selectedOrderType,
             });
 
-            // Close modal after successful order
-            setIsConfirmationOpen(false);
+            // Keep the dialog open and switch it to the success view, with the figures the server confirmed
+            setOrderResult({
+                wasBuy: isBuy,
+                quantity: numericQuantity,
+                symbol: stock.symbol,
+                total: response?.data?.order?.totalValue ?? estimatedTotal,
+                walletBalance: response?.data?.walletBalance,
+            });
 
             // Reset quantity after successful order
             setQuantity("1");
         } catch (err) {
-            setError(err.message || "Unable to place order.");
+            // The dialog is still open, so the error must show inside it (the form behind the overlay is not visible)
+            setOrderError(err.message || "Unable to place order.");
         }
     };
+
+    // Closes the dialog and clears its success / error state
+    const closeConfirmation = () => {
+        setIsConfirmationOpen(false);
+        setOrderResult(null);
+        setOrderError("");
+    };
+
+    // After a successful order: close the dialog and open the orders list
+    const viewOrders = () => {
+        closeConfirmation();
+        navigate("/orders");
+    };
+
+    const currency = stock?.currency || "INR";
 
     // ==========================================
     // 5. Render
@@ -157,42 +184,91 @@ export default function PlaceOrderCard({
             {/* ========================================== */}
             <Modal
                 isOpen={isConfirmationOpen}
-                onClose={() => setIsConfirmationOpen(false)}
-                title={`Confirm ${isBuy ? "Buy" : "Sell"} Order`}
+                onClose={closeConfirmation}
+                size="sm"
+                closeOnOverlayClick={!isSubmitting}
+                closeOnEscape={!isSubmitting}
+                title={
+                    orderResult
+                        ? "Order placed"
+                        : `Confirm ${isBuy ? "Buy" : "Sell"} Order`
+                }
                 footer={
-                    <>
-                        <Button
-                            variant="secondary"
-                            onClick={() => setIsConfirmationOpen(false)}
-                        >
-                            Cancel
-                        </Button>
+                    orderResult ? (
+                        <>
+                            <Button variant="secondary" onClick={viewOrders}>
+                                View orders
+                            </Button>
 
-                        <Button
-                            onClick={handleConfirmOrder}
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? "Processing..." : "Confirm Order"}
-                        </Button>
-                    </>
+                            <Button onClick={closeConfirmation}>Done</Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button
+                                variant="secondary"
+                                onClick={closeConfirmation}
+                                disabled={isSubmitting}
+                            >
+                                Cancel
+                            </Button>
+
+                            <Button
+                                variant={isBuy ? "success" : "danger"}
+                                onClick={handleConfirmOrder}
+                                loading={isSubmitting}
+                            >
+                                {isSubmitting ? "Placing order" : "Confirm Order"}
+                            </Button>
+                        </>
+                    )
                 }
             >
-                <div className="order-confirmation">
-                    <p>
-                        You are about to {isBuy ? "buy" : "sell"}{" "}
-                        <strong>{numericQuantity}</strong> shares of{" "}
-                        <strong>{stock.symbol}</strong>.
-                    </p>
+                {orderResult ? (
+                    <ResultState
+                        kind="success"
+                        title={`${orderResult.wasBuy ? "Bought" : "Sold"} ${orderResult.quantity} \u00d7 ${orderResult.symbol}`}
+                        description="Your order was executed."
+                    >
+                        <dl className="order-confirmation__rows">
+                            <div>
+                                <dt>{orderResult.wasBuy ? "Total cost" : "Total proceeds"}</dt>
+                                <dd>{formatCurrency(orderResult.total, currency)}</dd>
+                            </div>
 
-                    <div className="order-confirmation__total">
-                        <span>Estimated {isBuy ? "Cost" : "Proceeds"}</span>
-                        <strong>{formattedTotal}</strong>
+                            {orderResult.walletBalance !== undefined && (
+                                <div>
+                                    <dt>Wallet balance</dt>
+                                    <dd>{formatCurrency(orderResult.walletBalance, currency)}</dd>
+                                </div>
+                            )}
+                        </dl>
+                    </ResultState>
+                ) : (
+                    <div className="order-confirmation">
+                        <p>
+                            You are about to {isBuy ? "buy" : "sell"}{" "}
+                            <strong>{numericQuantity}</strong> shares of{" "}
+                            <strong>{stock.symbol}</strong>.
+                        </p>
+
+                        <dl className="order-confirmation__rows">
+                            <div>
+                                <dt>Estimated {isBuy ? "Cost" : "Proceeds"}</dt>
+                                <dd>{formattedTotal}</dd>
+                            </div>
+                        </dl>
+
+                        <p className="order-confirmation__note">
+                            The final execution price and total will be determined by the server.
+                        </p>
+
+                        {orderError && (
+                            <p className="order-confirmation__error" role="alert">
+                                {orderError}
+                            </p>
+                        )}
                     </div>
-
-                    <p className="order-confirmation__note">
-                        The final execution price and total will be determined by the server.
-                    </p>
-                </div>
+                )}
             </Modal>
 
         </section>

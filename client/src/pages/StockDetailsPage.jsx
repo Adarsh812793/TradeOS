@@ -34,7 +34,6 @@ export default function StockDetailsPage() {
     searchParams.get("action") === "sell" ? "sell" : "buy"
   );
   const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
-  const [orderSuccess, setOrderSuccess] = useState("");
 
   //watchlist associated state variables
   const [isInWatchlist, setIsInWatchlist] = useState(false);
@@ -119,7 +118,6 @@ export default function StockDetailsPage() {
   const handlePlaceOrder = useCallback(
     async ({ stockId, quantity, orderType }) => {
       setIsSubmittingOrder(true);
-      setOrderSuccess("");
 
       try {
         const createOrder =
@@ -129,10 +127,6 @@ export default function StockDetailsPage() {
           stockId,
           quantity,
         });
-
-        setOrderSuccess(
-          response?.message || `${orderType} order placed successfully.`
-        );
 
         refreshNotifications();
 
@@ -238,13 +232,6 @@ return (
     {watchlistError && (
       <p className="stock-details-page__error" role="alert">
         {watchlistError}
-      </p>
-    )}
-
-    {/* Order success message */}
-    {orderSuccess && (
-      <p className="stock-details-page__success">
-        {orderSuccess}
       </p>
     )}
   </div>
