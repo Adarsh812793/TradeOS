@@ -2,7 +2,11 @@
 // Page buttons for any list that comes from a paginated API
 // (`pagination` is the object the backend returns: page, limit, totalItems, totalPages, hasNextPage, hasPreviousPage).
 // `itemLabel` is the word used in "Showing 1–8 of 19 orders".
+// Long lists are shortened with dots: 1 … 16 17 18 … 34, so the buttons never overflow the screen.
 
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+import { getPageItems } from "./pagination.utils.js";
 import "./Pagination.css";
 
 export default function Pagination({
@@ -24,15 +28,6 @@ export default function Pagination({
   const startItem = (page - 1) * limit + 1;
   const endItem = Math.min(page * limit, totalItems);
 
-  // Page numbers around the current page
-  const visiblePages = [];
-  const first = Math.max(1, page - 2);
-  const last = Math.min(totalPages, page + 2);
-
-  for (let pageNumber = first; pageNumber <= last; pageNumber++) {
-    visiblePages.push(pageNumber);
-  }
-
   return (
     <nav className="pagination" aria-label="Pagination">
       <p className="pagination__info">
@@ -43,34 +38,43 @@ export default function Pagination({
       <div className="pagination__controls">
         <button
           type="button"
-          className="pagination__button"
+          className="pagination__button pagination__arrow"
           disabled={!hasPreviousPage}
           onClick={() => onPageChange(page - 1)}
+          aria-label="Previous page"
         >
-          Previous
+          <ChevronLeft size={18} aria-hidden="true" />
         </button>
 
-        {visiblePages.map((pageNumber) => (
-          <button
-            key={pageNumber}
-            type="button"
-            className={`pagination__button ${
-              pageNumber === page ? "pagination__button--active" : ""
-            }`}
-            onClick={() => onPageChange(pageNumber)}
-            aria-current={pageNumber === page ? "page" : undefined}
-          >
-            {pageNumber}
-          </button>
-        ))}
+        {getPageItems(page, totalPages).map((item) =>
+          typeof item === "string" ? (
+            <span key={item} className="pagination__gap" aria-hidden="true">
+              …
+            </span>
+          ) : (
+            <button
+              key={item}
+              type="button"
+              className={`pagination__button ${
+                item === page ? "pagination__button--active" : ""
+              }`}
+              onClick={() => onPageChange(item)}
+              aria-label={`Page ${item}`}
+              aria-current={item === page ? "page" : undefined}
+            >
+              {item}
+            </button>
+          )
+        )}
 
         <button
           type="button"
-          className="pagination__button"
+          className="pagination__button pagination__arrow"
           disabled={!hasNextPage}
           onClick={() => onPageChange(page + 1)}
+          aria-label="Next page"
         >
-          Next
+          <ChevronRight size={18} aria-hidden="true" />
         </button>
       </div>
     </nav>

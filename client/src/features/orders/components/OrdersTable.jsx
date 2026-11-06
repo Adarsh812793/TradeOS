@@ -1,4 +1,5 @@
 
+import Table from "../../../components/ui/Table.jsx";
 import OrderRow from "./OrderRow.jsx";
 import OrderCard from "./OrderCard.jsx";
 
@@ -14,18 +15,18 @@ export default function OrdersTable({
     <div className="orders-table-wrapper">
       {/* Desktop table */}
       <div className="orders-table-desktop">
-        <table className="orders-table">
+        <Table caption="Your orders">
           <thead>
             <tr>
               <th>#</th>
               <th>Stock</th>
               <th>Type</th>
-              <th>Quantity</th>
-              <th>Price</th>
-              <th>Total Value</th>
+              <th className="data-table__num">Quantity</th>
+              <th className="data-table__num">Price</th>
+              <th className="data-table__num">Total Value</th>
               <th>Status</th>
               <th>Date &amp; Time</th>
-              <th>Actions</th>
+              <th className="data-table__actions">Actions</th>
             </tr>
           </thead>
 
@@ -39,7 +40,7 @@ export default function OrdersTable({
               />
             ))}
           </tbody>
-        </table>
+        </Table>
       </div>
 
       {/* Mobile cards */}

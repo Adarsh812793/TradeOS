@@ -7,6 +7,10 @@
 }
 
 /* Padding variants */
+.card--padding-none {
+  padding: 0;
+}
+
 .card--padding-sm {
   padding: var(--space-3);
 }

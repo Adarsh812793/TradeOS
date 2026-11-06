@@ -1,6 +1,8 @@
 
 import { Search } from "lucide-react";
 
+import Select from "../../../components/ui/Select.jsx";
+
 import "./StockFilters.css";
 
 // 1. Stock filters component
@@ -35,41 +37,32 @@ export default function StockFilters({
       </div>
 
       {/* 3. Filter by exchange */}
-      <div className="stock-filters__field">
-        <label htmlFor="stock-exchange">Exchange</label>
-
-        <select
-          id="stock-exchange"
-          value={selectedExchange}
-          onChange={(event) => onExchangeChange(event.target.value)}
-          className="stock-filters__select"
-        >
-          <option value="all">All Exchanges</option>
-
-          {exchanges.map((exchange) => (
-            <option key={exchange} value={exchange}>
-              {exchange}
-            </option>
-          ))}
-        </select>
-      </div>
+      <Select
+        className="stock-filters__field"
+        label="Exchange"
+        id="stock-exchange"
+        value={selectedExchange}
+        onChange={onExchangeChange}
+        options={[
+          { value: "all", label: "All Exchanges" },
+          ...exchanges.map((exchange) => ({ value: exchange, label: exchange })),
+        ]}
+      />
 
       {/* 4. Sort stocks */}
-      <div className="stock-filters__field">
-        <label htmlFor="stock-sort">Sort by</label>
-
-        <select
-          id="stock-sort"
-          value={sortBy}
-          onChange={(event) => onSortChange(event.target.value)}
-          className="stock-filters__select"
-        >
-          <option value="symbol-asc">Symbol (A–Z)</option>
-          <option value="symbol-desc">Symbol (Z–A)</option>
-          <option value="price-asc">Price (Low–High)</option>
-          <option value="price-desc">Price (High–Low)</option>
-        </select>
-      </div>
+      <Select
+        className="stock-filters__field"
+        label="Sort by"
+        id="stock-sort"
+        value={sortBy}
+        onChange={onSortChange}
+        options={[
+          { value: "symbol-asc", label: "Symbol (A–Z)" },
+          { value: "symbol-desc", label: "Symbol (Z–A)" },
+          { value: "price-asc", label: "Price (Low–High)" },
+          { value: "price-desc", label: "Price (High–Low)" },
+        ]}
+      />
     </section>
   );
 }

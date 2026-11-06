@@ -1,51 +1,4 @@
-/* Table is for wide screens; below 1100px the cards are shown instead (see the end of this file).
-   The wrapper still scrolls sideways as a safety net. */
-.holdings-table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  background: var(--color-surface);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-lg);
-}
-
-.holdings-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.holdings-table thead {
-  background: var(--color-surface-subtle);
-}
-
-.holdings-table th {
-  padding: var(--space-4);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-}
-
-.holdings-table td {
-  padding: var(--space-4);
-  border-top: var(--border-width) solid var(--color-border);
-  color: var(--color-text-body);
-  font-size: var(--font-size-sm);
-}
-
-.holdings-table tbody tr:hover {
-  background: var(--color-surface-subtle);
-}
-
-/* Numbers line up on the right, with equal-width digits */
-.holdings-table__num {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.holdings-table__actions {
-  text-align: right;
-}
+/* Wide screens show the table (components/ui/Table); below 1100px the cards are shown instead (end of this file). */
 
 /* Stock cell */
 .holding-stock {
@@ -87,19 +40,6 @@
 .holding-value {
   color: var(--color-text-primary) !important;
   font-weight: var(--font-weight-medium);
-}
-
-/* Profit / loss colours */
-.holding-pnl {
-  font-weight: var(--font-weight-medium);
-}
-
-.holding-pnl--profit {
-  color: var(--color-success) !important;
-}
-
-.holding-pnl--loss {
-  color: var(--color-danger) !important;
 }
 
 /* Buy / Sell links (reuse the base .btn look from Button.css) */

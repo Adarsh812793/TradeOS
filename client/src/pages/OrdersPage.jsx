@@ -8,6 +8,7 @@ import OrdersTable from "../features/orders/components/OrdersTable.jsx";
 import EmptyState from "../components/ui/EmptyState.jsx";
 import Pagination from "../components/ui/Pagination.jsx";
 import Modal from "../components/ui/Modal.jsx";
+import { SkeletonHeading, SkeletonRegion, SkeletonTable } from "../components/ui/Skeleton.jsx";
 
 import { formatCurrency } from "../utils/currency.utils.js";
 import { formatDateTime } from "../utils/date.utils.js";
@@ -28,7 +29,10 @@ export default function OrdersPage() {
   if (loading) {
     return (
       <section className="orders-page">
-        <p>Loading your orders...</p>
+        <SkeletonRegion label="Loading your orders">
+          <SkeletonHeading />
+          <SkeletonTable columns={9} rows={6} cardsBelow={768} />
+        </SkeletonRegion>
       </section>
     );
   }

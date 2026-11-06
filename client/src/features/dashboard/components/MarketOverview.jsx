@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { getMarketIndices } from "../dashboard.api.js";
 import { formatCurrency } from "../../../utils/currency.utils.js";
+import { SkeletonList, SkeletonRegion } from "../../../components/ui/Skeleton.jsx";
 import "./MarketOverview.css";
 
 /* 2. Format Quote Timestamp */
@@ -98,9 +99,9 @@ export default function MarketOverview() {
             </div>
 
             {loading && indices.length === 0 ? (
-                <div className="market-overview__status">
-                    Fetching market data...
-                </div>
+                <SkeletonRegion label="Loading market data">
+                    <SkeletonList rows={2} rowHeight={72} />
+                </SkeletonRegion>
             ) : error && indices.length === 0 ? (
                 <div className="market-overview__status market-overview__status--error">
                     <p>{error}</p>

@@ -13,6 +13,7 @@ import PlaceOrderCard from "../features/stocks/components/stock-details/PlaceOrd
 import StockPriceChart from "../features/stocks/components/stock-details/StockPriceChart.jsx"
 import CompanyInfo from "../features/stocks/components/stock-details/CompanyInfo.jsx";
 import StockPositionOrders from "../features/stocks/components/stock-details/StockPositionOrders.jsx";
+import StockDetailsSkeleton from "../features/stocks/components/stock-details/StockDetailsSkeleton.jsx";
 
 import "./StockDetailsPage.css"
 
@@ -34,7 +35,6 @@ export default function StockDetailsPage() {
     searchParams.get("action") === "sell" ? "sell" : "buy"
   );
   const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
-  const [orderSuccess, setOrderSuccess] = useState("");
 
   //watchlist associated state variables
   const [isInWatchlist, setIsInWatchlist] = useState(false);
@@ -119,7 +119,6 @@ export default function StockDetailsPage() {
   const handlePlaceOrder = useCallback(
     async ({ stockId, quantity, orderType }) => {
       setIsSubmittingOrder(true);
-      setOrderSuccess("");
 
       try {
         const createOrder =
@@ -129,10 +128,6 @@ export default function StockDetailsPage() {
           stockId,
           quantity,
         });
-
-        setOrderSuccess(
-          response?.message || `${orderType} order placed successfully.`
-        );
 
         refreshNotifications();
 
@@ -178,7 +173,7 @@ export default function StockDetailsPage() {
 
   // 6. Loading state
   if (loading) {
-    return <p>Loading stock details...</p>;
+    return <StockDetailsSkeleton />;
   }
 
   // 7. Error state
@@ -238,13 +233,6 @@ return (
     {watchlistError && (
       <p className="stock-details-page__error" role="alert">
         {watchlistError}
-      </p>
-    )}
-
-    {/* Order success message */}
-    {orderSuccess && (
-      <p className="stock-details-page__success">
-        {orderSuccess}
       </p>
     )}
   </div>

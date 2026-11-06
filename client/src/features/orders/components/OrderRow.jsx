@@ -33,13 +33,13 @@ export default function OrderRow({ order, index, onViewDetails }) {
         </Badge>
       </td>
 
-      <td>{order.quantity}</td>
+      <td className="data-table__num">{order.quantity}</td>
 
-      <td className="order-price">
+      <td className="data-table__num order-price">
         {formatCurrency(order.price, stock?.currency || "INR")}
       </td>
 
-      <td className="order-price">
+      <td className="data-table__num order-price">
         {formatCurrency(order.totalValue, stock?.currency || "INR")}
       </td>
 
@@ -51,9 +51,10 @@ export default function OrderRow({ order, index, onViewDetails }) {
 
       <td>{formatDateTime(order.createdAt)}</td>
 
-      <td>
+      <td className="data-table__actions">
         <Button
           variant="secondary"
+          size="sm"
           onClick={() => onViewDetails(order)}
         >
           Details

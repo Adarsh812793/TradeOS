@@ -7,7 +7,7 @@ import PortfolioValueChart from "../features/portfolio/components/PortfolioValue
 import HoldingsSection from "../features/portfolio/components/HoldingsSection.jsx";
 
 import Button from "../components/ui/Button.jsx";
-import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
+import { SkeletonHeading, SkeletonRegion, SkeletonStats, SkeletonTable } from "../components/ui/Skeleton.jsx";
 
 import "./PortfolioPage.css";
 
@@ -24,9 +24,11 @@ export default function PortfolioPage() {
     if (loading) {
         return (
             <section className="portfolio-page">
-                <div className="portfolio-page__loading">
-                    <LoadingSpinner label="Loading your portfolio..." />
-                </div>
+                <SkeletonRegion label="Loading your portfolio">
+                    <SkeletonHeading />
+                    <SkeletonStats count={4} />
+                    <SkeletonTable columns={9} rows={5} cardsBelow={1100} />
+                </SkeletonRegion>
             </section>
         );
     }

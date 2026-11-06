@@ -1,4 +1,6 @@
 import { useState } from "react";
+
+import SegmentedControl from "../../../../components/ui/SegmentedControl.jsx";
 import "./StockPriceChart.css";
 
 const timeRanges = ["1D", "1W", "1M", "3M", "1Y", "ALL"];
@@ -24,20 +26,13 @@ export default function PriceChart() {
 
       {/* Time range selectors */}
       <div className="price-chart__ranges">
-        {timeRanges.map((range) => (
-          <button
-            key={range}
-            type="button"
-            className={
-              selectedRange === range
-                ? "price-chart__range active"
-                : "price-chart__range"
-            }
-            onClick={() => setSelectedRange(range)}
-          >
-            {range}
-          </button>
-        ))}
+        <SegmentedControl
+          label="Time range"
+          size="sm"
+          value={selectedRange}
+          onChange={setSelectedRange}
+          options={timeRanges.map((range) => ({ value: range, label: range }))}
+        />
       </div>
 
       {/* Empty chart state */}

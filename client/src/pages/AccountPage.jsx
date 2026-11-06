@@ -16,7 +16,7 @@ import TradingAccountDetails from "../features/account/components/trading/Tradin
 import DeleteAccountPanel from "../features/account/components/danger/DeleteAccountPanel.jsx";
 
 import Button from "../components/ui/Button.jsx";
-import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
+import { SkeletonList, SkeletonRegion } from "../components/ui/Skeleton.jsx";
 
 import "./AccountPage.css";
 
@@ -34,9 +34,9 @@ export default function AccountPage() {
       </header>
 
       {loading && (
-        <div className="account-page__loading">
-          <LoadingSpinner label="Loading your account..." />
-        </div>
+        <SkeletonRegion label="Loading your account">
+          <SkeletonList rows={5} rowHeight={70} />
+        </SkeletonRegion>
       )}
 
       {!loading && error && (

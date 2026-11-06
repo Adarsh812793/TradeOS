@@ -46,7 +46,8 @@ Built: Indigo Desk tokens, self-hosted fonts, all 346 hard-coded colours replace
 Self-hosted fonts, Indigo Desk tokens with a proper type and spacing scale, replace hard-coded colours and font sizes, remove the Arial and `#f5f7fb` defaults in `index.css`, set the page title and favicon. **Done when** the whole app is dark, every page works, and no hex values remain outside `tokens.css`.
 *Learn:* design tokens, semantic versus raw colour names, type scales, colour contrast.
 
-### Phase 2. Shared components (`feature/ui-components`)
+### Phase 2. Shared components (`feature/ui-components`) - DONE 2026-11-06 (awaiting PR)
+Built: component gallery at `/dev/ui` (dev only); Button (variants by meaning, sizes, loading, block); Input (hint, ref, eye icon, dark autofill) and a new Select; Card, Badge, EmptyState restyled; Modal with focus handling and unique ids; ResultState (animated success tick) and the order success screen; one Pagination with page-number dots (fixes the Stocks sideways scroll); SegmentedControl; Table and PriceChange (first used on Holdings and Orders); Skeleton loading states on the main pages. Small fixes along the way: failed-order error was hidden behind the dialog overlay, the order dialog had no styling, the sign-up `block` warning, a `.orders-table` CSS clash, the Orders empty-state icon. Checked with screenshots, real order flows (buy, sell, failing order), keyboard tests, a delayed-API skeleton test on 8 pages x 2 widths, and the page-list logic for every list size to 60. Bundle: JS 572 kB to 579 kB, CSS 122 kB to 127 kB. Original scope:
 Restyle Button, Input, Card, Badge, Modal, Pagination, EmptyState and LoadingSpinner. Add Table, price-change and loading-skeleton components. **Done when** they are in use and every page still works.
 *Learn:* component APIs and variants, keeping props stable, focus states.
 
@@ -79,6 +80,11 @@ Motion, phone and tablet layouts, accessibility, performance, the full checklist
 *Learn:* motion principles, Lighthouse, keyboard testing.
 
 ## Findings carried to later phases
+
+- **Still on their own CSS (moved in the page phases):** `StockTable`, `StockCard`, `WatchlistTable`, `TransactionsTable` and `StockPositionOrders` have their own table styling and should move to `Table`; Stocks / Orders / Transactions cards share a look that could become one component. The holdings Buy / Sell links use a bare `.btn` class with their own colours (a `ButtonLink` could replace that).
+- **Layout:** the Holdings table needs about 1,000px of panel width; at a 1180px screen it scrolls inside its panel because the 240px sidebar leaves little room. The icon rail (Phase 3) fixes this.
+- **Stock page:** the header's Buy button is marigold (primary) while the order panel's Buy is green; decide in Phase 6 (green = buy).
+- **Tests:** the order quantity field relies on the browser's own `min` / `step` validation, so the app's "positive whole number" message only shows if the browser lets the submit through.
 
 - **Phase 2:** `<Button block>` passes `block` to the DOM and React warns ("non-boolean attribute"); make it a proper prop.
 - **Phase 3:** the Sidebar's collapse arrow button goes away with the icon rail; Login's "Forgot password?" links to a page that does not exist.

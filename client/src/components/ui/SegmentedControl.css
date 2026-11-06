@@ -1,0 +1,72 @@
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+}
+
+.segmented--fill {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  width: 100%;
+}
+
+.segmented__option {
+  min-width: 44px;
+  padding: var(--space-2) var(--space-3);
+
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.segmented--sm .segmented__option {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+}
+
+.segmented__option:hover:not(.segmented__option--selected) {
+  background: var(--color-surface-subtle);
+  color: var(--color-text-primary);
+}
+
+.segmented__option:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 1px;
+}
+
+/* The chosen option: marigold, or green / red for buy / sell */
+.segmented__option--selected {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.segmented__option--selected.segmented__option--success {
+  background: var(--color-success);
+  color: var(--color-on-solid);
+}
+
+.segmented__option--selected.segmented__option--danger {
+  background: var(--color-danger);
+  color: var(--color-on-solid);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segmented__option {
+    transition: none;
+  }
+}

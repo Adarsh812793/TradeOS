@@ -5,6 +5,7 @@ import {
   getPortfolio,
 } from "../dashboard.api.js";
 import { formatCurrency } from "../../../utils/currency.utils.js";
+import { SkeletonRegion, SkeletonStats } from "../../../components/ui/Skeleton.jsx";
 import "./AccountSummary.css";
 
 const formatPercentage = (value) => {
@@ -68,9 +69,9 @@ export default function AccountSummary() {
   if (loading) {
     return (
       <section className="account-summary">
-        <p className="account-summary__message">
-          Loading account summary...
-        </p>
+        <SkeletonRegion label="Loading account summary">
+          <SkeletonStats count={4} />
+        </SkeletonRegion>
       </section>
     );
   }

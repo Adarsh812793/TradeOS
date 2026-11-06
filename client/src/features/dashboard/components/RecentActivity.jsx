@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getRecentOrders } from "../dashboard.api.js";
 import { formatCurrency } from "../../../utils/currency.utils.js";
+import { SkeletonList, SkeletonRegion } from "../../../components/ui/Skeleton.jsx";
 import "./RecentActivity.css";
 
 // 2. Order Status Configuration
@@ -62,9 +63,9 @@ export default function RecentActivity() {
   if (loading) {
     return (
       <section className="recent-activity">
-        <p className="recent-activity__message">
-          Loading recent activity...
-        </p>
+        <SkeletonRegion label="Loading recent activity">
+          <SkeletonList rows={4} rowHeight={64} />
+        </SkeletonRegion>
       </section>
     );
   }

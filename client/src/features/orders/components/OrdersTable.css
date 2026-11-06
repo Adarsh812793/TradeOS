@@ -1,38 +1,6 @@
 .orders-table-wrapper {
   width: 100%;
-  overflow-x: auto;
-  background: var(--color-surface);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-lg);
-}
-
-.orders-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.orders-table thead {
-  background: var(--color-surface-subtle);
-}
-
-.orders-table th {
-  padding: var(--space-4);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-}
-
-.orders-table td {
-  padding: var(--space-4);
-  border-top: var(--border-width) solid var(--color-border);
-  color: var(--color-text-body);
-  font-size: var(--font-size-sm);
-}
-
-.orders-table tbody tr:hover {
-  background: var(--color-surface-subtle);
+  min-width: 0;
 }
 
 .order-stock {
@@ -54,12 +22,6 @@
 .order-price {
   color: var(--color-text-primary) !important;
   font-weight: var(--font-weight-medium);
-}
-
-@media (max-width: 768px) {
-  .orders-table {
-    min-width: 950px;
-  }
 }
 
 
