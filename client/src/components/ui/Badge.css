@@ -1,45 +1,53 @@
 
+/* A small status label. Squarer than a pill, like the labels on a trading screen. */
 .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  padding: 4px 8px;
-  border-radius: 999px;
+  padding: 2px var(--space-2);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-sm);
 
   font-family: var(--font-sans);
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  line-height: 1.4;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+  line-height: 1.5;
   white-space: nowrap;
 }
 
 /* Successful or completed state */
 .badge--success {
   background: var(--color-success-tint);
+  border-color: var(--color-success-border);
   color: var(--color-success);
 }
 
 /* Pending or awaiting action */
 .badge--warning {
   background: var(--color-warning-tint);
+  border-color: var(--color-warning-border);
   color: var(--color-warning);
 }
 
 /* Failed, rejected, or negative state */
 .badge--danger {
   background: var(--color-danger-tint);
+  border-color: var(--color-danger-border);
   color: var(--color-danger);
 }
 
 /* Default or unspecified state */
 .badge--neutral {
   background: var(--color-surface-subtle);
+  border-color: var(--color-border);
   color: var(--color-text-secondary);
 }
 
 /* Informational state */
 .badge--info {
   background: var(--color-info-tint);
+  border-color: var(--color-info-border);
   color: var(--color-info);
 }

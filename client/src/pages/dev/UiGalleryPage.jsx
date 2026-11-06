@@ -120,6 +120,7 @@ export default function UiGalleryPage() {
       </Section>
 
       <Section id="cards" title="Card" note="Padding sm, md, lg and with shadow.">
+        <Card padding="none">No padding</Card>
         <Card padding="sm">Small padding</Card>
         <Card padding="md">Medium padding</Card>
         <Card padding="lg" shadow>Large padding with shadow</Card>
@@ -148,7 +149,7 @@ export default function UiGalleryPage() {
         </div>
       </Section>
 
-      <Section id="empty" title="EmptyState">
+      <Section id="empty" title="EmptyState" note="Icons: orders, portfolio, watchlist, transactions, search.">
         <div className="ui-gallery__wide">
           <EmptyState
             title="No orders yet"
@@ -158,6 +159,9 @@ export default function UiGalleryPage() {
             onAction={() => {}}
           />
         </div>
+        <EmptyState title="Your watchlist is empty" icon="watchlist" />
+        <EmptyState title="No holdings yet" icon="portfolio" />
+        <EmptyState title="No transactions" icon="transactions" />
       </Section>
 
       <Section id="spinner" title="LoadingSpinner">

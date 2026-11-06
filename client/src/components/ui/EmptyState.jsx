@@ -1,15 +1,26 @@
 //What to show if user has no orders,transactions or other stuff at the very start when accout is created
 
+import {
+  BriefcaseBusiness,
+  ClipboardList,
+  Eye,
+  ReceiptText,
+  Search,
+} from "lucide-react";
+
 import Button from "./Button.jsx";
 import "./EmptyState.css";
 
+// The icon for each kind of empty list
 const iconMap = {
-  orders: "file-text",
-  portfolio: "chart-no-axes-combined",
-  watchlist: "bookmark",
-  search: "search",
+  orders: ClipboardList,
+  portfolio: BriefcaseBusiness,
+  watchlist: Eye,
+  transactions: ReceiptText,
+  search: Search,
 };
 
+// A friendly "nothing here yet" panel with an optional action button.
 export default function EmptyState({
   title,
   description,
@@ -17,17 +28,12 @@ export default function EmptyState({
   actionLabel,
   onAction,
 }) {
-  const iconName = iconMap[icon] ?? iconMap.search;
+  const Icon = iconMap[icon] ?? iconMap.search;
 
   return (
     <div className="empty-state">
       <div className="empty-state__icon" aria-hidden="true">
-        <span className={`empty-state__symbol empty-state__symbol--${icon}`}>
-          {iconName === "file-text" && "▤"}
-          {iconName === "chart-no-axes-combined" && "↗"}
-          {iconName === "bookmark" && "♡"}
-          {iconName === "search" && "⌕"}
-        </span>
+        <Icon size={26} strokeWidth={1.6} />
       </div>
 
       <h2 className="empty-state__title">{title}</h2>
