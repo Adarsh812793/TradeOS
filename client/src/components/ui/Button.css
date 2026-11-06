@@ -1,64 +1,152 @@
-
+/* Base shape. Colours come from the variants below, so a plain `.btn` (used by link-styled buttons)
+   only gets the shape, not a colour. */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
 
+  min-height: 38px;
   padding: var(--space-2) var(--space-4);
   border: var(--border-width) solid transparent;
   border-radius: var(--radius-md);
 
   font-family: var(--font-sans);
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+  white-space: nowrap;
 
   cursor: pointer;
   transition:
     background-color 150ms ease,
     border-color 150ms ease,
-    box-shadow 150ms ease;
+    color 150ms ease,
+    box-shadow 150ms ease,
+    transform 80ms ease;
 }
 
-/* Primary action */
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* Sizes */
+.btn--sm {
+  min-height: 30px;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+}
+
+.btn--lg {
+  min-height: 46px;
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--font-size-base);
+}
+
+.btn--block {
+  display: flex;
+  width: 100%;
+}
+
+/* Primary: the main action (marigold) */
 .btn--primary {
   background: var(--color-primary);
-  color: var(--color-surface);
+  color: var(--color-on-primary);
 }
 
 .btn--primary:hover:not(:disabled) {
   background: var(--color-primary-hover);
 }
 
-/* Secondary action */
+/* Secondary: neutral action */
 .btn--secondary {
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   color: var(--color-text-primary);
   border-color: var(--color-border);
 }
 
 .btn--secondary:hover:not(:disabled) {
-  background: var(--color-surface-subtle);
+  background: var(--color-surface-raised);
+  border-color: var(--color-border-strong);
 }
 
-/* Danger action */
+/* Ghost: quiet action, no box until hovered */
+.btn--ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: var(--color-surface-subtle);
+  color: var(--color-text-primary);
+}
+
+/* Success: buy (green means up / buy) */
+.btn--success {
+  background: var(--color-success);
+  color: var(--color-on-solid);
+}
+
+.btn--success:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-success) 86%, white);
+}
+
+/* Danger: sell and destructive actions (red means down / sell / delete) */
 .btn--danger {
   background: var(--color-danger);
-  color: var(--color-surface);
+  color: var(--color-on-solid);
 }
 
 .btn--danger:hover:not(:disabled) {
-  background: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 86%, white);
 }
 
 /* Disabled state */
 .btn:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Loading: keeps its size, shows a spinner, ignores clicks */
+.btn--loading {
+  cursor: progress;
+}
+
+.btn--loading:disabled {
+  opacity: 0.85;
+}
+
+.btn__spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 700ms linear infinite;
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Keyboard accessibility */
 .btn:focus-visible {
   outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: none;
+  }
+
+  .btn__spinner {
+    animation-duration: 1.6s;
+  }
 }

@@ -45,12 +45,21 @@ export default function UiGalleryPage() {
         <p>Every shared component in every state. Development only.</p>
       </header>
 
-      <Section id="buttons" title="Button" note="Variants, disabled.">
+      <Section id="buttons" title="Button" note="Variants by meaning (success = buy, danger = sell or delete), sizes, loading, full width.">
         <Button>Primary</Button>
         <Button variant="secondary">Secondary</Button>
-        <Button variant="danger">Danger</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button variant="success">Buy</Button>
+        <Button variant="danger">Sell</Button>
         <Button disabled>Disabled</Button>
         <Button variant="secondary" disabled>Disabled</Button>
+        <Button size="sm">Small</Button>
+        <Button size="lg">Large</Button>
+        <Button loading>Placing order</Button>
+        <Button variant="success" loading>Buying</Button>
+        <div className="ui-gallery__field">
+          <Button block>Full width</Button>
+        </div>
       </Section>
 
       <Section id="inputs" title="Input" note="Normal, with error, disabled, password.">
