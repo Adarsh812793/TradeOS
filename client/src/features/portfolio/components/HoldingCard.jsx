@@ -1,14 +1,14 @@
 
 import Badge from "../../../components/ui/Badge.jsx";
+import PriceChange from "../../../components/ui/PriceChange.jsx";
 import HoldingStock from "./HoldingStock.jsx";
 import HoldingActions from "./HoldingActions.jsx";
 
 import { formatCurrency } from "../../../utils/currency.utils.js";
 import {
-  formatSignedCurrency,
   formatSignedPercent,
   getPnlTone,
-} from "../utils/portfolio.utils.js";
+} from "../../../utils/change.utils.js";
 
 import "./HoldingCard.css";
 
@@ -24,7 +24,6 @@ const TONE_TO_BADGE = {
 export default function HoldingCard({ holding }) {
   const { stock } = holding;
 
-  const pnlTone = getPnlTone(holding.unrealizedPnL);
   const returnsTone = getPnlTone(holding.pnlPercentage);
 
   const details = [
@@ -35,8 +34,7 @@ export default function HoldingCard({ holding }) {
     { label: "Current Value", value: formatCurrency(holding.currentValue) },
     {
       label: "P&L",
-      value: formatSignedCurrency(holding.unrealizedPnL),
-      tone: pnlTone,
+      value: <PriceChange amount={holding.unrealizedPnL} />,
     },
   ];
 
@@ -51,12 +49,10 @@ export default function HoldingCard({ holding }) {
       </div>
 
       <div className="holding-card__details">
-        {details.map(({ label, value, tone }) => (
+        {details.map(({ label, value }) => (
           <div className="holding-card__item" key={label}>
             <span>{label}</span>
-            <strong className={tone ? `holding-pnl holding-pnl--${tone}` : ""}>
-              {value}
-            </strong>
+            <strong>{value}</strong>
           </div>
         ))}
       </div>

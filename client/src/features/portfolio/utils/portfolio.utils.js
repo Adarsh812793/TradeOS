@@ -1,35 +1,4 @@
 
-import { formatCurrency } from "../../../utils/currency.utils.js";
-
-// Rounds to 2 decimals first so tiny values like -0.001 show as 0.00, not -0.00
-function roundToTwoDecimals(value) {
-  return Math.round((Number(value) || 0) * 100) / 100;
-}
-
-// Used to pick the profit / loss / neutral colour
-export function getPnlTone(value) {
-  const rounded = roundToTwoDecimals(value);
-
-  if (rounded > 0) return "profit";
-  if (rounded < 0) return "loss";
-  return "neutral";
-}
-
-// +₹1,700.00 / -₹250.00 / ₹0.00
-export function formatSignedCurrency(value) {
-  const rounded = roundToTwoDecimals(value);
-  const sign = rounded > 0 ? "+" : rounded < 0 ? "-" : "";
-
-  return `${sign}${formatCurrency(Math.abs(rounded))}`;
-}
-
-// +7.23% / -2.10% / 0.00%
-export function formatSignedPercent(value) {
-  const rounded = roundToTwoDecimals(value);
-  const sign = rounded > 0 ? "+" : rounded < 0 ? "-" : "";
-
-  return `${sign}${Math.abs(rounded).toFixed(2)}%`;
-}
 
 // Today, 10:42 AM  /  01 Nov, 10:42 AM
 export function formatLastUpdated(date) {

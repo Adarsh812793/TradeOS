@@ -11,9 +11,11 @@ import Input from "../../components/ui/Input.jsx";
 import LoadingSpinner from "../../components/ui/LoadingSpinner.jsx";
 import Modal from "../../components/ui/Modal.jsx";
 import Pagination from "../../components/ui/Pagination.jsx";
+import PriceChange from "../../components/ui/PriceChange.jsx";
 import ResultState from "../../components/ui/ResultState.jsx";
 import SegmentedControl from "../../components/ui/SegmentedControl.jsx";
 import Select from "../../components/ui/Select.jsx";
+import Table from "../../components/ui/Table.jsx";
 
 import "./UiGalleryPage.css";
 
@@ -135,6 +137,48 @@ export default function UiGalleryPage() {
           onChange={setRange}
           options={["1D", "1W", "1M", "3M", "1Y", "ALL"].map((value) => ({ value, label: value }))}
         />
+      </Section>
+
+      <Section id="price-change" title="PriceChange" note="Sign and colour: green up, red down, grey at zero. Amount, percent or both, optional arrow.">
+        <PriceChange amount={1700} />
+        <PriceChange amount={-839.46} />
+        <PriceChange amount={0} />
+        <PriceChange percent={7.23} />
+        <PriceChange percent={-2.1} />
+        <PriceChange amount={1700} percent={7.23} arrow />
+        <PriceChange amount={-250} percent={-2.1} arrow />
+      </Section>
+
+      <Section id="table" title="Table" note="The shared frame: header row, dividers, numbers right-aligned in the mono font.">
+        <div className="ui-gallery__wide">
+          <Table caption="Example holdings" minWidth={520}>
+            <thead>
+              <tr>
+                <th>Stock</th>
+                <th className="data-table__num">Quantity</th>
+                <th className="data-table__num">Price</th>
+                <th className="data-table__num">P&amp;L</th>
+                <th className="data-table__actions">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>RELIANCE</td>
+                <td className="data-table__num">10</td>
+                <td className="data-table__num">₹2,520.00</td>
+                <td className="data-table__num"><PriceChange amount={1700} /></td>
+                <td className="data-table__actions"><Button size="sm" variant="secondary">Details</Button></td>
+              </tr>
+              <tr>
+                <td>SBIN</td>
+                <td className="data-table__num">15</td>
+                <td className="data-table__num">₹802.00</td>
+                <td className="data-table__num"><PriceChange amount={-336} /></td>
+                <td className="data-table__actions"><Button size="sm" variant="secondary">Details</Button></td>
+              </tr>
+            </tbody>
+          </Table>
+        </div>
       </Section>
 
       <Section id="badges" title="Badge">

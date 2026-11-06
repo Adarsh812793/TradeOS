@@ -1,0 +1,22 @@
+.price-change {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+
+  font-family: var(--font-mono);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.price-change--profit {
+  color: var(--color-success);
+}
+
+.price-change--loss {
+  color: var(--color-danger);
+}
+
+.price-change--neutral {
+  color: var(--color-text-secondary);
+}

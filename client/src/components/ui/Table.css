@@ -1,0 +1,70 @@
+/* A table panel: it scrolls sideways inside itself, never the page */
+.data-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* Hidden description for screen readers */
+.data-table__caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.data-table thead {
+  background: var(--color-surface-subtle);
+}
+
+.data-table th {
+  padding: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.data-table td {
+  padding: var(--space-3);
+  border-top: var(--border-width) solid var(--color-border-subtle);
+  color: var(--color-text-body);
+  font-size: var(--font-size-sm);
+}
+
+.data-table tbody tr:hover {
+  background: color-mix(in srgb, var(--color-surface-subtle) 55%, transparent);
+}
+
+/* Numbers line up on the right, with equal-width digits, in the mono font */
+.data-table .data-table__num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-13);
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table .data-table__actions {
+  text-align: right;
+}
+
+.data-table th:first-child,
+.data-table td:first-child {
+  padding-left: var(--space-4);
+}
+
+.data-table th:last-child,
+.data-table td:last-child {
+  padding-right: var(--space-4);
+}

@@ -13,7 +13,7 @@ import {
   formatSignedCurrency,
   formatSignedPercent,
   getPnlTone,
-} from "../utils/portfolio.utils.js";
+} from "../../../utils/change.utils.js";
 
 import "./PortfolioSummaryCards.css";
 
