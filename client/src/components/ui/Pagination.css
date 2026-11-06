@@ -35,11 +35,12 @@
   padding: 0 var(--space-3);
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-surface);
+  background: var(--color-surface-subtle);
   color: var(--color-text-primary);
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition:
     background 0.2s ease,
@@ -47,7 +48,22 @@
 }
 
 .pagination__button:hover:not(:disabled) {
-  background: var(--color-surface-subtle);
+  background: var(--color-surface-raised);
+  border-color: var(--color-border-strong);
+}
+
+/* Previous / next arrows: a square icon button */
+.pagination__arrow {
+  padding: 0;
+  width: 36px;
+}
+
+/* The dots where pages are skipped */
+.pagination__gap {
+  min-width: 20px;
+  color: var(--color-text-muted);
+  text-align: center;
+  user-select: none;
 }
 
 .pagination__button:focus-visible {
@@ -58,7 +74,8 @@
 .pagination__button--active {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: var(--color-surface);
+  color: var(--color-on-primary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .pagination__button--active:hover:not(:disabled) {
@@ -68,4 +85,17 @@
 .pagination__button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+/* Phones: the range text sits above the buttons, both centred */
+@media (max-width: 560px) {
+  .pagination {
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .pagination__controls {
+    justify-content: center;
+  }
 }
