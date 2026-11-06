@@ -54,32 +54,12 @@
   color: var(--color-text-secondary);
 }
 
-.holdings-toolbar__search-input:focus,
-.holdings-toolbar__select:focus {
+.holdings-toolbar__search-input:focus {
   outline: 2px solid var(--color-border-focus);
   outline-offset: 1px;
 }
 
-/* Sort */
-.holdings-toolbar__sort {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-}
-
-.holdings-toolbar__select {
-  height: 40px;
-  padding: 0 var(--space-3);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  font-family: var(--font-sans);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-}
+/* Sort is the shared Select component (components/ui/Select) */
 
 /* Phones: controls take the full width, search on its own row */
 @media (max-width: 600px) {
@@ -93,10 +73,5 @@
 
   .holdings-toolbar__sort {
     width: 100%;
-  }
-
-  .holdings-toolbar__select {
-    flex: 1;
-    min-width: 0;
   }
 }

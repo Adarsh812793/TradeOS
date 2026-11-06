@@ -11,6 +11,7 @@ import Input from "../../components/ui/Input.jsx";
 import LoadingSpinner from "../../components/ui/LoadingSpinner.jsx";
 import Modal from "../../components/ui/Modal.jsx";
 import Pagination from "../../components/ui/Pagination.jsx";
+import Select from "../../components/ui/Select.jsx";
 
 import "./UiGalleryPage.css";
 
@@ -28,6 +29,7 @@ function Section({ id, title, note, children }) {
 export default function UiGalleryPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(3);
+  const [exchange, setExchange] = useState("all");
 
   const pagination = {
     page,
@@ -74,6 +76,38 @@ export default function UiGalleryPage() {
         </div>
         <div className="ui-gallery__field">
           <Input label="Password" name="gallery-password" type="password" placeholder="Enter your password" />
+        </div>
+        <div className="ui-gallery__field">
+          <Input label="Quantity" name="gallery-hint" placeholder="Enter quantity" hint="Whole numbers only" />
+        </div>
+      </Section>
+
+      <Section id="selects" title="Select" note="Stacked label and inline label.">
+        <div className="ui-gallery__field">
+          <Select
+            label="Exchange"
+            id="gallery-exchange"
+            value={exchange}
+            onChange={setExchange}
+            options={[
+              { value: "all", label: "All Exchanges" },
+              { value: "NSE", label: "NSE" },
+              { value: "BSE", label: "BSE" },
+            ]}
+          />
+        </div>
+        <div className="ui-gallery__field">
+          <Select
+            inline
+            label="Sort by"
+            id="gallery-sort"
+            value={exchange}
+            onChange={setExchange}
+            options={[
+              { value: "all", label: "Current value" },
+              { value: "NSE", label: "P&L" },
+            ]}
+          />
         </div>
       </Section>
 

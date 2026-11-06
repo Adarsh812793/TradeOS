@@ -13,6 +13,7 @@
   font-weight: var(--font-weight-medium);
 }
 
+/* Fields sit slightly darker than the panel they are on, like an inset slot */
 .form-field__input {
   width: 100%;
   min-height: 42px;
@@ -21,7 +22,7 @@
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-md);
 
-  background: var(--color-surface);
+  background: var(--color-background);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: var(--font-size-base);
@@ -33,7 +34,11 @@
 }
 
 .form-field__input::placeholder {
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
+}
+
+.form-field__input:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
 }
 
 .form-field__input:focus {
@@ -47,11 +52,22 @@
   opacity: 0.7;
 }
 
+/* Browser autofill would paint a light box on a dark page; keep it dark */
+.form-field__input:-webkit-autofill,
+.form-field__input:-webkit-autofill:hover,
+.form-field__input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-text-primary);
+  caret-color: var(--color-text-primary);
+  box-shadow: 0 0 0 1000px var(--color-background) inset;
+  transition: background-color 9999s ease-out 0s;
+}
+
 .form-field__input--error {
   border-color: var(--color-danger);
 }
 
 .form-field__input--error:focus {
+  border-color: var(--color-danger);
   box-shadow: 0 0 0 3px var(--color-danger-tint);
 }
 
@@ -61,7 +77,11 @@
   font-size: var(--font-size-xs);
 }
 
-/* Button for unhide hide password */
+.form-field__hint {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
 
 /* Input and password toggle positioning */
 .form-field__input-wrapper {
@@ -71,44 +91,54 @@
   width: 100%;
 }
 
-/* Reserve space for the toggle inside password fields */
 .form-field__input-wrapper .form-field__input {
   width: 100%;
   min-width: 0;
 }
 
-.form-field__input-wrapper .form-field__input[type="password"],
-.form-field__input-wrapper .form-field__input[type="text"] {
-  padding-right: 68px;
+/* Reserve space for the toggle inside password fields */
+.form-field__input--password {
+  padding-right: 44px;
 }
 
-/* Password visibility button inside the input */
+/* Password visibility button (eye icon) inside the input */
 .form-field__password-toggle {
   position: absolute;
-  right: 10px;
+  right: 6px;
   top: 50%;
   transform: translateY(-50%);
-  padding: 4px 6px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--color-text-secondary);
-  font: inherit;
-  font-size: 12px;
-  font-weight: 600;
   cursor: pointer;
 }
 
 .form-field__password-toggle:hover {
-  color: var(--color-primary);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-primary);
 }
 
 .form-field__password-toggle:focus-visible {
   outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
+  outline-offset: 1px;
 }
 
 .form-field__password-toggle:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-field__input {
+    transition: none;
+  }
 }

@@ -1,6 +1,8 @@
 
 import { Search } from "lucide-react";
 
+import Select from "../../../components/ui/Select.jsx";
+
 import { HOLDING_SORT_OPTIONS } from "../utils/portfolio.utils.js";
 
 import "./HoldingsToolbar.css";
@@ -46,21 +48,15 @@ export default function HoldingsToolbar({
             />
           </div>
 
-          <label className="holdings-toolbar__sort">
-            <span>Sort by</span>
-
-            <select
-              value={sortBy}
-              onChange={(event) => onSortChange(event.target.value)}
-              className="holdings-toolbar__select"
-            >
-              {HOLDING_SORT_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <Select
+            className="holdings-toolbar__sort"
+            inline
+            label="Sort by"
+            id="holdings-sort"
+            value={sortBy}
+            onChange={onSortChange}
+            options={HOLDING_SORT_OPTIONS}
+          />
         </div>
       )}
     </div>
