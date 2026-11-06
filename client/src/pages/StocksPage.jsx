@@ -8,6 +8,7 @@ import StockFilters from "../features/stocks/components/StockFilters.jsx";
 import StockTable from "../features/stocks/components/StockTable.jsx";
 import StockCard from "../features/stocks/components/StockCard.jsx";
 import Pagination from "../components/ui/Pagination.jsx";
+import { SkeletonRegion, SkeletonTable } from "../components/ui/Skeleton.jsx";
 import {filterAndSortStocks}from "../features/stocks/utils/stockFilters.utils.js"
 import {paginateItems,getTotalPages,} from "../features/stocks/utils/pagination.utils.js";
 
@@ -143,9 +144,9 @@ return (
 
     {/* 3. Loading state */}
     {loading ? (
-      <p className="stocks-page__status" role="status">
-        Loading stocks...
-      </p>
+      <SkeletonRegion label="Loading stocks">
+        <SkeletonTable columns={5} rows={8} cardsBelow={768} />
+      </SkeletonRegion>
     ) : error ? (
       <p className="stocks-page__error" role="alert">
         {error}

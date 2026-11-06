@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import watchlistApi from "../features/watchlist/watchlist.api";
 import WatchlistTable from "../features/watchlist/components/WatchlistTable";
+import { SkeletonHeading, SkeletonRegion, SkeletonTable } from "../components/ui/Skeleton.jsx";
 
 export default function WatchlistPage() {
   const [watchlist, setWatchlist] = useState([]);
@@ -43,7 +44,14 @@ export default function WatchlistPage() {
   }, []);
 
   if (loading) {
-    return <p>Loading your watchlist...</p>;
+    return (
+      <section className="watchlist-page">
+        <SkeletonRegion label="Loading your watchlist">
+          <SkeletonHeading />
+          <SkeletonTable columns={5} rows={5} />
+        </SkeletonRegion>
+      </section>
+    );
   }
 
   if (error) {

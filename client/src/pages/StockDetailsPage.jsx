@@ -13,6 +13,7 @@ import PlaceOrderCard from "../features/stocks/components/stock-details/PlaceOrd
 import StockPriceChart from "../features/stocks/components/stock-details/StockPriceChart.jsx"
 import CompanyInfo from "../features/stocks/components/stock-details/CompanyInfo.jsx";
 import StockPositionOrders from "../features/stocks/components/stock-details/StockPositionOrders.jsx";
+import StockDetailsSkeleton from "../features/stocks/components/stock-details/StockDetailsSkeleton.jsx";
 
 import "./StockDetailsPage.css"
 
@@ -172,7 +173,7 @@ export default function StockDetailsPage() {
 
   // 6. Loading state
   if (loading) {
-    return <p>Loading stock details...</p>;
+    return <StockDetailsSkeleton />;
   }
 
   // 7. Error state

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getWatchlist } from "../dashboard.api.js";
 import { formatCurrency } from "../../../utils/currency.utils.js";
+import { SkeletonList, SkeletonRegion } from "../../../components/ui/Skeleton.jsx";
 import "./WatchlistPreview.css";
 
 // 3. Watchlist Preview Component
@@ -55,9 +56,9 @@ export default function WatchlistPreview() {
   if (loading) {
     return (
       <section className="watchlist-preview">
-        <p className="watchlist-preview__message">
-          Loading watchlist...
-        </p>
+        <SkeletonRegion label="Loading watchlist">
+          <SkeletonList rows={3} rowHeight={64} />
+        </SkeletonRegion>
       </section>
     );
   }

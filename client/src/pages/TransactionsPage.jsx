@@ -7,7 +7,7 @@ import TransactionsTable from "../features/transactions/components/TransactionsT
 
 import Button from "../components/ui/Button.jsx";
 import EmptyState from "../components/ui/EmptyState.jsx";
-import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
+import { SkeletonHeading, SkeletonRegion, SkeletonTable } from "../components/ui/Skeleton.jsx";
 import Pagination from "../components/ui/Pagination.jsx";
 
 import "./TransactionsPage.css";
@@ -30,9 +30,10 @@ export default function TransactionsPage() {
   if (hasNothingToShow && loading) {
     return (
       <section className="transactions-page">
-        <div className="transactions-page__loading">
-          <LoadingSpinner label="Loading your transactions..." />
-        </div>
+        <SkeletonRegion label="Loading your transactions">
+          <SkeletonHeading />
+          <SkeletonTable columns={6} rows={8} cardsBelow={1000} />
+        </SkeletonRegion>
       </section>
     );
   }

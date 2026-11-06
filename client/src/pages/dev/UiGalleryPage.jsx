@@ -15,6 +15,7 @@ import PriceChange from "../../components/ui/PriceChange.jsx";
 import ResultState from "../../components/ui/ResultState.jsx";
 import SegmentedControl from "../../components/ui/SegmentedControl.jsx";
 import Select from "../../components/ui/Select.jsx";
+import Skeleton, { SkeletonList, SkeletonRegion, SkeletonStats, SkeletonTable } from "../../components/ui/Skeleton.jsx";
 import Table from "../../components/ui/Table.jsx";
 
 import "./UiGalleryPage.css";
@@ -259,6 +260,18 @@ export default function UiGalleryPage() {
       <Section id="spinner" title="LoadingSpinner">
         <LoadingSpinner label="Loading your portfolio..." />
         <LoadingSpinner size={40} label="Large" />
+      </Section>
+
+      <Section id="skeleton" title="Skeleton" note="Placeholders shown while a page loads: shapes, stat cards, list rows and a table. Shimmer stops for reduced motion.">
+        <Skeleton width={200} height={24} />
+        <Skeleton width={120} height={12} />
+        <div className="ui-gallery__wide">
+          <SkeletonRegion label="Loading example">
+            <SkeletonStats count={3} />
+            <SkeletonList rows={2} rowHeight={48} />
+            <SkeletonTable columns={5} rows={3} />
+          </SkeletonRegion>
+        </div>
       </Section>
 
       <Section id="avatar" title="Avatar">
