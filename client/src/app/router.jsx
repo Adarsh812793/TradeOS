@@ -68,6 +68,17 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // Component gallery: only exists in development (Vite removes this, and the page, from production builds)
+  ...(import.meta.env.DEV
+    ? [
+        {
+          path: "/dev/ui",
+          lazy: async () => ({
+            Component: (await import("../pages/dev/UiGalleryPage.jsx")).default,
+          }),
+        },
+      ]
+    : []),
   {
     path:"/login",
     element:<LoginPage></LoginPage>

@@ -1,0 +1,56 @@
+/* Development-only component gallery. Uses the same tokens as the app. */
+
+.ui-gallery {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4) var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  color: var(--color-text-body);
+}
+
+.ui-gallery__header h1 {
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-3xl);
+}
+
+.ui-gallery__header p,
+.ui-gallery__note {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.ui-gallery__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.ui-gallery__section h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+}
+
+.ui-gallery__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.ui-gallery__field {
+  width: 240px;
+  max-width: 100%;
+}
+
+.ui-gallery__wide {
+  width: 100%;
+  min-width: 0;
+}

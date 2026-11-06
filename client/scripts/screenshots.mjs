@@ -113,6 +113,11 @@ async function runViewport(browser, viewportName, viewport, stockId) {
   await shoot(page, "signup", viewportName);
   await page.goto(`${BASE}/definitely-not-a-page`);
   await shoot(page, "404", viewportName);
+  await attempt("gallery", async () => {
+    await page.goto(`${BASE}/dev/ui`); // development-only component gallery
+    await page.waitForSelector(".ui-gallery", { timeout: 5000 });
+    await shoot(page, "gallery", viewportName);
+  });
 
   // Log in through the real form
   await page.goto(`${BASE}/login`);

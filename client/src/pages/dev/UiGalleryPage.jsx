@@ -1,0 +1,132 @@
+// Development-only page (/dev/ui) that shows every shared component in every state on one screen.
+// It is not part of the production build. Open it while building or restyling a component.
+import { useState } from "react";
+
+import Avatar from "../../components/ui/Avatar.jsx";
+import Badge from "../../components/ui/Badge.jsx";
+import Button from "../../components/ui/Button.jsx";
+import Card from "../../components/ui/Card.jsx";
+import EmptyState from "../../components/ui/EmptyState.jsx";
+import Input from "../../components/ui/Input.jsx";
+import LoadingSpinner from "../../components/ui/LoadingSpinner.jsx";
+import Modal from "../../components/ui/Modal.jsx";
+import Pagination from "../../components/ui/Pagination.jsx";
+
+import "./UiGalleryPage.css";
+
+// One titled block of the gallery.
+function Section({ id, title, note, children }) {
+  return (
+    <section className="ui-gallery__section" id={id}>
+      <h2>{title}</h2>
+      {note && <p className="ui-gallery__note">{note}</p>}
+      <div className="ui-gallery__row">{children}</div>
+    </section>
+  );
+}
+
+export default function UiGalleryPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [page, setPage] = useState(3);
+
+  const pagination = {
+    page,
+    limit: 10,
+    totalItems: 338,
+    totalPages: 34,
+    hasNextPage: page < 34,
+    hasPreviousPage: page > 1,
+  };
+
+  return (
+    <main className="ui-gallery">
+      <header className="ui-gallery__header">
+        <h1>TradeOS components</h1>
+        <p>Every shared component in every state. Development only.</p>
+      </header>
+
+      <Section id="buttons" title="Button" note="Variants, disabled.">
+        <Button>Primary</Button>
+        <Button variant="secondary">Secondary</Button>
+        <Button variant="danger">Danger</Button>
+        <Button disabled>Disabled</Button>
+        <Button variant="secondary" disabled>Disabled</Button>
+      </Section>
+
+      <Section id="inputs" title="Input" note="Normal, with error, disabled, password.">
+        <div className="ui-gallery__field">
+          <Input label="Email" name="gallery-email" placeholder="you@example.com" required />
+        </div>
+        <div className="ui-gallery__field">
+          <Input label="Full name" name="gallery-name" value="Aarav Mehta" onChange={() => {}} error="Name must be at least 2 characters" />
+        </div>
+        <div className="ui-gallery__field">
+          <Input label="Disabled" name="gallery-disabled" value="Not editable" onChange={() => {}} disabled />
+        </div>
+        <div className="ui-gallery__field">
+          <Input label="Password" name="gallery-password" type="password" placeholder="Enter your password" />
+        </div>
+      </Section>
+
+      <Section id="badges" title="Badge">
+        <Badge variant="success">Executed</Badge>
+        <Badge variant="warning">Pending</Badge>
+        <Badge variant="danger">Rejected</Badge>
+        <Badge variant="info">Info</Badge>
+        <Badge>Neutral</Badge>
+      </Section>
+
+      <Section id="cards" title="Card" note="Padding sm, md, lg and with shadow.">
+        <Card padding="sm">Small padding</Card>
+        <Card padding="md">Medium padding</Card>
+        <Card padding="lg" shadow>Large padding with shadow</Card>
+      </Section>
+
+      <Section id="modal" title="Modal">
+        <Button onClick={() => setIsModalOpen(true)}>Open dialog</Button>
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title="Confirm buy order"
+          footer={
+            <>
+              <Button variant="secondary" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+              <Button onClick={() => setIsModalOpen(false)}>Confirm order</Button>
+            </>
+          }
+        >
+          <p>You are about to buy 2 shares of RELIANCE.</p>
+        </Modal>
+      </Section>
+
+      <Section id="pagination" title="Pagination" note="34 pages, to check long lists.">
+        <div className="ui-gallery__wide">
+          <Pagination pagination={pagination} onPageChange={setPage} itemLabel="stocks" />
+        </div>
+      </Section>
+
+      <Section id="empty" title="EmptyState">
+        <div className="ui-gallery__wide">
+          <EmptyState
+            title="No orders yet"
+            description="Your orders will appear here after you place your first trade."
+            icon="orders"
+            actionLabel="Browse stocks"
+            onAction={() => {}}
+          />
+        </div>
+      </Section>
+
+      <Section id="spinner" title="LoadingSpinner">
+        <LoadingSpinner label="Loading your portfolio..." />
+        <LoadingSpinner size={40} label="Large" />
+      </Section>
+
+      <Section id="avatar" title="Avatar">
+        <Avatar name="Aarav Mehta" size={48} />
+        <Avatar name="" size={48} />
+        <Avatar name="Sana" size={32} />
+      </Section>
+    </main>
+  );
+}
