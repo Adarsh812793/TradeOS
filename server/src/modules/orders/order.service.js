@@ -11,6 +11,7 @@ import { LOW_BALANCE_THRESHOLD } from "../notifications/notification.constants.j
 
 import AppError from "../../utils/AppError.js";
 import ERROR_CODES from "../../utils/errorCodes.js";
+import { assertMarketOpen } from "../market/market.status.js";
 import retryTransaction from "../../utils/retryTransaction.js";
 import { lineTotal, subtractMoney, addMoney, canAfford, roundRate } from "../../utils/money.js";
 
@@ -22,6 +23,9 @@ const runBuyOrder = async ({
     stockId,
     quantity
 }) => {
+
+    // Orders are only accepted while the market is open (the server decides, whatever the screen shows)
+    assertMarketOpen();
 
     // ==========================================
     // Start MongoDB transaction
@@ -292,6 +296,8 @@ const runSellOrder = async ({
     stockId,
     quantity
 }) => {
+
+    assertMarketOpen();
 
     // ==========================================
     // Start MongoDB transaction
