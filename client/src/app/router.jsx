@@ -3,97 +3,69 @@ import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "../features/auth/ProtectedRoute.jsx";
 
 import AppLayout from "../components/layout/AppLayout.jsx";
+import AppLoading from "../components/layout/AppLoading.jsx";
+import RouteError from "../components/layout/RouteError.jsx";
 import CurrentUserProvider from "../features/account/CurrentUserProvider.jsx";
 import NotificationsProvider from "../features/notifications/NotificationsProvider.jsx";
 
-import LoginPage from "../pages/LoginPage.jsx";
-import SignupPage from "../pages/SignupPage.jsx";
-import DashboardPage from "../pages/DashboardPage.jsx";
-import StocksPage from "../pages/StocksPage.jsx";
-import StockDetailsPage from "../pages/StockDetailsPage.jsx";
-import OrdersPage from "../pages/OrdersPage.jsx";
-import PortfolioPage from "../pages/PortfolioPage.jsx";
 import NotFoundPage from "../pages/NotFoundPage.jsx";
-import AccountPage from "../pages/AccountPage.jsx";
-import WatchlistPage from "../pages/WatchlistPage.jsx";
-import TransactionsPage from "../pages/TransactionsPage.jsx";
+
+// Every page is its own file that downloads only when the page is first opened, so the first visit (for example the
+// login page) does not have to download the whole app. While a page downloads, the current page stays on screen and
+// AppLayout shows a thin progress bar (React Router reports that as navigation.state === "loading").
+// Use it like:  { path: "/orders", ...page(() => import("../pages/OrdersPage.jsx")) }
+const page = (importPage) => ({
+  lazy: async () => ({ Component: (await importPage()).default }),
+});
 
 const router = createBrowserRouter([
   {
-    element: <ProtectedRoute />,
+    // Anything the routes below cannot handle themselves ends up on a friendly screen, never React Router's raw error page
+    errorElement: <RouteError fullPage />,
+    // Shown only while the very first page's code downloads (before any layout exists)
+    hydrateFallbackElement: <AppLoading />,
     children: [
       {
-        // The providers sit inside ProtectedRoute, so the profile is only loaded (and notifications only polled) for logged-in users
-        element: (
-          <CurrentUserProvider>
-            <NotificationsProvider>
-              <AppLayout />
-            </NotificationsProvider>
-          </CurrentUserProvider>
-        ),
+        element: <ProtectedRoute />,
         children: [
           {
-            path: "/dashboard",
-            element: <DashboardPage />,
-          },
-          {
-            path: "/stocks",
-            element: <StocksPage />,
-          },
-          {
-            path: "/stocks/:stockId",
-            element: <StockDetailsPage />,
-          },
-          {
-            path: "/orders",
-            element: <OrdersPage />,
-          },
-          {
-            path: "/portfolio",
-            element: <PortfolioPage />,
-          },
-          {
-            path: "/watchlist",
-            element: <WatchlistPage />,
-          },
-          {
-            path: "/transactions",
-            element: <TransactionsPage />,
-          },
-          {
-            path: "/account",
-            element: <AccountPage />,
+            // The providers sit inside ProtectedRoute, so the profile is only loaded (and notifications only polled) for logged-in users
+            element: (
+              <CurrentUserProvider>
+                <NotificationsProvider>
+                  <AppLayout />
+                </NotificationsProvider>
+              </CurrentUserProvider>
+            ),
+            children: [
+              {
+                // An error inside a page (a crash, or its code failing to download) replaces only the page:
+                // the navigation around it keeps working
+                errorElement: <RouteError />,
+                children: [
+                  { path: "/dashboard", ...page(() => import("../pages/DashboardPage.jsx")) },
+                  { path: "/stocks", ...page(() => import("../pages/StocksPage.jsx")) },
+                  { path: "/stocks/:stockId", ...page(() => import("../pages/StockDetailsPage.jsx")) },
+                  { path: "/orders", ...page(() => import("../pages/OrdersPage.jsx")) },
+                  { path: "/portfolio", ...page(() => import("../pages/PortfolioPage.jsx")) },
+                  { path: "/watchlist", ...page(() => import("../pages/WatchlistPage.jsx")) },
+                  { path: "/transactions", ...page(() => import("../pages/TransactionsPage.jsx")) },
+                  { path: "/account", ...page(() => import("../pages/AccountPage.jsx")) },
+                ],
+              },
+            ],
           },
         ],
       },
+      // Component gallery: only exists in development (Vite removes this, and the page, from production builds)
+      ...(import.meta.env.DEV
+        ? [{ path: "/dev/ui", ...page(() => import("../pages/dev/UiGalleryPage.jsx")) }]
+        : []),
+      { path: "/login", ...page(() => import("../pages/LoginPage.jsx")) },
+      { path: "/signup", ...page(() => import("../pages/SignupPage.jsx")) },
+      { path: "/", ...page(() => import("../pages/LoginPage.jsx")) },
+      { path: "*", element: <NotFoundPage /> },
     ],
-  },
-  // Component gallery: only exists in development (Vite removes this, and the page, from production builds)
-  ...(import.meta.env.DEV
-    ? [
-        {
-          path: "/dev/ui",
-          lazy: async () => ({
-            Component: (await import("../pages/dev/UiGalleryPage.jsx")).default,
-          }),
-        },
-      ]
-    : []),
-  {
-    path:"/login",
-    element:<LoginPage></LoginPage>
-  },
-  {
-    path:"/signup",
-    element:<SignupPage></SignupPage>
-  },
-  {
-    path:"/",
-    element:<LoginPage></LoginPage>
-  },
-  {
-    path: "*",
-    element: <NotFoundPage />,
   },
 ]);
 

@@ -60,3 +60,54 @@
     );
   }
 }
+
+/* Loading bar across the top of the screen while the next page downloads.
+   It stays invisible for the first 200ms, so fast navigation never flashes it. */
+.app-shell__progress {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1200;
+
+  height: 3px;
+  overflow: hidden;
+  opacity: 0;
+  animation: shell-progress-show 0s linear 200ms forwards;
+}
+
+.app-shell__progress::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: var(--color-primary);
+  border-radius: 0 3px 3px 0;
+  animation: shell-progress-slide 1.1s ease-in-out infinite;
+}
+
+@keyframes shell-progress-show {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shell-progress-slide {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(260%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell__progress::before {
+    width: 100%;
+    animation: none;
+    opacity: 0.6;
+  }
+}
