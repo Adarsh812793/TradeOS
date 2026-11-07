@@ -8,16 +8,28 @@ import { lineTotal, roundMoney, subtractMoney } from "../../utils/money.js";
 
 
 
-// I. Gets all stock data from db
+// Adds today's change (against the previous close) to a plain stock object: 0 until a previous close exists
+const withDayChange = (stock) => {
+    const hasPreviousClose = stock.previousClose > 0;
+    const dayChange = hasPreviousClose ? subtractMoney(stock.currentPrice, stock.previousClose) : 0;
+
+    return {
+        ...stock,
+        dayChange,
+        dayChangePercent: hasPreviousClose ? Number(((dayChange / stock.previousClose) * 100).toFixed(2)) : 0
+    };
+};
+
+// I. Gets all stock data from db (with today's change)
 const getAllStocks = async () => {
 
     const stocks = await Stock.find({
         isActive: true
     }).sort({
         symbol: 1
-    });
+    }).lean();
 
-    return stocks;
+    return stocks.map(withDayChange);
 };
 
 
@@ -27,13 +39,13 @@ const getStockById = async (stockId) => {
     const stock = await Stock.findOne({
         _id: stockId,
         isActive: true
-    });
+    }).lean();
 
     if (!stock) {
         throw new AppError("Stock not found",404,ERROR_CODES.STOCK_NOT_FOUND);
     }
 
-    return stock;
+    return withDayChange(stock);
 };
 
 // III. Gets user's position and recent orders for a stock
