@@ -35,13 +35,20 @@ export async function runPriceUpdate({ now = new Date(), provider = getPriceProv
   // Each 15-second slot may move a stock only once. The condition sits INSIDE the write, so if two job runs (this
   // process or another server) race, MongoDB lets exactly one of them through; the other matches nothing.
   const slotStart = new Date(Math.floor(now.getTime() / PRICE_UPDATE_INTERVAL_MS) * PRICE_UPDATE_INTERVAL_MS);
+  // A "last update" more than a minute in the FUTURE can only come from a run with a wrong clock. Treat it as stale,
+  // otherwise one bad clock would freeze that stock's price until real time caught up.
+  const tooFarAhead = new Date(now.getTime() + 60 * 1000);
 
   const results = await Promise.all(
     newPrices.map(({ stockId, price }) =>
       Stock.updateOne(
         {
           _id: stockId,
-          $or: [{ lastPriceUpdateAt: null }, { lastPriceUpdateAt: { $lt: slotStart } }],
+          $or: [
+            { lastPriceUpdateAt: null },
+            { lastPriceUpdateAt: { $lt: slotStart } },
+            { lastPriceUpdateAt: { $gt: tooFarAhead } },
+          ],
         },
         {
           $set: {

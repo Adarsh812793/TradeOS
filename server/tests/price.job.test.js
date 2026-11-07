@@ -124,6 +124,23 @@ describe("price service", () => {
         expect((await reload(stock)).currentPrice).toBe(1000.5);
     });
 
+    it("is not frozen by a last-update time in the future (a run with a wrong clock)", async () => {
+        const oneHourAhead = new Date(MONDAY_10_00.getTime() + 3600 * 1000);
+        await Stock.updateOne({ _id: stock._id }, { lastPriceUpdateAt: oneHourAhead });
+
+        const result = await runPriceUpdate({ now: MONDAY_10_00, provider: plusFifty, filter: only });
+
+        expect(result.updated).toBe(1);
+        expect((await reload(stock)).currentPrice).toBe(1000.5);
+    });
+
+    it("still refuses a second move in the same slot when the earlier update was just now (not in the future)", async () => {
+        await runPriceUpdate({ now: MONDAY_10_00, provider: plusFifty, filter: only });
+        const again = await runPriceUpdate({ now: plusSeconds(MONDAY_10_00, 10), provider: plusFifty, filter: only });
+
+        expect(again.updated).toBe(0);
+    });
+
     it("leaves inactive stocks alone", async () => {
         await Stock.updateOne({ _id: stock._id }, { isActive: false });
 
