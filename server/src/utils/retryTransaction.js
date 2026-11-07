@@ -2,6 +2,7 @@ import AppError from "./AppError.js";
 import ERROR_CODES from "./errorCodes.js";
 
 const MAX_ATTEMPTS = 8;
+const MAX_PAUSE_MS = 200;
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -12,7 +13,8 @@ const isRetryable = (error) =>
 
 // Runs `work` (a function that opens, uses and commits its OWN transaction) again when MongoDB aborts it for a
 // transient reason. Every attempt starts fresh, so it re-reads the latest data (including the current price).
-// A short random pause between attempts stops the competing requests from colliding in lockstep.
+// Between attempts it pauses for a random time that doubles each attempt up to a cap ("exponential backoff with full
+// jitter"): the randomness stops competing requests colliding in lockstep, and the growth gives a slow database room.
 export default async function retryTransaction(work) {
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
@@ -28,7 +30,7 @@ export default async function retryTransaction(work) {
         );
       }
 
-      await wait(Math.random() * 25 * attempt);
+      await wait(Math.random() * Math.min(MAX_PAUSE_MS, 20 * 2 ** attempt));
     }
   }
 }
