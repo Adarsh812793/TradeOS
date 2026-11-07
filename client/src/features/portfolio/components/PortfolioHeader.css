@@ -53,3 +53,7 @@
     font-size: var(--font-size-xl);
   }
 }
+
+.portfolio-header__market {
+  margin-top: var(--space-2);
+}

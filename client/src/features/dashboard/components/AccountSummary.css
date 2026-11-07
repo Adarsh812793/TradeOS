@@ -181,3 +181,7 @@
     font-size: 23px;
   }
 }
+
+.account-summary__market {
+  margin-top: 8px;
+}

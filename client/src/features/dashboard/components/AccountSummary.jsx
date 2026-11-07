@@ -5,11 +5,26 @@ import {
   getPortfolio,
 } from "../dashboard.api.js";
 import { formatCurrency } from "../../../utils/currency.utils.js";
+import useVisiblePolling from "../../../hooks/useVisiblePolling.js";
+import MarketStatusBadge from "../../market/components/MarketStatusBadge.jsx";
 import { SkeletonRegion, SkeletonStats } from "../../../components/ui/Skeleton.jsx";
 import "./AccountSummary.css";
 
 const formatPercentage = (value) => {
   return `${Number(value ?? 0).toFixed(2)}%`;
+};
+
+// Turns the wallet and portfolio answers into the four summary figures
+const buildSummary = (walletResponse, portfolioResponse) => {
+  const portfolioSummary = portfolioResponse.data.summary;
+
+  return {
+    walletBalance: walletResponse.data.balance,
+    investedAmount: portfolioSummary.totalInvestedValue,
+    currentValue: portfolioSummary.totalCurrentValue,
+    unrealizedPnL: portfolioSummary.totalUnrealizedPnL,
+    pnlPercentage: portfolioSummary.totalPnLPercentage,
+  };
 };
 
 // 2. Account Summary
@@ -34,17 +49,7 @@ export default function AccountSummary() {
 
         if (!isActive) return;
 
-        const wallet = walletResponse.data;
-        const portfolio = portfolioResponse.data;
-        const portfolioSummary = portfolio.summary;
-
-        setSummary({
-          walletBalance: wallet.balance,
-          investedAmount: portfolioSummary.totalInvestedValue,
-          currentValue: portfolioSummary.totalCurrentValue,
-          unrealizedPnL: portfolioSummary.totalUnrealizedPnL,
-          pnlPercentage: portfolioSummary.totalPnLPercentage,
-        });
+        setSummary(buildSummary(walletResponse, portfolioResponse));
       } catch (err) {
         if (isActive) {
           setError(
@@ -64,6 +69,16 @@ export default function AccountSummary() {
       isActive = false;
     };
   }, []);
+
+  // Profit and loss follow the prices: reload quietly every 30 s while the tab is visible (a failure keeps the figures)
+  useVisiblePolling(async () => {
+    try {
+      const [walletResponse, portfolioResponse] = await Promise.all([getWallet(), getPortfolio()]);
+      setSummary(buildSummary(walletResponse, portfolioResponse));
+    } catch {
+      /* keep showing the figures we have */
+    }
+  });
 
   // 3. Loading and Error States
   if (loading) {
@@ -136,6 +151,7 @@ export default function AccountSummary() {
           <p className="account-summary__subtitle">
             An overview of your virtual trading account
           </p>
+          <MarketStatusBadge className="account-summary__market" />
         </div>
       </div>
 

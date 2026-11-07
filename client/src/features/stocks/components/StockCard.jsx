@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Bookmark, ChevronRight } from "lucide-react";
 
 import { formatCurrency } from "../../../utils/currency.utils.js";
+import PriceChange from "../../../components/ui/PriceChange.jsx";
 import "./StockCard.css";
 
 // 2. Mobile stock card
@@ -41,6 +42,7 @@ export default function StockCard({
           <span className="stock-card__price">
             {formatCurrency(stock.currentPrice, stock.currency)}
           </span>
+          <PriceChange percent={stock.dayChangePercent} arrow />
           <span className="stock-card__exchange">
             {stock.exchange}
           </span>

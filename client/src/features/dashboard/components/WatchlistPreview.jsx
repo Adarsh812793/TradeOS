@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getWatchlist } from "../dashboard.api.js";
+import useVisiblePolling from "../../../hooks/useVisiblePolling.js";
 import { formatCurrency } from "../../../utils/currency.utils.js";
 import { SkeletonList, SkeletonRegion } from "../../../components/ui/Skeleton.jsx";
 import "./WatchlistPreview.css";
@@ -51,6 +52,16 @@ export default function WatchlistPreview() {
       isMounted = false;
     };
   }, [refreshKey]);
+
+  // Keep prices fresh: a quiet reload every 30 s while the tab is visible (a failure keeps the list as it is)
+  useVisiblePolling(async () => {
+    try {
+      const response = await getWatchlist();
+      setStocks(response.data);
+    } catch {
+      /* keep showing the list we have */
+    }
+  });
 
   // 3.2 Display loading and error states.
   if (loading) {

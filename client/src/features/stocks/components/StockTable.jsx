@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Bookmark, ChevronRight } from "lucide-react";
 
 import { formatCurrency } from "../../../utils/currency.utils.js";
+import PriceChange from "../../../components/ui/PriceChange.jsx";
 import "./StockTable.css";
 
 // 2. Stock table component
@@ -22,6 +23,9 @@ export default function StockTable({
             <th scope="col">Company</th>
             <th scope="col" className="stock-table__price-heading">
               Price
+            </th>
+            <th scope="col" className="stock-table__change-heading">
+              Today
             </th>
             <th scope="col" className="stock-table__exchange-heading">
               Exchange
@@ -58,6 +62,10 @@ export default function StockTable({
 
               <td className="stock-table__price">
                 {formatCurrency(stock.currentPrice, stock.currency)}
+              </td>
+
+              <td className="stock-table__change">
+                <PriceChange percent={stock.dayChangePercent} arrow />
               </td>
 
               <td className="stock-table__exchange">

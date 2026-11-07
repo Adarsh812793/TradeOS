@@ -7,6 +7,8 @@ import ResultState from "../../../../components/ui/ResultState.jsx";
 import SegmentedControl from "../../../../components/ui/SegmentedControl.jsx";
 
 import { formatCurrency } from "../../../../utils/currency.utils.js";
+import { formatDateTime } from "../../../../utils/date.utils.js";
+import useMarketStatus from "../../../market/useMarketStatus.js";
 import "./PlaceOrderCard.css";
 
 export default function PlaceOrderCard({
@@ -25,6 +27,8 @@ export default function PlaceOrderCard({
     const [orderResult, setOrderResult] = useState(null); // set when the order went through (drives the success view)
     const [orderError, setOrderError] = useState(""); // shown inside the dialog when the order fails
     const navigate = useNavigate();
+    const { status: marketStatus, refresh: refreshMarketStatus } = useMarketStatus();
+    const isMarketClosed = marketStatus?.isOpen === false;
 
     // ==========================================
     // 2. Derived values
@@ -47,6 +51,8 @@ export default function PlaceOrderCard({
     const handleSubmit = (event) => {
         event.preventDefault();
         setError("");
+
+        if (isMarketClosed) return; // the button is disabled too; the server refuses orders while closed anyway
 
         if (!Number.isInteger(numericQuantity) || numericQuantity <= 0) {
             setError("Quantity must be a positive whole number.");
@@ -76,6 +82,7 @@ export default function PlaceOrderCard({
                 quantity: numericQuantity,
                 symbol: stock.symbol,
                 total: response?.data?.order?.totalValue ?? estimatedTotal,
+                price: response?.data?.order?.price, // the price the server actually executed at
                 walletBalance: response?.data?.walletBalance,
             });
 
@@ -84,6 +91,8 @@ export default function PlaceOrderCard({
         } catch (err) {
             // The dialog is still open, so the error must show inside it (the form behind the overlay is not visible)
             setOrderError(err.message || "Unable to place order.");
+
+            if (err?.data?.errorCode === "MARKET_CLOSED") refreshMarketStatus();
         }
     };
 
@@ -149,22 +158,35 @@ export default function PlaceOrderCard({
                     <strong>{formattedTotal}</strong>
                 </div>
 
+                {isMarketClosed && (
+                    <p className="place-order-card__closed" role="status">
+                        <strong>The market is closed.</strong>{" "}
+                        {marketStatus.nextOpenAt
+                            ? `Orders open ${formatDateTime(marketStatus.nextOpenAt)}.`
+                            : "Orders are not accepted right now."}
+                    </p>
+                )}
+
                 <Button
                     type="submit"
                     block
                     size="lg"
                     variant={isBuy ? "success" : "danger"}
                     loading={isSubmitting}
+                    disabled={isMarketClosed}
                 >
                     {isSubmitting
                         ? "Placing order"
-                        : `Place ${isBuy ? "Buy" : "Sell"} Order`}
+                        : isMarketClosed
+                            ? "Market closed"
+                            : `Place ${isBuy ? "Buy" : "Sell"} Order`}
                 </Button>
             </form>
 
             <p className="place-order-card__note">
-                Orders are executed using the current stored stock price.
-                The final amount is confirmed by the server.
+                The total above is an estimate. Orders execute at the latest price when they reach the
+                server, which can differ slightly from the price shown here. The actual price is shown
+                once the order is placed.
             </p>
 
 
@@ -217,13 +239,20 @@ export default function PlaceOrderCard({
                     <ResultState
                         kind="success"
                         title={`${orderResult.wasBuy ? "Bought" : "Sold"} ${orderResult.quantity} \u00d7 ${orderResult.symbol}`}
-                        description="Your order was executed."
+                        description="Your order was executed at the latest price."
                     >
                         <dl className="order-confirmation__rows">
                             <div>
                                 <dt>{orderResult.wasBuy ? "Total cost" : "Total proceeds"}</dt>
                                 <dd>{formatCurrency(orderResult.total, currency)}</dd>
                             </div>
+
+                            {orderResult.price !== undefined && (
+                                <div>
+                                    <dt>Execution price</dt>
+                                    <dd>{formatCurrency(orderResult.price, currency)} per share</dd>
+                                </div>
+                            )}
 
                             {orderResult.walletBalance !== undefined && (
                                 <div>
@@ -249,7 +278,7 @@ export default function PlaceOrderCard({
                         </dl>
 
                         <p className="order-confirmation__note">
-                            The final execution price and total will be determined by the server.
+                            The execution price is the latest price when the server receives the order, so the final total can differ slightly from this estimate.
                         </p>
 
                         {orderError && (

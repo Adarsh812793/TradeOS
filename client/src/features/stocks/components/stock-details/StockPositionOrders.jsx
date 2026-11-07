@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import stocksApi from "../../stocks.api.js";
+import useVisiblePolling from "../../../../hooks/useVisiblePolling.js";
 
 import { formatCurrency } from "../../../../utils/currency.utils.js";
 import "./StockPositionOrders.css";
@@ -49,6 +50,17 @@ export default function StockPositionDetails({ stock }) {
             isMounted = false;
         };
     }, [stock._id]);
+
+    // Profit and loss follow the price: reload quietly every 30 s (no Loading flash; a failure keeps the old figures)
+    useVisiblePolling(async () => {
+        try {
+            const response = await stocksApi.getStockPosition(stock._id);
+            setPosition(response.data.position);
+            setRecentOrders(response.data.recentOrders);
+        } catch {
+            /* keep showing the figures we have */
+        }
+    });
 
     if (loading) {
         return (

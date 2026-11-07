@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
 import watchlistApi from "../features/watchlist/watchlist.api";
+import useVisiblePolling from "../hooks/useVisiblePolling.js";
+import MarketStatusBadge from "../features/market/components/MarketStatusBadge.jsx";
 import WatchlistTable from "../features/watchlist/components/WatchlistTable";
 import { SkeletonHeading, SkeletonRegion, SkeletonTable } from "../components/ui/Skeleton.jsx";
 
@@ -43,6 +45,16 @@ export default function WatchlistPage() {
     };
   }, []);
 
+  // Keep prices fresh: a quiet reload every 30 s while the tab is visible (a failure keeps the list as it is)
+  useVisiblePolling(async () => {
+    try {
+      const response = await watchlistApi.getUserWatchlist();
+      setWatchlist(response.data);
+    } catch {
+      /* keep showing the list we have */
+    }
+  });
+
   if (loading) {
     return (
       <section className="watchlist-page">
@@ -75,6 +87,7 @@ export default function WatchlistPage() {
         <div>
           <h1>My Watchlist</h1>
           <p>Track and monitor your favourite stocks</p>
+          <MarketStatusBadge className="watchlist-page__market" />
         </div>
 
       </header>
