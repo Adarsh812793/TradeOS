@@ -11,7 +11,7 @@ import "./DashboardPage.css";
 /* 2. Dashboard Page */
 export default function DashboardPage() {
   return (
-    <main className="dashboard-page">
+    <div className="dashboard-page">
       {/* 2.1 Account Summary */}
       <section className="dashboard-page__account">
         <AccountSummary />
@@ -36,6 +36,6 @@ export default function DashboardPage() {
       <section className="dashboard-page__activity">
         <RecentActivity />
       </section>
-    </main>
+    </div>
   );
 }

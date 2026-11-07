@@ -346,10 +346,10 @@
 }
 
 /* On phones the dropdown becomes a sheet spanning the screen under the navbar (same as the search dropdown) */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .notifications__dropdown {
     position: fixed;
-    top: 64px;
+    top: calc(var(--navbar-height) + var(--space-1));
     right: 10px;
     left: 10px;
     width: auto;

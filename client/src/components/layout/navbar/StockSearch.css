@@ -310,10 +310,10 @@
 }
 
 /* On phones the dropdown spans the screen under the navbar instead of hanging off the search box */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .navbar__search-dropdown {
     position: fixed;
-    top: 64px;
+    top: calc(var(--navbar-height) + var(--space-1));
     right: 10px;
     left: 10px;
 

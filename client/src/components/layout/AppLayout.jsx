@@ -1,77 +1,35 @@
 
-import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
-import Sidebar from "./Sidebar.jsx";
+import NavRail from "./NavRail.jsx";
 import Navbar from "./Navbar.jsx";
+import BottomNav from "./BottomNav.jsx";
 
 import "./AppLayout.css";
 
+// The frame around every logged-in page: icon rail (desktop and tablet), top bar, the page itself, and the bottom bar
+// on phones. Exactly one <main> lives here; pages must not add their own.
 export default function AppLayout() {
-
-  //i.State variables
-  // Desktop sidebar preference
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    return localStorage.getItem("tradeos-sidebar-collapsed") === "true";
-  });
-
-  // Mobile drawer visibility
-  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
-
-  //ii. Functions
-  function handleToggleCollapse() {
-    setIsCollapsed((previousState) => {
-      const nextState = !previousState;
-
-      localStorage.setItem(
-        "tradeos-sidebar-collapsed",
-        String(nextState)
-      );
-
-      return nextState;
-    });
-  }
-
-  function handleCloseMobileDrawer() {
-    setIsMobileDrawerOpen(false);
+  // "Skip to content" moves keyboard focus straight to the page, past the navigation
+  function skipToContent(event) {
+    event.preventDefault();
+    document.getElementById("main-content")?.focus();
   }
 
   return (
-    <div
-      className={`app-layout ${
-        isCollapsed ? "app-layout--collapsed" : ""
-      } ${isMobileDrawerOpen ? "app-layout--mobile-open" : ""}`}
-    >
-      {/* Sidebar navigation */}
-      <Sidebar
-        isCollapsed={isCollapsed}
-        onToggleCollapse={handleToggleCollapse}
-        isMobileDrawerOpen={isMobileDrawerOpen}
-        onNavigate={handleCloseMobileDrawer}
-      />
+    <div className="app-shell">
+      <a href="#main-content" className="app-shell__skip" onClick={skipToContent}>
+        Skip to content
+      </a>
 
-      {/* Mobile backdrop */}
-      {isMobileDrawerOpen && (
-        <button
-          type="button"
-          className="app-layout__backdrop"
-          aria-label="Close navigation menu"
-          onClick={handleCloseMobileDrawer}
-        />
-      )}
+      <NavRail />
+      <Navbar />
 
-      {/* Main content */}
-      <main className="app-layout__content">
-        <Navbar
-          onMenuClick={() =>
-            setIsMobileDrawerOpen((previousState) => !previousState)
-          }
-        />
-
-        <div className="app-layout__page">
-          <Outlet />
-        </div>
+      <main id="main-content" className="app-shell__main" tabIndex={-1}>
+        <Outlet />
       </main>
+
+      <BottomNav />
     </div>
   );
 }

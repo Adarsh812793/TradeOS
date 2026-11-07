@@ -110,8 +110,9 @@
   --radius-pill: 999px;
 
   /* Layout */
-  --sidebar-width: 240px;
-  --navbar-height: 64px;
+  --rail-width: 64px; /* the icon navigation on desktop and tablet */
+  --navbar-height: 60px; /* the top bar, at every width: dropdowns and sticky panels position from it */
+  --bottom-nav-height: 60px; /* the phone navigation bar (plus the phone's safe area) */
 
   /* Shadows: on a dark page they are deeper and only used for things that float (menus, dialogs) */
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);

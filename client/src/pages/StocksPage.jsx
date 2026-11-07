@@ -115,7 +115,7 @@ export default function StocksPage() {
 
   // 8. Render the page
 return (
-  <main className="stocks-page">
+  <div className="stocks-page">
     {/* 1. Page heading */}
     <header className="stocks-page__header">
       <h1>Explore Stocks</h1>
@@ -197,7 +197,7 @@ return (
         />
       </>
     )}
-  </main>
+  </div>
 );
 
 }

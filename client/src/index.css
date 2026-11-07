@@ -49,3 +49,13 @@ a {
     background: var(--color-primary);
     color: var(--color-on-primary);
 }
+
+/* Text that is read out by screen readers but not shown */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}

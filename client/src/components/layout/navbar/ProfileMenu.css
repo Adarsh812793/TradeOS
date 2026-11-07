@@ -114,7 +114,7 @@
 @media (max-width: 480px) {
   .profile-menu__dropdown {
     position: fixed;
-    top: 68px;
+    top: calc(var(--navbar-height) + var(--space-1));
     right: 12px;
     width: 250px;
     max-width: calc(100vw - 24px);
