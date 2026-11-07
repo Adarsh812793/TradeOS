@@ -1,0 +1,131 @@
+.nav-rail {
+  grid-area: rail;
+  position: sticky;
+  top: 0;
+  z-index: 110; /* above the top bar so tooltips are never covered */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+
+  width: var(--rail-width);
+  height: 100vh;
+  height: 100dvh;
+  padding: var(--space-3) 0;
+
+  background: var(--color-surface);
+  border-right: var(--border-width) solid var(--color-border);
+}
+
+.nav-rail__logo {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--space-3);
+
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
+  border-radius: var(--radius-md);
+}
+
+.nav-rail__logo:focus-visible,
+.nav-rail__link:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.nav-rail__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Account sits at the bottom of the rail */
+.nav-rail__account {
+  margin-top: auto;
+}
+
+.nav-rail__link {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
+
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.nav-rail__link:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-subtle);
+}
+
+/* The current page: marigold icon, a soft tint and a bar on the rail's edge */
+.nav-rail__link--active,
+.nav-rail__link--active:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
+}
+
+.nav-rail__link--active::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: -10px; /* the rail edge: the link is centred with 10px each side */
+  width: 3px;
+  background: var(--color-primary);
+  border-radius: 0 3px 3px 0;
+}
+
+/* Name tooltip, shown on hover and on keyboard focus */
+.nav-rail__tooltip {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + var(--space-3));
+  transform: translateY(-50%);
+
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-surface-raised);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.nav-rail__link:hover .nav-rail__tooltip,
+.nav-rail__link:focus-visible .nav-rail__tooltip {
+  opacity: 1;
+}
+
+/* Phones use the bottom bar instead */
+@media (max-width: 768px) {
+  .nav-rail {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-rail__link,
+  .nav-rail__tooltip {
+    transition: none;
+  }
+}

@@ -1,7 +1,8 @@
 
 /* 1. Imports */
 import config from "../../config/env.js";
-import { getSavedFyersTokens,getFyersConnectionStatus } from "./market.token.service.js";
+import { getSavedFyersTokens,getFyersConnectionStatus,updateFyersConnectionStatus } from "./market.token.service.js";
+import { createQuoteCache } from "./market.cache.js";
 import { MARKET_INDICES } from "./market.constants.js";
 import ERROR_CODES from "../../utils/errorCodes.js";
 
@@ -138,12 +139,21 @@ export async function getStockQuotes(symbols) {
 
 
 /* 4. Fetch Market Indices */
+// One shared cache for the indices: every user's request is answered from it, and FYERS is asked at most once per
+// 30 seconds per index, however many users there are (see market.cache.js for the stampede and failure rules).
+const indexQuoteCache = createQuoteCache();
+
+// Empties the index cache (used by tests).
+export const clearIndexCache = () => indexQuoteCache.clear();
+
 export async function getMarketIndices() {
-    // 4.1 Fetch the configured index quotes concurrently
+    // 4.1 Get the configured index quotes concurrently, through the cache
     const indices = Object.values(MARKET_INDICES);
 
     const results = await Promise.allSettled(
-        indices.map((index) => getStockQuote(index.symbol))
+        indices.map((index) =>
+            indexQuoteCache.get(index.symbol, () => getStockQuote(index.symbol))
+        )
     );
 
     // 4.2 Normalize successful results and collect failures
@@ -154,10 +164,15 @@ export async function getMarketIndices() {
         const marketIndex = indices[index];
 
         if (result.status === "fulfilled") {
+            const { value, fetchedAt, stale } = result.value;
+
             data.push({
                 name: marketIndex.name,
                 exchange: marketIndex.exchange,
-                ...result.value,
+                ...value,
+                // stale = FYERS could not be reached and this is an EARLIER quote (shown as delayed, never as live)
+                stale,
+                asOf: new Date(fetchedAt).toISOString(),
             });
         } else {
             errors.push({

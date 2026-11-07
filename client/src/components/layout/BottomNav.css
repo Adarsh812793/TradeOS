@@ -1,0 +1,164 @@
+/* Phone navigation. Hidden everywhere except phones (the icon rail is used on larger screens). */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .bottom-nav {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 120;
+
+    display: block;
+    padding-bottom: env(safe-area-inset-bottom, 0px); /* keeps it clear of the home indicator */
+
+    background: var(--color-surface);
+    border-top: var(--border-width) solid var(--color-border);
+  }
+
+  .bottom-nav__list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    height: var(--bottom-nav-height);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .bottom-nav__list > li {
+    min-width: 0;
+  }
+
+  /* One cell: the whole thing is the tap target (a fifth of the screen wide, 60px tall) */
+  .bottom-nav__item {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+
+    width: 100%;
+    height: 100%;
+    padding: 0 var(--space-1);
+
+    color: var(--color-text-secondary);
+    background: transparent;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+    transition: color 150ms ease;
+  }
+
+  .bottom-nav__item:active {
+    background: var(--color-surface-subtle);
+  }
+
+  .bottom-nav__item:focus-visible {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: -3px;
+  }
+
+  .bottom-nav__label {
+    max-width: 100%;
+    overflow: hidden;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The current page: marigold icon and label, and a short bar on the top edge */
+  .bottom-nav__item--active,
+  .bottom-nav__item--open {
+    color: var(--color-primary);
+  }
+
+  .bottom-nav__item--active .bottom-nav__label {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .bottom-nav__item--active::before {
+    content: "";
+    position: absolute;
+    top: -1px; /* sits on the bar's top border */
+    left: 50%;
+    width: 28px;
+    height: 3px;
+    transform: translateX(-50%);
+    background: var(--color-primary);
+    border-radius: 0 0 3px 3px;
+  }
+
+  /* The "More" sheet: a small card above the bar, on the right */
+  .bottom-nav__sheet {
+    position: absolute;
+    right: var(--space-3);
+    bottom: calc(100% + var(--space-2));
+
+    width: min(240px, calc(100vw - var(--space-6)));
+    margin: 0;
+    padding: var(--space-1);
+    list-style: none;
+
+    background: var(--color-surface-raised);
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+
+    animation: bottom-nav-sheet-enter 140ms ease-out;
+  }
+
+  .bottom-nav__sheet-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+
+    min-height: 48px;
+    padding: 0 var(--space-3);
+
+    color: var(--color-text-body);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+  }
+
+  .bottom-nav__sheet-link:active {
+    background: var(--color-surface-subtle);
+  }
+
+  .bottom-nav__sheet-link:focus-visible {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: -2px;
+  }
+
+  .bottom-nav__sheet-link--active {
+    color: var(--color-primary);
+    background: var(--color-primary-tint);
+  }
+}
+
+@keyframes bottom-nav-sheet-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav__item {
+    transition: none;
+  }
+
+  .bottom-nav__sheet {
+    animation: none;
+  }
+}

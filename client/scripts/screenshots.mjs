@@ -168,6 +168,18 @@ async function runViewport(browser, viewportName, viewport, stockId) {
     await page.waitForSelector("[role=dialog]");
     await shoot(page, "open-order-details", viewportName);
   });
+  await attempt("navigation", async () => {
+    await page.goto(`${BASE}/portfolio`);
+    if (viewport.width <= 768) {
+      // phone: the bottom bar's "More" sheet
+      await page.click(".bottom-nav button:has-text('More')");
+      await shoot(page, "open-more-sheet", viewportName);
+    } else {
+      // desktop and tablet: the icon rail with a name tooltip showing
+      await page.hover(".nav-rail a:has-text('Orders')");
+      await shoot(page, "rail-tooltip", viewportName);
+    }
+  });
   await attempt("account-sections", async () => {
     await page.goto(`${BASE}/account`);
     const headers = page.locator("main button[aria-expanded='false']");
