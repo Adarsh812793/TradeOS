@@ -47,17 +47,21 @@ function holidayName(dateString) {
 // IST midnight (as a UTC instant) at the start of the given IST calendar date ("2026-11-09"): the daily candle's start
 export const istMidnight = (dateString) => new Date(Date.parse(`${dateString}T00:00:00Z`) - IST_OFFSET_MS);
 
+// True when the IST calendar date ("2026-11-09") is a weekday that is not an exchange holiday
+export function isTradingDay(dateString) {
+  const weekday = new Date(`${dateString}T00:00:00Z`).getUTCDay();
+  return weekday !== 0 && weekday !== 6 && !holidayName(dateString);
+}
+
 // The instant the market next opens, searching forward from `instant` (a weekend or holiday is skipped)
 function findNextOpen(instant) {
   const today = istParts(instant);
 
   for (let offset = 0; offset < 30; offset++) {
     const dateString = istParts(new Date(istMidnight(today.date).getTime() + offset * DAY_MS)).date;
-    const weekday = new Date(`${dateString}T00:00:00Z`).getUTCDay();
-    const isTradingDay = weekday !== 0 && weekday !== 6 && !holidayName(dateString);
     const opensAt = new Date(istMidnight(dateString).getTime() + MARKET_OPEN_MINUTE * 60 * 1000);
 
-    if (isTradingDay && opensAt > instant) return opensAt;
+    if (isTradingDay(dateString) && opensAt > instant) return opensAt;
   }
 
   return null;
