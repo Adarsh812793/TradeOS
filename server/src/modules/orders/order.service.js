@@ -11,10 +11,13 @@ import { LOW_BALANCE_THRESHOLD } from "../notifications/notification.constants.j
 
 import AppError from "../../utils/AppError.js";
 import ERROR_CODES from "../../utils/errorCodes.js";
+import retryTransaction from "../../utils/retryTransaction.js";
 import { lineTotal, subtractMoney, addMoney, canAfford, roundRate } from "../../utils/money.js";
 
-//i. Service to create a buy order
-const createBuyOrder = async ({
+//i. Service to create a buy order (runs the whole transaction again if MongoDB aborts it for a transient reason)
+const createBuyOrder = (order) => retryTransaction(() => runBuyOrder(order));
+
+const runBuyOrder = async ({
     userId,
     stockId,
     quantity
@@ -281,8 +284,10 @@ const createBuyOrder = async ({
     }
 };
 
-//ii. Service to sell the stock
-const createSellOrder = async ({
+//ii. Service to sell the stock (same retry as buying)
+const createSellOrder = (order) => retryTransaction(() => runSellOrder(order));
+
+const runSellOrder = async ({
     userId,
     stockId,
     quantity
