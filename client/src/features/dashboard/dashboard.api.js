@@ -24,7 +24,5 @@ export const getWatchlist = () => {
   return api.get("/api/watchlist");
 };
 
-/* 4. Fetch Market Indices */
-export const getMarketIndices = () => {
-    return api.get("/api/market/indices");
-};
+/* 4. Fetch Market Indices (defined once in the market feature, shared with the top bar's market strip) */
+export { getMarketIndices } from "../market/market.api.js";
