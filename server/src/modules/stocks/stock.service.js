@@ -4,6 +4,7 @@ import Order from "../orders/order.model.js";
 
 import AppError from "../../utils/AppError.js";
 import ERROR_CODES from "../../utils/errorCodes.js";
+import { lineTotal, roundMoney, subtractMoney } from "../../utils/money.js";
 
 
 
@@ -58,9 +59,9 @@ const getStockPosition = async (stockId, userId) => {
     const averageBuyPrice = holding?.averageBuyPrice || 0;
     const currentPrice = stock.currentPrice;
 
-    const investedValue = quantity * averageBuyPrice;
-    const currentValue = quantity * currentPrice;
-    const profitLoss = currentValue - investedValue;
+    const investedValue = roundMoney(quantity * averageBuyPrice);
+    const currentValue = lineTotal(currentPrice, quantity);
+    const profitLoss = subtractMoney(currentValue, investedValue);
 
     const profitLossPercentage = investedValue > 0
         ? (profitLoss / investedValue) * 100

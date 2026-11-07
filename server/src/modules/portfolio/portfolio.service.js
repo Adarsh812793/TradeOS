@@ -1,5 +1,7 @@
 import Holding from "../holdings/holding.model.js";
 import AppError from "../../utils/AppError.js";
+import { lineTotal, roundMoney, subtractMoney, sumMoney } from "../../utils/money.js";
+
 const getUserPortfolio = async (userId) => {
 
     const userHoldings = await Holding.find({ userId })
@@ -11,27 +13,22 @@ const getUserPortfolio = async (userId) => {
     // populate() gives null if the stock no longer exists, which would crash the calculations below
     const holdings = userHoldings.filter((holding) => holding.stockId);
 
-    let totalInvestedValue = 0;
-    let totalCurrentValue = 0;
-
     const portfolio = holdings.map((holding) => {
 
         const quantity = holding.quantity;
         const averageBuyPrice = holding.averageBuyPrice;
         const currentPrice = holding.stockId.currentPrice;
 
-        const investedValue = quantity * averageBuyPrice;
-        const currentValue = quantity * currentPrice;
+        // Each row is rounded to paise, and the totals below add those rounded rows, so the screen always adds up
+        const investedValue = roundMoney(quantity * averageBuyPrice);
+        const currentValue = lineTotal(currentPrice, quantity);
 
-        const unrealizedPnL = currentValue - investedValue;
+        const unrealizedPnL = subtractMoney(currentValue, investedValue);
 
         const pnlPercentage =
             investedValue === 0
                 ? 0
                 : (unrealizedPnL / investedValue) * 100;
-
-        totalInvestedValue += investedValue;
-        totalCurrentValue += currentValue;
 
         return {
             stock: holding.stockId,
@@ -45,8 +42,11 @@ const getUserPortfolio = async (userId) => {
         };
     });
 
+    const totalInvestedValue = sumMoney(portfolio.map((row) => row.investedValue));
+    const totalCurrentValue = sumMoney(portfolio.map((row) => row.currentValue));
+
     const totalUnrealizedPnL =
-        totalCurrentValue - totalInvestedValue;
+        subtractMoney(totalCurrentValue, totalInvestedValue);
 
     const totalPnLPercentage =
         totalInvestedValue === 0

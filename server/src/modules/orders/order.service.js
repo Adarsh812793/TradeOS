@@ -11,6 +11,7 @@ import { LOW_BALANCE_THRESHOLD } from "../notifications/notification.constants.j
 
 import AppError from "../../utils/AppError.js";
 import ERROR_CODES from "../../utils/errorCodes.js";
+import { lineTotal, subtractMoney, addMoney, canAfford, roundRate } from "../../utils/money.js";
 
 //i. Service to create a buy order
 const createBuyOrder = async ({
@@ -77,15 +78,16 @@ const createBuyOrder = async ({
 
         const executionPrice = stock.currentPrice;
 
+        // Exact money: whole-paise maths (see utils/money.js), so totals never carry float dust
         const totalValue =
-            executionPrice * quantity;
+            lineTotal(executionPrice, quantity);
 
 
         // ==========================================
         // 5. Check wallet balance
         // ==========================================
 
-        if (wallet.balance < totalValue) {
+        if (!canAfford(wallet.balance, totalValue)) {
 
             throw new AppError(
                 "Insufficient wallet balance",400,ERROR_CODES.INSUFFICIENT_BALANCE
@@ -121,7 +123,7 @@ const createBuyOrder = async ({
 
         const balanceBeforeBuy = wallet.balance;
 
-        wallet.balance -= totalValue;
+        wallet.balance = subtractMoney(wallet.balance, totalValue);
 
         await wallet.save({
             session
@@ -156,10 +158,12 @@ const createBuyOrder = async ({
 
             // Weighted average buy price
             const newAveragePrice =
-                (
-                    (oldQuantity * oldAveragePrice) +
-                    (quantity * executionPrice)
-                ) / newQuantity;
+                roundRate(
+                    (
+                        (oldQuantity * oldAveragePrice) +
+                        (quantity * executionPrice)
+                    ) / newQuantity
+                );
 
 
             holding.quantity = newQuantity;
@@ -358,8 +362,9 @@ const createSellOrder = async ({
 
         const executionPrice = stock.currentPrice;
 
+        // Exact money: whole-paise maths (see utils/money.js), so totals never carry float dust
         const totalValue =
-            executionPrice * quantity;
+            lineTotal(executionPrice, quantity);
 
 
         // ==========================================
@@ -427,7 +432,7 @@ const createSellOrder = async ({
         }
 
 
-        wallet.balance += totalValue;
+        wallet.balance = addMoney(wallet.balance, totalValue);
 
         await wallet.save({
             session
