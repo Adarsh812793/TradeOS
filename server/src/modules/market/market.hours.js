@@ -44,8 +44,8 @@ function holidayName(dateString) {
   return yearList[dateString] ?? null;
 }
 
-// IST midnight (as a UTC instant) at the start of the given IST calendar date
-const istMidnight = (dateString) => new Date(Date.parse(`${dateString}T00:00:00Z`) - IST_OFFSET_MS);
+// IST midnight (as a UTC instant) at the start of the given IST calendar date ("2026-11-09"): the daily candle's start
+export const istMidnight = (dateString) => new Date(Date.parse(`${dateString}T00:00:00Z`) - IST_OFFSET_MS);
 
 // The instant the market next opens, searching forward from `instant` (a weekend or holiday is skipped)
 function findNextOpen(instant) {

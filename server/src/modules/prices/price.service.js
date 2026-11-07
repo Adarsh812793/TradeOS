@@ -2,6 +2,7 @@ import config from "../../config/env.js";
 import Stock from "../stocks/stock.model.js";
 import { getMarketStatus } from "../market/market.hours.js";
 import { getPriceProvider } from "./price.provider.js";
+import { recordCandles } from "../candles/candle.service.js";
 
 export const PRICE_UPDATE_INTERVAL_MS = 15 * 1000;
 
@@ -54,6 +55,15 @@ export async function runPriceUpdate({ now = new Date(), provider = getPriceProv
     )
   );
 
-  const updated = results.filter((result) => result.modifiedCount === 1).length;
-  return { updated, unchanged: results.length - updated, tradingDay };
+  // Only prices that really moved are folded into candles, so a skipped (already moved) slot never counts twice
+  const moved = newPrices.filter((_, index) => results[index].modifiedCount === 1);
+
+  try {
+    await recordCandles(moved, now);
+  } catch (error) {
+    // The price itself is already saved; a failed candle write leaves a one-update gap that the next update repairs
+    console.error("[prices] candle write failed:", error.message);
+  }
+
+  return { updated: moved.length, unchanged: results.length - moved.length, tradingDay };
 }
