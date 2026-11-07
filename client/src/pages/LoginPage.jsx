@@ -205,10 +205,6 @@ export default function LoginPage() {
                   />
                 )}
               />
-
-              <div className="login-page__forgot-link">
-                <Link to="/forgot-password">Forgot password?</Link>
-              </div>
             </div>
 
             {/* 3.3 Submit */}
