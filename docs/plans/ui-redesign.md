@@ -51,7 +51,8 @@ Built: component gallery at `/dev/ui` (dev only); Button (variants by meaning, s
 Restyle Button, Input, Card, Badge, Modal, Pagination, EmptyState and LoadingSpinner. Add Table, price-change and loading-skeleton components. **Done when** they are in use and every page still works.
 *Learn:* component APIs and variants, keeping props stable, focus states.
 
-### Phase 3. App layout (`feature/ui-app-shell`)
+### Phase 3. App layout (`feature/ui-app-shell`) - DONE 2026-11-07 (awaiting PR)
+Built: a shared index-quote cache on the server (30 s fresh, one FYERS call for any number of simultaneous requests, 5 s cooldown after a failure, earlier quotes labelled stale for at most 5 minutes; plus a fix for a missing import that broke the expired-token path); the app frame as a CSS grid; the 64px icon rail; the phone bottom bar with a More sheet; the top bar with a market strip; one `<main>` per page and a skip link; one `--navbar-height` and one 768px phone breakpoint; every page loaded on demand (main download 581 kB to 346 kB, 173 kB to 110 kB gzipped) with a progress bar; a friendly error screen; scroll to top on navigation; the dead "Forgot password?" link removed. The Holdings table now fits at 1180px. Checked with 44 frame checks (7 links x 4 widths), 19 market strip checks (mocked live, delayed, empty, 502, fake-clock polling), 13 loading/error/scroll checks, 21 server tests for the cache (mutation-checked), and the earlier phases' regression scripts. Original scope:
 Icon rail instead of the sidebar, market strip, restyled navbar dropdowns, mobile navigation, pages loaded on demand. The sidebar collapse button goes away on purpose. **Done when** the Navigation and Navbar sections of the checklist pass.
 *Learn:* CSS grid app layouts, route-level code splitting, accessible navigation.
 
@@ -82,12 +83,12 @@ Motion, phone and tablet layouts, accessibility, performance, the full checklist
 ## Findings carried to later phases
 
 - **Still on their own CSS (moved in the page phases):** `StockTable`, `StockCard`, `WatchlistTable`, `TransactionsTable` and `StockPositionOrders` have their own table styling and should move to `Table`; Stocks / Orders / Transactions cards share a look that could become one component. The holdings Buy / Sell links use a bare `.btn` class with their own colours (a `ButtonLink` could replace that).
-- **Layout:** the Holdings table needs about 1,000px of panel width; at a 1180px screen it scrolls inside its panel because the 240px sidebar leaves little room. The icon rail (Phase 3) fixes this.
+- **Layout:** the Holdings table needs about 1,000px of panel width; at a 1180px screen it scrolled inside its panel because the 240px sidebar left little room. FIXED in Phase 3: the 64px icon rail leaves about 1,066px at a 1180px screen.
 - **Stock page:** the header's Buy button is marigold (primary) while the order panel's Buy is green; decide in Phase 6 (green = buy).
 - **Tests:** the order quantity field relies on the browser's own `min` / `step` validation, so the app's "positive whole number" message only shows if the browser lets the submit through.
 
 - **Phase 2:** `<Button block>` passes `block` to the DOM and React warns ("non-boolean attribute"); make it a proper prop.
-- **Phase 3:** the Sidebar's collapse arrow button goes away with the icon rail; Login's "Forgot password?" links to a page that does not exist.
+- **Phase 3 (done):** the Sidebar and its collapse arrow are gone; Login's dead "Forgot password?" link was removed. Carried forward: Back opens pages at the top instead of the old scroll position (pages load their data after they appear); the market strip was only tested against mocked and unconnected FYERS, so check it once with a real FYERS connection; the dashboard's MarketOverview still fetches indices on its own (cheap because of the server cache).
 - **Phase 6:** the Stocks page pagination lists every page number and scrolls sideways once there are many pages (found with 34 pages); it needs ellipsis truncation. The header Buy button is marigold while the Place Order panel's Buy is green: pick one meaning (green = buy).
 - **All phases:** prices, tables and big numbers should use `--font-mono` / `--font-display` as each page is rebuilt; Phase 1 only changed the base fonts.
 
@@ -134,7 +135,13 @@ Run the sections for the pages a phase touched. "Works" includes the loading sta
 ### Navigation (sidebar or rail)
 - [ ] Every link opens its page: Dashboard, Stocks, Portfolio, Orders, Watchlist, Transactions
 - [ ] The active page is highlighted
-- [ ] Phone: the menu opens and closes, including by tapping outside
+- [ ] Phone: the bottom bar links work, and "More" (Watchlist, Transactions, Account) opens and closes, including by tapping outside or Esc
+
+### Navbar: market strip
+- [ ] NIFTY 50 and SENSEX show with level and percent (green up, red down) on screens wider than 1000px
+- [ ] Updates about every minute; stops while the tab is hidden
+- [ ] When FYERS is unavailable the strip is simply empty (no error text); a quote the server marks stale shows dimmed with "Delayed" and a time
+- [ ] Hidden on phones and narrow tablets
 
 ### Navbar: search
 - [ ] Opens with results from the database, filters by symbol and company name
