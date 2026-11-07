@@ -24,8 +24,20 @@ for (const variable of requiredEnvVariables) {
     }
 }
 
+// Development-only override: pretend the market is always open, so trading and price movement can be tried at night.
+// It may only be on when NODE_ENV is EXPLICITLY "development" or "test". A production host that forgot to set
+// NODE_ENV (it would default to development below) is caught too, because this reads the raw value.
+const marketAlwaysOpen = process.env.MARKET_ALWAYS_OPEN === "true";
+
+if (marketAlwaysOpen && !["development", "test"].includes(process.env.NODE_ENV)) {
+    throw new Error(
+        'MARKET_ALWAYS_OPEN=true is only allowed when NODE_ENV is "development" or "test". Remove it from this environment.'
+    );
+}
+
 export default {
     PORT: process.env.PORT || 8080,
+    MARKET_ALWAYS_OPEN: marketAlwaysOpen,
     NODE_ENV: process.env.NODE_ENV || "development",
     MONGODB_URI: process.env.MONGODB_URI,
     JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,

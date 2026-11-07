@@ -4,6 +4,8 @@ import config from "../../config/env.js";
 import { getStockQuote,getStockQuotes,getMarketIndices } from "./market.service.js";
 import { isSupportedStock } from "./market.constants.js";
 import { saveFyersTokens,updateFyersConnectionStatus,getFyersConnectionStatus } from "./market.token.service.js";
+import { getCurrentMarketStatus } from "./market.status.js";
+import { getPriceProvider } from "../prices/price.provider.js";
 
 /* 2. Temporary Token Storage — Local Development Only */
 let fyersAccessToken = null;
@@ -282,4 +284,17 @@ export async function getFyersConnectionStatusController(req, res) {
     }
 }
 
+/* Market status: is the market open, why not, when it opens next, and where prices come from */
+export function getMarketStatusController(req, res) {
+    const status = getCurrentMarketStatus();
 
+    return res.status(200).json({
+        success: true,
+        message: "Market status retrieved successfully",
+        data: {
+            ...status,
+            priceSource: getPriceProvider().name,
+            serverTime: new Date().toISOString()
+        }
+    });
+}

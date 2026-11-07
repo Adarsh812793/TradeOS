@@ -1,6 +1,8 @@
 
 import { Bookmark} from "lucide-react";
 import { formatCurrency } from "../../../../utils/currency.utils.js";
+import PriceChange from "../../../../components/ui/PriceChange.jsx";
+import MarketStatusBadge from "../../../market/components/MarketStatusBadge.jsx";
 import "./StockHeader.css";
 
 // 2. Stock Header component
@@ -38,6 +40,8 @@ export default function StockHeader({
             <span className="stock-header__badge">
               {stock.exchange}
             </span>
+
+            <MarketStatusBadge />
           </div>
         </div>
 
@@ -77,8 +81,10 @@ export default function StockHeader({
             {formatCurrency(stock.currentPrice, stock.currency)}
           </span>
 
+          <PriceChange amount={stock.dayChange} percent={stock.dayChangePercent} arrow />
+
           <span className="stock-header__price-caption">
-            Current price
+            Current price, change today
           </span>
 
         </div>

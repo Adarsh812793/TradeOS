@@ -164,3 +164,14 @@
 .place-order-card > .segmented {
   margin-bottom: var(--space-4);
 }
+
+/* Shown instead of an active order button while the market is closed */
+.place-order-card__closed {
+  margin: var(--space-3) 0;
+  padding: var(--space-3);
+  background: var(--color-warning-tint);
+  border: var(--border-width) solid var(--color-warning-border);
+  border-radius: var(--radius-md);
+  color: var(--color-warning);
+  font-size: var(--font-size-sm);
+}

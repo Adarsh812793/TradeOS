@@ -7,6 +7,7 @@ import AppLoading from "../components/layout/AppLoading.jsx";
 import RouteError from "../components/layout/RouteError.jsx";
 import CurrentUserProvider from "../features/account/CurrentUserProvider.jsx";
 import NotificationsProvider from "../features/notifications/NotificationsProvider.jsx";
+import MarketStatusProvider from "../features/market/MarketStatusProvider.jsx";
 
 import NotFoundPage from "../pages/NotFoundPage.jsx";
 
@@ -33,7 +34,9 @@ const router = createBrowserRouter([
             element: (
               <CurrentUserProvider>
                 <NotificationsProvider>
-                  <AppLayout />
+                  <MarketStatusProvider>
+                    <AppLayout />
+                  </MarketStatusProvider>
                 </NotificationsProvider>
               </CurrentUserProvider>
             ),

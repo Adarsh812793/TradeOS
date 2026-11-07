@@ -6,6 +6,7 @@ import stocksApi from "../features/stocks/stocks.api.js";
 import {createBuyOrder,createSellOrder,} from "../features/orders/orders.api.js";
 import watchlistApi from "../features/watchlist/watchlist.api.js";
 import useNotifications from "../features/notifications/useNotifications.js";
+import useVisiblePolling from "../hooks/useVisiblePolling.js";
 
 import StockHeader from "../features/stocks/components/stock-details/StockHeader.jsx";
 import MarketSummary from "../features/stocks/components/stock-details/MarketSummary.jsx";
@@ -72,6 +73,16 @@ export default function StockDetailsPage() {
       isMounted = false;
     };
   }, [stockId]);
+
+  // Keep the price fresh: a quiet reload every 30 s while the tab is visible (a failure keeps the old price)
+  useVisiblePolling(async () => {
+    try {
+      const response = await stocksApi.getStockById(stockId);
+      setStock(response.data);
+    } catch {
+      /* keep showing the price we have */
+    }
+  });
 
   useEffect(() => {
     let isMounted = true;

@@ -2,6 +2,7 @@
 import { RefreshCw } from "lucide-react";
 
 import Button from "../../../components/ui/Button.jsx";
+import MarketStatusBadge from "../../market/components/MarketStatusBadge.jsx";
 import { formatLastUpdated } from "../utils/portfolio.utils.js";
 
 import "./PortfolioHeader.css";
@@ -18,6 +19,7 @@ export default function PortfolioHeader({
         <p className="portfolio-header__subtitle">
           Track your investments and returns
         </p>
+        <MarketStatusBadge className="portfolio-header__market" />
       </div>
 
       <div className="portfolio-header__actions">

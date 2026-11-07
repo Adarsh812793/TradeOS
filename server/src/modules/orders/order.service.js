@@ -11,13 +11,21 @@ import { LOW_BALANCE_THRESHOLD } from "../notifications/notification.constants.j
 
 import AppError from "../../utils/AppError.js";
 import ERROR_CODES from "../../utils/errorCodes.js";
+import { assertMarketOpen } from "../market/market.status.js";
+import retryTransaction from "../../utils/retryTransaction.js";
+import { lineTotal, subtractMoney, addMoney, canAfford, roundRate } from "../../utils/money.js";
 
-//i. Service to create a buy order
-const createBuyOrder = async ({
+//i. Service to create a buy order (runs the whole transaction again if MongoDB aborts it for a transient reason)
+const createBuyOrder = (order) => retryTransaction(() => runBuyOrder(order));
+
+const runBuyOrder = async ({
     userId,
     stockId,
     quantity
 }) => {
+
+    // Orders are only accepted while the market is open (the server decides, whatever the screen shows)
+    assertMarketOpen();
 
     // ==========================================
     // Start MongoDB transaction
@@ -77,15 +85,16 @@ const createBuyOrder = async ({
 
         const executionPrice = stock.currentPrice;
 
+        // Exact money: whole-paise maths (see utils/money.js), so totals never carry float dust
         const totalValue =
-            executionPrice * quantity;
+            lineTotal(executionPrice, quantity);
 
 
         // ==========================================
         // 5. Check wallet balance
         // ==========================================
 
-        if (wallet.balance < totalValue) {
+        if (!canAfford(wallet.balance, totalValue)) {
 
             throw new AppError(
                 "Insufficient wallet balance",400,ERROR_CODES.INSUFFICIENT_BALANCE
@@ -121,7 +130,7 @@ const createBuyOrder = async ({
 
         const balanceBeforeBuy = wallet.balance;
 
-        wallet.balance -= totalValue;
+        wallet.balance = subtractMoney(wallet.balance, totalValue);
 
         await wallet.save({
             session
@@ -156,10 +165,12 @@ const createBuyOrder = async ({
 
             // Weighted average buy price
             const newAveragePrice =
-                (
-                    (oldQuantity * oldAveragePrice) +
-                    (quantity * executionPrice)
-                ) / newQuantity;
+                roundRate(
+                    (
+                        (oldQuantity * oldAveragePrice) +
+                        (quantity * executionPrice)
+                    ) / newQuantity
+                );
 
 
             holding.quantity = newQuantity;
@@ -277,12 +288,16 @@ const createBuyOrder = async ({
     }
 };
 
-//ii. Service to sell the stock
-const createSellOrder = async ({
+//ii. Service to sell the stock (same retry as buying)
+const createSellOrder = (order) => retryTransaction(() => runSellOrder(order));
+
+const runSellOrder = async ({
     userId,
     stockId,
     quantity
 }) => {
+
+    assertMarketOpen();
 
     // ==========================================
     // Start MongoDB transaction
@@ -358,8 +373,9 @@ const createSellOrder = async ({
 
         const executionPrice = stock.currentPrice;
 
+        // Exact money: whole-paise maths (see utils/money.js), so totals never carry float dust
         const totalValue =
-            executionPrice * quantity;
+            lineTotal(executionPrice, quantity);
 
 
         // ==========================================
@@ -427,7 +443,7 @@ const createSellOrder = async ({
         }
 
 
-        wallet.balance += totalValue;
+        wallet.balance = addMoney(wallet.balance, totalValue);
 
         await wallet.save({
             session

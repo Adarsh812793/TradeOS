@@ -56,7 +56,8 @@ Built: a shared index-quote cache on the server (30 s fresh, one FYERS call for 
 Icon rail instead of the sidebar, market strip, restyled navbar dropdowns, mobile navigation, pages loaded on demand. The sidebar collapse button goes away on purpose. **Done when** the Navigation and Navbar sections of the checklist pass.
 *Learn:* CSS grid app layouts, route-level code splitting, accessible navigation.
 
-### Phase 4. Simulated market (`feature/simulated-market`)
+### Phase 4. Simulated market (`feature/simulated-market`) - DONE 2026-11-07 (awaiting PR)
+Built: exact money maths in whole paise (`utils/money.js`; fixes float drift such as 3 x 2850.05 = 8550.150000000001); order retry on write conflicts (five simultaneous orders used to give four 500s); IST market hours and a 2026 NSE holiday list; orders blocked with 403 `MARKET_CLOSED`; the development-only `MARKET_ALWAYS_OPEN` override (the server refuses it outside development/test); a simulated price provider (25% yearly volatility scaled to 15 s steps, 5-paise ticks, 10% daily limit) and a 15 s price job that holds still when the market is closed and cannot double-move a price; `previousClose` / `tradingDay` kept in MongoDB; 5-minute (14 calendar days) and daily (forever) OHLC candles with `GET /api/stocks/:id/candles`; a safe dry-run-first backfill script (applied to the dev database: 2,480 daily and 7,500 five-minute synthetic candles, user data and prices verified unchanged); `GET /api/market/status`; "Market open/closed" and "Simulated" labels; a 30 s quiet price refresh on the price pages; a disabled order form with the reason when closed, estimate wording and the execution price on the result; today's change in the stock list and header. Checked with 237 server tests (key rules mutation-tested), 22 closed-market and 12 open-market browser checks, and the earlier regression scripts. Bundle: JS 346 kB to 347 kB. Original scope:
 Backend: a market-hours module, a provider module that a real vendor can replace later, a price job that moves `Stock.currentPrice` only while the market is open, a holiday list, orders rejected while the market is closed, previous close and daily change, stored candles with backfilled history, tests. Frontend: polling hook and "Simulated" badge. **Done when** prices move during market hours and hold outside them, and orders and P&L stay correct.
 *Learn:* random-walk price models, background jobs, time zones (IST), the provider pattern, polling costs.
 
@@ -90,6 +91,7 @@ Motion, phone and tablet layouts, accessibility, performance, the full checklist
 - **Phase 2:** `<Button block>` passes `block` to the DOM and React warns ("non-boolean attribute"); make it a proper prop.
 - **Phase 3 (done):** the Sidebar and its collapse arrow are gone; Login's dead "Forgot password?" link was removed. Carried forward: Back opens pages at the top instead of the old scroll position (pages load their data after they appear); the market strip was only tested against mocked and unconnected FYERS, so check it once with a real FYERS connection; the dashboard's MarketOverview still fetches indices on its own (cheap because of the server cache).
 - **Phase 6:** the Stocks page pagination lists every page number and scrolls sideways once there are many pages (found with 34 pages); it needs ellipsis truncation. The header Buy button is marigold while the Place Order panel's Buy is green: pick one meaning (green = buy).
+- **Phase 4 (done):** the holiday list needs the next year added each January; the price chart (Phase 6) and portfolio performance chart (Phase 7) are still placeholders, and the candles and `/candles` endpoint are ready for the first; the job's cost grows linearly with the number of stocks (batch the writes if the list grows to hundreds); the test database holds ~1,400 leftover test stocks that slow any run of the price job against it.
 - **All phases:** prices, tables and big numbers should use `--font-mono` / `--font-display` as each page is rebuilt; Phase 1 only changed the base fonts.
 
 ## Open questions
@@ -162,8 +164,22 @@ Run the sections for the pages a phase touched. "Works" includes the loading sta
 - [ ] Shows the photo or initial and the name, and updates at once after an edit
 - [ ] "Account" and "Log out" work
 
+### Market status and simulated prices (new in Phase 4; needs `MARKET_ALWAYS_OPEN=true` outside market hours)
+- [ ] Backend console prints "Price job started" and shows no repeating `[prices]` errors
+- [ ] Prices on Stocks change by themselves within about 30 s, in steps of 0.05, with no skeleton flash
+- [ ] "Today" shows green up / red down with a percent, starting near 0%
+- [ ] Stock details price, change today and "Your Position" profit/loss follow the price
+- [ ] Switching tabs for a minute and returning refreshes at once
+- [ ] "Market open" and "Simulated" labels show on Dashboard, Stocks, Stock details, Portfolio and (non-empty) Watchlist
+- [ ] Buy: the total is labelled an estimate; the result shows the execution price; the wallet falls by exactly price x quantity
+- [ ] With the override off: labels say "Market closed", the order button is disabled with the next opening time, prices hold still, and the server answers 403 `MARKET_CLOSED`
+- [ ] Existing wallet, holdings and orders are unchanged after the backfill
+- [ ] `GET /api/market/status` and `GET /api/stocks/:id/candles?range=1W` answer; `?range=5Y` answers 400
+- [ ] Phone width: the daily change shows on cards, labels wrap, no sideways scroll
+
 ### Dashboard (`/dashboard`)
-- [ ] Account summary figures load, and the error state's reload works
+- [ ] Account summary figures load (and follow price changes every 30 s), and the error state's reload works
+- [ ] "Market open/closed" and "Simulated" labels show under the Account Summary title
 - [ ] Portfolio performance section shows
 - [ ] Market overview shows NIFTY and SENSEX; Refresh and retry work
 - [ ] Watchlist preview: "View all", browse stocks when empty, Retry
@@ -171,6 +187,7 @@ Run the sections for the pages a phase touched. "Works" includes the loading sta
 
 ### Stocks (`/stocks`)
 - [ ] List loads; search, exchange filter and sort work
+- [ ] The "Today" column shows the daily change (colour, arrow and percent), aligned with the price
 - [ ] `?search=` in the URL filters the list, and typing updates the URL
 - [ ] Pagination works and returns to page 1 when filters change
 - [ ] Watchlist bookmark adds and removes, in table and card layouts
@@ -178,13 +195,13 @@ Run the sections for the pages a phase touched. "Works" includes the loading sta
 - [ ] Table on wide screens, cards on narrow screens
 
 ### Stock details (`/stocks/:id`)
-- [ ] Header shows name, symbol, exchange, price
+- [ ] Header shows name, symbol, exchange, price, today's change and the market labels
 - [ ] Watchlist button toggles, and a failure shows the banner
 - [ ] Header Buy and Sell switch the form and scroll to it
 - [ ] `?action=sell` opens on the Sell form
-- [ ] Quantity validation (positive whole numbers) and estimated total
+- [ ] Quantity validation (positive whole numbers) and estimated total; while the market is closed the button is disabled and says why
 - [ ] Confirmation dialog: cancel and confirm
-- [ ] Buy succeeds: success message, wallet falls, holding appears
+- [ ] Buy succeeds: success message with the execution price, wallet falls exactly, holding appears
 - [ ] Sell succeeds; selling too many and insufficient balance show the server's message
 - [ ] "Your Position" and "Recent Orders" tabs work and refresh after an order
 - [ ] Chart range buttons and company information show

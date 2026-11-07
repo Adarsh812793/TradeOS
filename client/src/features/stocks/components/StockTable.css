@@ -205,3 +205,16 @@
     width: 100px;
   }
 }
+
+/* Today's change: right-aligned like the price beside it */
+.stock-table__change,
+.stock-table__change-heading {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* A block-level flex box (not the default inline one) so the cell centres it, like the price, instead of sitting on a text baseline that the arrow icon would lift */
+.stock-table__change .price-change {
+  display: flex;
+  justify-content: flex-end;
+}

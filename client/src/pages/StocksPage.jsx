@@ -3,6 +3,8 @@ import { useEffect, useState,useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import stocksApi from "../features/stocks/stocks.api.js";
+import useVisiblePolling from "../hooks/useVisiblePolling.js";
+import MarketStatusBadge from "../features/market/components/MarketStatusBadge.jsx";
 import useWatchlistToggle from "../features/watchlist/hooks/useWatchlistToggle.js";
 import StockFilters from "../features/stocks/components/StockFilters.jsx";
 import StockTable from "../features/stocks/components/StockTable.jsx";
@@ -80,6 +82,16 @@ export default function StocksPage() {
     };
   }, []);
 
+  // Keep prices fresh: a quiet reload every 30 s while the tab is visible (no spinner; a failure keeps the old prices)
+  useVisiblePolling(async () => {
+    try {
+      const response = await stocksApi.getAllStocks();
+      setStocks(response.data);
+    } catch {
+      /* keep showing the prices we have */
+    }
+  });
+
   // 4. Get unique exchanges from the fetched stocks->NSE,BSE
   const exchanges = [...new Set(stocks.map((stock) => stock.exchange))];
 
@@ -120,6 +132,7 @@ return (
     <header className="stocks-page__header">
       <h1>Explore Stocks</h1>
       <p>Browse and discover available stocks.</p>
+      <MarketStatusBadge />
     </header>
 
     {/* 2. Search and filter controls */}
@@ -145,7 +158,7 @@ return (
     {/* 3. Loading state */}
     {loading ? (
       <SkeletonRegion label="Loading stocks">
-        <SkeletonTable columns={5} rows={8} cardsBelow={768} />
+        <SkeletonTable columns={6} rows={8} cardsBelow={768} />
       </SkeletonRegion>
     ) : error ? (
       <p className="stocks-page__error" role="alert">
