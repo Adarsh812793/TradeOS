@@ -54,7 +54,7 @@ export default function UiGalleryPage() {
         <p>Every shared component in every state. Development only.</p>
       </header>
 
-      <Section id="buttons" title="Button" note="Variants by meaning (success = buy, danger = sell or delete), sizes, loading, full width.">
+      <Section id="buttons" title="Button" note="Variants by meaning (success = buy, danger = sell or delete), sizes, loading, full width. `as` makes it a link for navigation.">
         <Button>Primary</Button>
         <Button variant="secondary">Secondary</Button>
         <Button variant="ghost">Ghost</Button>
@@ -65,13 +65,15 @@ export default function UiGalleryPage() {
         <Button size="sm">Small</Button>
         <Button size="lg">Large</Button>
         <Button loading>Placing order</Button>
+        <Button as="a" href="#buttons">As a link</Button>
+        <Button as="a" href="#buttons" variant="secondary" size="lg">As a link, large</Button>
         <Button variant="success" loading>Buying</Button>
         <div className="ui-gallery__field">
           <Button block>Full width</Button>
         </div>
       </Section>
 
-      <Section id="inputs" title="Input" note="Normal, with error, disabled, password.">
+      <Section id="inputs" title="Input" note="Normal, with error, disabled, password, hint. `animateMessage` makes the message area under the field open and close smoothly, taking no room while there is no message (used on login and signup).">
         <div className="ui-gallery__field">
           <Input label="Email" name="gallery-email" placeholder="you@example.com" required />
         </div>
@@ -86,6 +88,7 @@ export default function UiGalleryPage() {
         </div>
         <div className="ui-gallery__field">
           <Input label="Quantity" name="gallery-hint" placeholder="Enter quantity" hint="Whole numbers only" />
+          <Input label="Smooth message (with a hint)" name="gallery-animated" placeholder="animateMessage" hint="This hint sits in the smoothly opening area" animateMessage />
         </div>
       </Section>
 

@@ -83,6 +83,36 @@
   font-size: var(--font-size-xs);
 }
 
+/* The smoothly opening message area (animateMessage in Input.jsx). A grid whose single row animates between 0fr and 1fr:
+   the standard way to animate to "as tall as the content" without knowing the height.
+   The negative margin cancels the 8px flex gap above it, so while it is closed it takes no room at all. */
+.form-field__message {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: calc(var(--space-2) * -1);
+  transition: grid-template-rows 180ms ease;
+}
+
+.form-field__message[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.form-field__message-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* The gap is put back as padding on the message itself, so it only exists while there is a message */
+.form-field__message-inner > * {
+  padding-top: var(--space-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-field__message {
+    transition: none;
+  }
+}
+
 /* Input and password toggle positioning */
 .form-field__input-wrapper {
   position: relative;

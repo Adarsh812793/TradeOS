@@ -1,0 +1,31 @@
+/* The terrain fills whatever positioned parent it is placed in, behind the content. It never takes clicks. */
+.market-terrain {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.market-terrain__still,
+.market-terrain__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* The picture fills the space and is cropped, never stretched */
+.market-terrain__still {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* The live scene starts invisible on top of the picture and fades in once it has drawn its first frame */
+.market-terrain__canvas {
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+
+.market-terrain__canvas--visible {
+  opacity: 1;
+}

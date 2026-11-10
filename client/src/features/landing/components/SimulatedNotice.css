@@ -1,0 +1,65 @@
+/* A band in a lighter surface colour, so it reads as its own section and not as more of the page */
+.simulated-notice {
+  padding-block: var(--space-16);
+  background: var(--color-surface);
+  border-block: var(--border-width) solid var(--color-border);
+}
+
+.simulated-notice__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: var(--space-12);
+  align-items: start;
+}
+
+.simulated-notice__points {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.simulated-notice__point {
+  padding-block: var(--space-4);
+  border-top: var(--border-width) solid var(--color-border-strong);
+
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+}
+
+.simulated-notice__point:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.simulated-notice__point:last-child {
+  padding-bottom: 0;
+}
+
+.simulated-notice__point strong {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.simulated-notice__footnote {
+  max-width: 46em;
+  margin: var(--space-10) 0 0;
+
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .simulated-notice {
+    padding-block: var(--space-12);
+  }
+
+  .simulated-notice__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .simulated-notice__footnote {
+    margin-top: var(--space-8);
+  }
+}

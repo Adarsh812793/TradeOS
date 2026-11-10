@@ -83,9 +83,6 @@ export default function StockHeader({
 
           <PriceChange amount={stock.dayChange} percent={stock.dayChangePercent} arrow />
 
-          <span className="stock-header__price-caption">
-            Current price, change today
-          </span>
 
         </div>
 

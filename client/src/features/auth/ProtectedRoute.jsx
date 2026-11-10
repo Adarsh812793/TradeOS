@@ -2,13 +2,14 @@
 
 import { Navigate, Outlet } from "react-router-dom";
 import useAuth from "./useAuth.js";
+import AppLoading from "../../components/layout/AppLoading.jsx";
 
 export default function ProtectedRoute() {
   const { isAuthenticated, isLoading, sessionEndReason } = useAuth();
 
   // Wait for session restoration before deciding.
   if (isLoading) {
-    return <p>Checking your session...</p>;
+    return <AppLoading />; // the app's spinner, instead of a bare line of text
   }
 
   // Redirect users who are not authenticated.

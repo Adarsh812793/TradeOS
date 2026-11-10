@@ -1,225 +1,152 @@
+import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Link } from "react-router-dom";
-import { ChartNoAxesCombinedIcon } from "lucide-react";
 import Card from "../components/ui/Card.jsx";
 import Input from "../components/ui/Input.jsx";
 import Button from "../components/ui/Button.jsx";
-import "./LoginPage.css";
-
-import { useForm, Controller } from "react-hook-form";
-
-import { zodResolver } from "@hookform/resolvers/zod";
+import AuthLayout from "../features/auth/components/AuthLayout.jsx";
+import AuthMessage from "../features/auth/components/AuthMessage.jsx";
 import { loginSchema } from "../features/auth/login.validation.schema.js";
-
-import { useState } from "react";
-import { useNavigate, useLocation} from "react-router-dom";
 import useAuth from "../features/auth/useAuth.js";
+import useAutoFocusField from "../features/auth/useAutoFocusField.js";
+import runAfterPointerRelease from "../features/auth/runAfterPointerRelease.js";
 import { IDLE_LIMIT_MINUTES } from "../features/auth/idleActivity.js";
 
-export default function LoginPage() {
+// The three rows on the brand side: what is waiting behind the login
+const LOGIN_HIGHLIGHTS = [
+  { title: "Portfolio", text: "Profit and loss, stock by stock, as prices move." },
+  { title: "Orders", text: "Every trade you have placed, in one history." },
+  { title: "Watchlist", text: "The stocks you follow, one click from a trade." },
+];
 
-  //i.state variables and other variables
+// The login page: the shared auth frame around the sign-in form, plus the notices other flows send here
+// (just registered, account deleted, signed out after inactivity).
+export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [serverError, setServerError] = useState("");
+
+  // Notices passed in through the navigation state by the flows that send the user here
   const registrationSuccess = location.state?.registrationSuccess;
   const accountDeleted = location.state?.accountDeleted; // set after deleting the account from the Account page
   const sessionEndReason = location.state?.sessionEndReason; // "idle" or "expired": set when the app signed the user out
 
+  const {
+    control,
+    handleSubmit,
+    setFocus,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    // "onTouched": a field is checked when the visitor leaves it (and then on every change), not only on submit
+    mode: "onTouched",
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-    const {control,handleSubmit,formState: { errors, isSubmitting },} = useForm({
-      resolver:zodResolver(loginSchema),
-      defaultValues: {
-        email: "",
-        password: "",
-      },
-    });
+  useAutoFocusField(setFocus, "email"); // the cursor starts in the email field (on devices with a mouse)
 
-    async function onSubmit(credentials) {
-      setServerError("");
+  // Signs the user in with the form values and opens the dashboard, or shows the server's error message.
+  async function onSubmit(credentials) {
+    setServerError("");
 
-      try {
-        await login(credentials);
+    try {
+      await login(credentials);
 
-        navigate("/dashboard", {
-          replace: true,
-        });
-      } catch (error) {
-        setServerError(
-          error.message || "Login failed. Please try again."
-        );
-      }
+      navigate("/dashboard", {
+        replace: true,
+      });
+    } catch (error) {
+      setServerError(error.message || "Login failed. Please try again.");
     }
+  }
 
   return (
-    <main className="login-page">
+    <AuthLayout
+      title="Pick up where you left off."
+      intro="Your portfolio, orders and watchlist are as you left them."
+      highlights={LOGIN_HIGHLIGHTS}
+      marketChip
+      brightScene
+    >
+      <Card padding="lg">
+        <h2 className="auth-layout__heading">Log in</h2>
+        <p className="auth-layout__subheading">Use your TradeOS account.</p>
 
-      {/* 1. Shared decorative market chart */}
-      <div className="login-page__chart" aria-hidden="true">
-        <svg
-          viewBox="0 0 1000 300"
-          preserveAspectRatio="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <linearGradient id="loginChartArea" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--color-success)" stopOpacity="0.14" />
-              <stop offset="100%" stopColor="var(--color-success)" stopOpacity="0" />
-            </linearGradient>
+        {registrationSuccess && <AuthMessage variant="success">Account created successfully. Please sign in.</AuthMessage>}
 
-            <linearGradient id="loginChartFade" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="white" stopOpacity="1" />
-              <stop offset="65%" stopColor="white" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="white" stopOpacity="0.2" />
-            </linearGradient>
+        {accountDeleted && (
+          <AuthMessage variant="info">Your account has been deleted. We&apos;re sorry to see you go.</AuthMessage>
+        )}
 
-            <mask id="loginChartMask">
-              <rect width="1000" height="300" fill="url(#loginChartFade)" />
-            </mask>
-          </defs>
+        {sessionEndReason && (
+          <AuthMessage variant="info">
+            {sessionEndReason === "idle"
+              ? `You were signed out after ${IDLE_LIMIT_MINUTES} minutes of inactivity. Please sign in again.`
+              : "Your session has expired. Please sign in again."}
+          </AuthMessage>
+        )}
 
-          <g mask="url(#loginChartMask)">
-            <path
-              d="M0 250 L100 210 L170 230 L260 150 L340 180
-                 L420 110 L500 145 L590 75 L670 115
-                 L760 45 L840 80 L920 25 L1000 55
-                 L1000 300 L0 300 Z"
-              fill="url(#loginChartArea)"
-            />
+        {serverError && <AuthMessage variant="error">{serverError}</AuthMessage>}
 
-            <path
-              d="M0 250 L100 210 L170 230 L260 150 L340 180
-                 L420 110 L500 145 L590 75 L670 115
-                 L760 45 L840 80 L920 25 L1000 55"
-              fill="none"
-              stroke="var(--color-success)"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </g>
-        </svg>
-      </div>
-
-      {/* 2. Left panel: Branding and product benefits */}
-      <section className="login-page__brand">
-
-        {/* 2.1 Logo */}
-        <Link to="/login" className="login-page__logo">
-          <span className="login-page__logo-mark" aria-hidden="true">
-            <ChartNoAxesCombinedIcon size={24} />
-          </span>
-          <span>TradeOS</span>
-        </Link>
-
-        {/* 2.2 Introduction */}
-        <div className="login-page__intro">
-          <h1>Your trading journey continues here.</h1>
-          <p>
-            Sign in to explore the markets, manage your virtual portfolio,
-            and track your trading performance.
-          </p>
-        </div>
-
-        {/* 2.3 Product benefits */}
-        <ul className="login-page__features">
-          <li>Explore market data</li>
-          <li>Practice with virtual money</li>
-          <li>Track your portfolio performance</li>
-        </ul>
-      </section>
-
-      {/* 3. Right panel: Login form */}
-      <section className="login-page__form-section">
-        <Card padding="lg">
-          <div className="login-page__form-header">
-            <h2>Welcome back</h2>
-            <p>Sign in to your TradeOS account.</p>
-          </div>
-
-          {registrationSuccess && (
-            <p className="login-page__success" role="status">
-              Account created successfully. Please sign in.
-            </p>
-          )}
-
-          {accountDeleted && (
-            <p className="login-page__success" role="status">
-              Your account has been deleted. We're sorry to see you go.
-            </p>
-          )}
-
-          {sessionEndReason && (
-            <p className="login-page__notice" role="status">
-              {sessionEndReason === "idle"
-                ? `You were signed out after ${IDLE_LIMIT_MINUTES} minutes of inactivity. Please sign in again.`
-                : "Your session has expired. Please sign in again."}
-            </p>
-          )}
-
-          {serverError && (
-            <p className="login-page__error" role="alert">
-              {serverError}
-            </p>
-          )}
-
-          <form className="login-page__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-            {/* 3.1 Email */}
-            <Controller
-              name="email"
-              control={control}
-              render={({ field }) => (
-                <Input
-                  label="Email"
-                  name={field.name}
-                  type="email"
-                  placeholder="you@example.com"
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={errors.email?.message}
-                  autoComplete="email"
-                  required
-                />
-              )}
-            />
-
-            {/* 3.2 Password and recovery link */}
-            <div className="login-page__password-section">
-
-              <Controller
-                name="password"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    label="Password"
-                    name={field.name}
-                    type="password"
-                    placeholder="Enter your password"
-                    value={field.value}
-                    onChange={field.onChange}
-                    error={errors.password?.message}
-                    autoComplete="current-password"
-                    required
-                  />
-                )}
+        <form className="auth-layout__form" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <Input
+                label="Email"
+                name={field.name}
+                type="email"
+                placeholder="you@example.com"
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={() => runAfterPointerRelease(field.onBlur)}
+                ref={field.ref}
+                error={errors.email?.message}
+                autoComplete="email"
+                animateMessage
+                required
               />
-            </div>
+            )}
+          />
 
-            {/* 3.3 Submit */}
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Loging in..." : "Login"}
-            </Button>
-            
-          </form>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <Input
+                label="Password"
+                name={field.name}
+                type="password"
+                placeholder="Enter your password"
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={() => runAfterPointerRelease(field.onBlur)}
+                ref={field.ref}
+                error={errors.password?.message}
+                autoComplete="current-password"
+                animateMessage
+                required
+              />
+            )}
+          />
 
-          {/* 3.4 Signup navigation */}
-          <p className="login-page__signup-link">
-            Don't have an account? <Link to="/signup">Create an account</Link>
-          </p>
-        </Card>
-      </section>
-    </main>
+          <Button type="submit" block loading={isSubmitting}>
+            {isSubmitting ? "Logging in..." : "Log in"}
+          </Button>
+        </form>
+
+        <p className="auth-layout__switch">
+          Don&apos;t have an account? <Link to="/signup">Create an account</Link>
+        </p>
+      </Card>
+    </AuthLayout>
   );
 }

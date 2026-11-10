@@ -17,6 +17,7 @@ export default function Input({
   onChange,
   error,
   hint, // helper text under the field (hidden while there is an error)
+  animateMessage = false, // the message area under the field opens and closes smoothly (no room is kept when there is no message)
   disabled = false,
   required = false,
   autoComplete, // hint for browsers and password managers, e.g. "current-password" or "new-password"
@@ -30,6 +31,19 @@ export default function Input({
 
   const inputType =
     isPassword && isPasswordVisible ? "text" : type;
+
+  // The line under the field: the error if there is one, otherwise the hint (or nothing)
+  const message = error ? (
+    <p id={`${inputId}-error`} className="form-field__error" role="alert">
+      {error}
+    </p>
+  ) : (
+    hint && (
+      <p id={`${inputId}-hint`} className="form-field__hint">
+        {hint}
+      </p>
+    )
+  );
 
   const describedBy = error
     ? `${inputId}-error`
@@ -87,21 +101,14 @@ export default function Input({
         )}
       </div>
 
-      {/* Validation error */}
-      {error ? (
-        <p
-          id={`${inputId}-error`}
-          className="form-field__error"
-          role="alert"
-        >
-          {error}
-        </p>
+      {/* Validation error, or the hint. With animateMessage the area opens smoothly when there is something to say and
+          closes again when there is not, so fields sit at their normal distance while everything is fine. */}
+      {animateMessage ? (
+        <div className="form-field__message" data-open={Boolean(message)}>
+          <div className="form-field__message-inner">{message}</div>
+        </div>
       ) : (
-        hint && (
-          <p id={`${inputId}-hint`} className="form-field__hint">
-            {hint}
-          </p>
-        )
+        message
       )}
     </div>
   );

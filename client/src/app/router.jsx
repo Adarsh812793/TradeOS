@@ -1,6 +1,7 @@
 
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "../features/auth/ProtectedRoute.jsx";
+import GuestRoute from "../features/auth/GuestRoute.jsx";
 
 import AppLayout from "../components/layout/AppLayout.jsx";
 import AppLoading from "../components/layout/AppLoading.jsx";
@@ -64,9 +65,15 @@ const router = createBrowserRouter([
       ...(import.meta.env.DEV
         ? [{ path: "/dev/ui", ...page(() => import("../pages/dev/UiGalleryPage.jsx")) }]
         : []),
-      { path: "/login", ...page(() => import("../pages/LoginPage.jsx")) },
-      { path: "/signup", ...page(() => import("../pages/SignupPage.jsx")) },
-      { path: "/", ...page(() => import("../pages/LoginPage.jsx")) },
+      {
+        // The pages made for visitors: a user who is already logged in is sent to the dashboard instead
+        element: <GuestRoute />,
+        children: [
+          { path: "/", ...page(() => import("../pages/LandingPage.jsx")) },
+          { path: "/login", ...page(() => import("../pages/LoginPage.jsx")) },
+          { path: "/signup", ...page(() => import("../pages/SignupPage.jsx")) },
+        ],
+      },
       { path: "*", element: <NotFoundPage /> },
     ],
   },
