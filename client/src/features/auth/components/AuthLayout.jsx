@@ -4,8 +4,9 @@ import { ChartNoAxesCombined } from "lucide-react";
 import stillImage from "../../../assets/terrain-still.webp";
 import "./AuthLayout.css";
 
-// The frame Login and Signup share: a brand side (logo, headline and the terrain picture from the landing page) next
-// to the form side. On a phone the brand side shrinks to a slim banner above the form.
+// The frame Login and Signup share: ONE terrain picture (the landing page's) behind the whole page, fading into the
+// background with gradients so there is no hard edge, with the brand text on one side and the form on the other.
+// On a phone the brand text becomes a slim header, and the picture dissolves downwards into the form.
 //   title    the page's one <h1>, shown on the brand side
 //   intro    an optional sentence under it (hidden on phones, to keep the form near the top)
 //   points   an optional list of short facts (also hidden on phones)
@@ -15,8 +16,9 @@ import "./AuthLayout.css";
 export default function AuthLayout({ title, intro, points = [], children }) {
   return (
     <main className="auth-layout">
-      <section className="auth-layout__brand">
-        {/* decorative: the same picture as the landing page, so the visitor feels they are still in the same place */}
+      {/* Decorative, behind everything: the same picture as the landing page, so the visitor feels they are still in the
+          same place. The shade over it is what blends it into the page. */}
+      <div className="auth-layout__backdrop" aria-hidden="true">
         <img
           className="auth-layout__image"
           src={stillImage}
@@ -26,8 +28,10 @@ export default function AuthLayout({ title, intro, points = [], children }) {
           decoding="async"
           fetchPriority="low"
         />
-        <div className="auth-layout__shade" aria-hidden="true" />
+        <div className="auth-layout__shade" />
+      </div>
 
+      <section className="auth-layout__brand">
         <div className="auth-layout__brand-content">
           <Link to="/" className="auth-layout__logo" aria-label="TradeOS home">
             <span className="auth-layout__logo-mark" aria-hidden="true">

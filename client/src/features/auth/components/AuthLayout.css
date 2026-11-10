@@ -2,6 +2,9 @@
 .auth-layout {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   min-height: 100vh;
   min-height: 100dvh;
 
@@ -10,34 +13,48 @@
   font-family: var(--font-sans);
 }
 
+/* ONE picture behind the whole page (not just the left half), so there is no edge for the eye to find */
+.auth-layout__backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
 /* ---- Brand side ---- */
 .auth-layout__brand {
-  position: relative;
-  isolation: isolate;
+  position: relative; /* above the picture */
   display: flex;
-  overflow: hidden;
-  border-right: var(--border-width) solid var(--color-border-subtle);
 }
 
 .auth-layout__image {
-  position: absolute;
-  inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 62% bottom; /* keep the lit part of the terrain in view when the picture is cropped */
+  object-position: 30% bottom; /* keep the lit part of the terrain on the left, where it stays visible */
 }
 
-/* Dark at the top, where the text is, fading out so the terrain shows at the bottom */
+/* Two gradients that blend the picture into the page:
+   - left to right: the terrain is clear on the left, fades through the middle and is almost gone behind the form,
+     so there is no seam where the two sides meet
+   - top to bottom: dark where the headline sits, so the text stays readable */
 .auth-layout__shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--color-background) 97%, transparent) 0%,
-    color-mix(in srgb, var(--color-background) 88%, transparent) 42%,
-    transparent 78%
-  );
+  background:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      color-mix(in srgb, var(--color-background) 50%, transparent) 30%,
+      color-mix(in srgb, var(--color-background) 86%, transparent) 55%,
+      color-mix(in srgb, var(--color-background) 94%, transparent) 75%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-background) 95%, transparent) 0%,
+      color-mix(in srgb, var(--color-background) 80%, transparent) 30%,
+      transparent 66%
+    );
 }
 
 .auth-layout__brand-content {
@@ -118,6 +135,7 @@
 
 /* ---- Form side ---- */
 .auth-layout__panel {
+  position: relative; /* above the picture */
   display: grid;
   place-items: center;
   padding: var(--space-10) var(--space-8);
@@ -188,16 +206,22 @@
     grid-template-rows: auto 1fr;
   }
 
-  .auth-layout__brand {
-    border-right: 0;
-    border-bottom: var(--border-width) solid var(--color-border-subtle);
+  /* The picture covers only the top of the page and dissolves downwards into the background behind the form */
+  .auth-layout__backdrop {
+    bottom: auto;
+    height: 320px;
+  }
+
+  .auth-layout__image {
+    object-position: center bottom;
   }
 
   .auth-layout__shade {
     background: linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--color-background) 94%, transparent),
-      color-mix(in srgb, var(--color-background) 72%, transparent)
+      color-mix(in srgb, var(--color-background) 78%, transparent) 0%,
+      color-mix(in srgb, var(--color-background) 60%, transparent) 38%,
+      var(--color-background) 100%
     );
   }
 
