@@ -1,0 +1,222 @@
+/* ---- The frame: brand side | form side (a single column on phones) ---- */
+.auth-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  background: var(--color-background);
+  color: var(--color-text-body);
+  font-family: var(--font-sans);
+}
+
+/* ---- Brand side ---- */
+.auth-layout__brand {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  overflow: hidden;
+  border-right: var(--border-width) solid var(--color-border-subtle);
+}
+
+.auth-layout__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 62% bottom; /* keep the lit part of the terrain in view when the picture is cropped */
+}
+
+/* Dark at the top, where the text is, fading out so the terrain shows at the bottom */
+.auth-layout__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-background) 97%, transparent) 0%,
+    color-mix(in srgb, var(--color-background) 88%, transparent) 42%,
+    transparent 78%
+  );
+}
+
+.auth-layout__brand-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  width: 100%;
+  padding: var(--space-10) clamp(var(--space-8), 5vw, 80px);
+}
+
+.auth-layout__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: fit-content;
+
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+.auth-layout__logo:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 4px;
+  border-radius: var(--radius-md);
+}
+
+/* The same logo tile as the side rail and the landing page */
+.auth-layout__logo-mark {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
+  border-radius: var(--radius-md);
+}
+
+.auth-layout__title {
+  max-width: 14em;
+  margin: 0;
+
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.auth-layout__lead {
+  max-width: 30em;
+  margin: var(--space-4) 0 0;
+
+  color: var(--color-text-body);
+  font-size: var(--font-size-lg);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.auth-layout__points {
+  max-width: 30em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.auth-layout__points li {
+  padding-block: var(--space-3);
+  border-top: var(--border-width) solid var(--color-border-strong);
+  color: var(--color-text-secondary);
+}
+
+/* ---- Form side ---- */
+.auth-layout__panel {
+  display: grid;
+  place-items: center;
+  padding: var(--space-10) var(--space-8);
+}
+
+.auth-layout__panel-inner {
+  width: min(420px, 100%);
+}
+
+.auth-layout__heading {
+  margin: 0;
+
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.auth-layout__subheading {
+  margin: var(--space-1) 0 var(--space-5);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* The form's fields, one under the other */
+.auth-layout__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* "Don't have an account? Create an account" */
+.auth-layout__switch {
+  margin: var(--space-6) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.auth-layout__switch a {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+}
+
+.auth-layout__switch a:hover {
+  text-decoration: underline;
+}
+
+.auth-layout__switch a:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.auth-layout__note {
+  margin: var(--space-5) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* ---- Phones: one column. The brand side becomes a slim banner (logo + headline), so the form starts near the top ---- */
+@media (max-width: 768px) {
+  .auth-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+  }
+
+  .auth-layout__brand {
+    border-right: 0;
+    border-bottom: var(--border-width) solid var(--color-border-subtle);
+  }
+
+  .auth-layout__shade {
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-background) 94%, transparent),
+      color-mix(in srgb, var(--color-background) 72%, transparent)
+    );
+  }
+
+  .auth-layout__brand-content {
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .auth-layout__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .auth-layout__lead,
+  .auth-layout__points {
+    display: none;
+  }
+
+  .auth-layout__panel {
+    place-items: start center;
+    padding: var(--space-6) var(--space-4) var(--space-10);
+  }
+}
