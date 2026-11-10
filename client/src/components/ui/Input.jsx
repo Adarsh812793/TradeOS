@@ -17,6 +17,7 @@ export default function Input({
   onChange,
   error,
   hint, // helper text under the field (hidden while there is an error)
+  reserveErrorSpace = false, // keep room for one line of message under the field, so showing an error never moves what is below
   disabled = false,
   required = false,
   autoComplete, // hint for browsers and password managers, e.g. "current-password" or "new-password"
@@ -30,6 +31,19 @@ export default function Input({
 
   const inputType =
     isPassword && isPasswordVisible ? "text" : type;
+
+  // The line under the field: the error if there is one, otherwise the hint (or nothing)
+  const message = error ? (
+    <p id={`${inputId}-error`} className="form-field__error" role="alert">
+      {error}
+    </p>
+  ) : (
+    hint && (
+      <p id={`${inputId}-hint`} className="form-field__hint">
+        {hint}
+      </p>
+    )
+  );
 
   const describedBy = error
     ? `${inputId}-error`
@@ -87,21 +101,13 @@ export default function Input({
         )}
       </div>
 
-      {/* Validation error */}
-      {error ? (
-        <p
-          id={`${inputId}-error`}
-          className="form-field__error"
-          role="alert"
-        >
-          {error}
-        </p>
+      {/* Validation error, or the hint. With reserveErrorSpace the message sits in a slot that is always one line tall:
+          otherwise an error appearing on blur pushes the next link or button down before the mouse is released, and
+          that click is lost. */}
+      {reserveErrorSpace ? (
+        <div className="form-field__message-slot">{message}</div>
       ) : (
-        hint && (
-          <p id={`${inputId}-hint`} className="form-field__hint">
-            {hint}
-          </p>
-        )
+        message
       )}
     </div>
   );

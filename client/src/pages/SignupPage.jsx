@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, useWatch, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Card from "../components/ui/Card.jsx";
@@ -8,8 +8,10 @@ import Input from "../components/ui/Input.jsx";
 import Button from "../components/ui/Button.jsx";
 import AuthLayout from "../features/auth/components/AuthLayout.jsx";
 import AuthMessage from "../features/auth/components/AuthMessage.jsx";
+import PasswordRuleHint from "../features/auth/components/PasswordRuleHint.jsx";
 import signupSchema from "../features/auth/signup.validation.schema.js";
 import authApi from "../features/auth/auth.api.js";
+import useAutoFocusField from "../features/auth/useAutoFocusField.js";
 
 // What the brand side says about the account: the three facts a new user should know before signing up
 const SIGNUP_POINTS = [
@@ -28,8 +30,11 @@ export default function SignupPage() {
   const {
     control,
     handleSubmit,
+    setFocus,
     formState: { errors, isSubmitting },
   } = useForm({
+    // "onTouched": a field is checked when the visitor leaves it (and then on every change), not only on submit
+    mode: "onTouched",
     resolver: zodResolver(signupSchema),
     defaultValues: {
       name: "",
@@ -38,6 +43,11 @@ export default function SignupPage() {
       confirmPassword: "",
     },
   });
+
+  useAutoFocusField(setFocus, "name"); // the cursor starts in the first field (on devices with a mouse)
+
+  // The password as it is typed, so the hint under it can tick when the rule is met
+  const typedPassword = useWatch({ control, name: "password" });
 
   // Creates the account with the form values and then opens the login page (which says it worked), or shows the error.
   async function onSubmit(data) {
@@ -86,8 +96,11 @@ export default function SignupPage() {
                 placeholder="Enter your full name"
                 value={field.value}
                 onChange={field.onChange}
+                onBlur={field.onBlur}
+                ref={field.ref}
                 error={errors.name?.message}
                 autoComplete="name"
+                reserveErrorSpace
                 required
               />
             )}
@@ -104,8 +117,11 @@ export default function SignupPage() {
                 placeholder="you@example.com"
                 value={field.value}
                 onChange={field.onChange}
+                onBlur={field.onBlur}
+                ref={field.ref}
                 error={errors.email?.message}
                 autoComplete="email"
+                reserveErrorSpace
                 required
               />
             )}
@@ -120,11 +136,14 @@ export default function SignupPage() {
                 name={field.name}
                 type="password"
                 placeholder="Create a password"
-                hint="At least 8 characters"
+                hint={<PasswordRuleHint met={typedPassword.length >= 8} />}
                 value={field.value}
                 onChange={field.onChange}
+                onBlur={field.onBlur}
+                ref={field.ref}
                 error={errors.password?.message}
                 autoComplete="new-password"
+                reserveErrorSpace
                 required
               />
             )}
@@ -141,8 +160,11 @@ export default function SignupPage() {
                 placeholder="Re-enter your password"
                 value={field.value}
                 onChange={field.onChange}
+                onBlur={field.onBlur}
+                ref={field.ref}
                 error={errors.confirmPassword?.message}
                 autoComplete="new-password"
+                reserveErrorSpace
                 required
               />
             )}

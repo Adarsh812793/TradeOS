@@ -83,6 +83,13 @@
   font-size: var(--font-size-xs);
 }
 
+/* Always one line tall (see reserveErrorSpace in Input.jsx), so a message appearing or going away moves nothing */
+.form-field__message-slot {
+  min-height: 1.5em;
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+}
+
 /* Input and password toggle positioning */
 .form-field__input-wrapper {
   position: relative;

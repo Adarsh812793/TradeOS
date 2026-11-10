@@ -73,7 +73,7 @@ export default function UiGalleryPage() {
         </div>
       </Section>
 
-      <Section id="inputs" title="Input" note="Normal, with error, disabled, password.">
+      <Section id="inputs" title="Input" note="Normal, with error, disabled, password, hint. `reserveErrorSpace` keeps a line free under the field so an error appearing does not shift what is below (used on login and signup).">
         <div className="ui-gallery__field">
           <Input label="Email" name="gallery-email" placeholder="you@example.com" required />
         </div>
@@ -88,6 +88,7 @@ export default function UiGalleryPage() {
         </div>
         <div className="ui-gallery__field">
           <Input label="Quantity" name="gallery-hint" placeholder="Enter quantity" hint="Whole numbers only" />
+          <Input label="Reserved message space" name="gallery-reserved" placeholder="Nothing moves when an error appears" reserveErrorSpace />
         </div>
       </Section>
 

@@ -10,6 +10,7 @@ import AuthLayout from "../features/auth/components/AuthLayout.jsx";
 import AuthMessage from "../features/auth/components/AuthMessage.jsx";
 import { loginSchema } from "../features/auth/login.validation.schema.js";
 import useAuth from "../features/auth/useAuth.js";
+import useAutoFocusField from "../features/auth/useAutoFocusField.js";
 import { IDLE_LIMIT_MINUTES } from "../features/auth/idleActivity.js";
 
 // The login page: the shared auth frame around the sign-in form, plus the notices other flows send here
@@ -29,14 +30,19 @@ export default function LoginPage() {
   const {
     control,
     handleSubmit,
+    setFocus,
     formState: { errors, isSubmitting },
   } = useForm({
+    // "onTouched": a field is checked when the visitor leaves it (and then on every change), not only on submit
+    mode: "onTouched",
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
+
+  useAutoFocusField(setFocus, "email"); // the cursor starts in the email field (on devices with a mouse)
 
   // Signs the user in with the form values and opens the dashboard, or shows the server's error message.
   async function onSubmit(credentials) {
@@ -90,8 +96,11 @@ export default function LoginPage() {
                 placeholder="you@example.com"
                 value={field.value}
                 onChange={field.onChange}
+                onBlur={field.onBlur}
+                ref={field.ref}
                 error={errors.email?.message}
                 autoComplete="email"
+                reserveErrorSpace
                 required
               />
             )}
@@ -108,8 +117,11 @@ export default function LoginPage() {
                 placeholder="Enter your password"
                 value={field.value}
                 onChange={field.onChange}
+                onBlur={field.onBlur}
+                ref={field.ref}
                 error={errors.password?.message}
                 autoComplete="current-password"
+                reserveErrorSpace
                 required
               />
             )}
