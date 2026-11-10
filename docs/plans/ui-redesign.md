@@ -61,7 +61,8 @@ Built: exact money maths in whole paise (`utils/money.js`; fixes float drift suc
 Backend: a market-hours module, a provider module that a real vendor can replace later, a price job that moves `Stock.currentPrice` only while the market is open, a holiday list, orders rejected while the market is closed, previous close and daily change, stored candles with backfilled history, tests. Frontend: polling hook and "Simulated" badge. **Done when** prices move during market hours and hold outside them, and orders and P&L stay correct.
 *Learn:* random-walk price models, background jobs, time zones (IST), the provider pattern, polling costs.
 
-### Phase 5. Landing and auth (`feature/landing-page`)
+### Phase 5. Landing and auth (`feature/landing-page`) - DONE 2026-11-10 (awaiting PR)
+Built: `GuestRoute` (logged-in users are sent to `/dashboard` from `/`, `/login` and `/signup`); the `three` dependency (only `three`: no React wrapper, no scroll library; native scrolling); a seeded random-walk terrain drawn as one instanced mesh (1,144 columns), lazy-loaded in its own 133 kB (gzipped) file, paused when off-screen or hidden, with a still picture first and for reduced motion, data saver, weak devices and no WebGL; the landing page (hero, how it works, what you can do, a full "The prices here are simulated" section, footer); `Button as` for real links; a shared `AuthLayout` for login and signup with one picture behind the whole page, gradients instead of a hard edge, and about 570 lines of duplicated CSS removed; validation on blur, autofocus on devices with a mouse, a live password rule, a card entrance, and a fix for a lost-click bug that validating on blur exposed (`runAfterPointerRelease`, `Input animateMessage`); a richer left side on login only (bigger headline, three numbered rows, a market open/closed pill, a brighter picture). Brand copy no longer says "real market data". Checked with maths checks on the simulation, 29 terrain behaviour checks, landing checks on the production build (heading outline, honesty wording, links, no sideways scroll from 320 to 1920 px, no lonely last words, text contrast of at least 5:1 over the moving terrain, keyboard order, slow-4G load with zero layout shift), 32 + 30 + 20 login and signup checks (each key fix mutation-tested), and the earlier phases' regression scripts. Bundle: main JS 347.35 kB to 347.65 kB (unchanged), `three` only in `TerrainScene` (536 kB, 133 kB gzipped), landing page 9.5 kB. Original scope:
 3D terrain with Three.js and React Three Fiber, smooth scrolling on this page only, `/` becomes the landing page and logged-in visitors go to `/dashboard`, login and signup redesign. 3D loads only on this route, pauses off-screen, and shows a still image for weak devices or reduced-motion settings. **Done when** the Landing, Login and Signup sections pass and the app bundle does not include Three.js.
 *Learn:* WebGL basics, instanced rendering, lazy loading, performance budgets, `prefers-reduced-motion`.
 
@@ -92,6 +93,7 @@ Motion, phone and tablet layouts, accessibility, performance, the full checklist
 - **Phase 3 (done):** the Sidebar and its collapse arrow are gone; Login's dead "Forgot password?" link was removed. Carried forward: Back opens pages at the top instead of the old scroll position (pages load their data after they appear); the market strip was only tested against mocked and unconnected FYERS, so check it once with a real FYERS connection; the dashboard's MarketOverview still fetches indices on its own (cheap because of the server cache).
 - **Phase 6:** the Stocks page pagination lists every page number and scrolls sideways once there are many pages (found with 34 pages); it needs ellipsis truncation. The header Buy button is marigold while the Place Order panel's Buy is green: pick one meaning (green = buy).
 - **Phase 4 (done):** the holiday list needs the next year added each January; the price chart (Phase 6) and portfolio performance chart (Phase 7) are still placeholders, and the candles and `/candles` endpoint are ready for the first; the job's cost grows linearly with the number of stocks (batch the writes if the list grows to hundreds); the test database holds ~1,400 leftover test stocks that slow any run of the price job against it.
+- **Phase 5 (done):** a terms-and-conditions checkbox on sign-up ("I understand the money is virtual and prices are simulated", wording from `SimulatedNotice.jsx`, maybe with a stored timestamp) and logging the user in right after sign-up are planned but not built; signup could adopt login's richer left side; the main bundle (110 kB gzipped) dominates the landing page's load on slow connections; the real NIFTY and SENSEX levels are mentioned on the landing page only in a footnote (the FYERS public-display licensing question stays open).
 - **All phases:** prices, tables and big numbers should use `--font-mono` / `--font-display` as each page is rebuilt; Phase 1 only changed the base fonts.
 
 ## Open questions
@@ -117,8 +119,13 @@ Run the sections for the pages a phase touched. "Works" includes the loading sta
 
 ### Landing (new in Phase 5)
 - [ ] `/` shows the landing page when logged out, and goes to `/dashboard` when logged in
-- [ ] Sign up and log in buttons open the right pages
-- [ ] Reduced-motion and phone fallbacks work
+- [ ] Sign up and log in buttons (header, hero, footer) open the right pages
+- [ ] The 3D terrain starts by itself on a wide screen, and the text and buttons are there before it
+- [ ] Scrolling the terrain out of view, or switching tabs, stops it (no frames are drawn)
+- [ ] Reduced motion, data saver, a weak device and a browser without WebGL show the still picture, with the whole page intact
+- [ ] The "Virtual money" and "Simulated prices" badges, the "The prices here are simulated" section and the footer line are all there and readable
+- [ ] Phone: nothing scrolls sideways, buttons fit on one row, the terrain shows below the text
+- [ ] The login and signup pages do not download the 3D code
 
 ### Login (`/login`)
 - [ ] Field validation messages show
@@ -126,13 +133,18 @@ Run the sections for the pages a phase touched. "Works" includes the loading sta
 - [ ] Correct login opens the dashboard
 - [ ] Show/hide password works
 - [ ] Messages after sign-up, account deletion, idle sign-out and expired session all show
-- [ ] "Create an account" link works
+- [ ] "Create an account" link works (without a page reload), and the logo opens the landing page
+- [ ] The cursor starts in the email field on a computer (not on a phone), a field is checked when you leave it, and a failed submit moves the cursor to the first problem
+- [ ] Clicking a link or button right after typing in a field works first time (the error appears after the click)
+- [ ] Wide screens: the left side has the bigger headline, the three numbered rows and the market open/closed pill, over the brighter picture; phones look as before
 - [ ] Known bug before the redesign: "Forgot password?" links to `/forgot-password`, which does not exist
 
 ### Signup (`/signup`)
 - [ ] Validation, including passwords that do not match
 - [ ] Email already in use shows the server's message
 - [ ] Success goes to login with a message, and a new account gets the welcome notification
+- [ ] The password hint ticks at 8 characters; fields sit at their normal distance, and the room under a field opens smoothly only when it shows an error
+- [ ] The line under the form says the money is virtual and prices are simulated
 
 ### Navigation (sidebar or rail)
 - [ ] Every link opens its page: Dashboard, Stocks, Portfolio, Orders, Watchlist, Transactions
