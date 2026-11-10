@@ -12,6 +12,7 @@ import PasswordRuleHint from "../features/auth/components/PasswordRuleHint.jsx";
 import signupSchema from "../features/auth/signup.validation.schema.js";
 import authApi from "../features/auth/auth.api.js";
 import useAutoFocusField from "../features/auth/useAutoFocusField.js";
+import runAfterPointerRelease from "../features/auth/runAfterPointerRelease.js";
 
 // What the brand side says about the account: the three facts a new user should know before signing up
 const SIGNUP_POINTS = [
@@ -96,11 +97,11 @@ export default function SignupPage() {
                 placeholder="Enter your full name"
                 value={field.value}
                 onChange={field.onChange}
-                onBlur={field.onBlur}
+                onBlur={() => runAfterPointerRelease(field.onBlur)}
                 ref={field.ref}
                 error={errors.name?.message}
                 autoComplete="name"
-                reserveErrorSpace
+                animateMessage
                 required
               />
             )}
@@ -117,11 +118,11 @@ export default function SignupPage() {
                 placeholder="you@example.com"
                 value={field.value}
                 onChange={field.onChange}
-                onBlur={field.onBlur}
+                onBlur={() => runAfterPointerRelease(field.onBlur)}
                 ref={field.ref}
                 error={errors.email?.message}
                 autoComplete="email"
-                reserveErrorSpace
+                animateMessage
                 required
               />
             )}
@@ -139,11 +140,11 @@ export default function SignupPage() {
                 hint={<PasswordRuleHint met={typedPassword.length >= 8} />}
                 value={field.value}
                 onChange={field.onChange}
-                onBlur={field.onBlur}
+                onBlur={() => runAfterPointerRelease(field.onBlur)}
                 ref={field.ref}
                 error={errors.password?.message}
                 autoComplete="new-password"
-                reserveErrorSpace
+                animateMessage
                 required
               />
             )}
@@ -160,11 +161,11 @@ export default function SignupPage() {
                 placeholder="Re-enter your password"
                 value={field.value}
                 onChange={field.onChange}
-                onBlur={field.onBlur}
+                onBlur={() => runAfterPointerRelease(field.onBlur)}
                 ref={field.ref}
                 error={errors.confirmPassword?.message}
                 autoComplete="new-password"
-                reserveErrorSpace
+                animateMessage
                 required
               />
             )}

@@ -3,6 +3,9 @@
 // Because it is drawn by the same code with the same seed, it matches the first frame of the live scene exactly,
 // so the cross-fade from picture to 3D is seamless. Run it again whenever the scene's look changes.
 //
+// Two pictures can be made (VARIANT=landing is the default; VARIANT=auth is the brighter, closer one for the login page):
+//   VARIANT=auth BASE_URL=http://localhost:5174 node scripts/make-terrain-still.mjs
+//
 // Needs the Vite dev server running (it serves the scene's source files to the browser):
 //   cd client && npx vite --port 5174 --strictPort
 // Then:
@@ -14,11 +17,19 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:5173";
-const WIDTH = 1600;
-const HEIGHT = 900;
 const QUALITY = 0.8; // WebP quality, 0 to 1
 
-const outFile = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "src", "assets", "terrain-still.webp");
+// What each variant looks like. `options` go straight to createTerrainScene.
+const VARIANTS = {
+  landing: { file: "terrain-still.webp", width: 1600, height: 900, options: {} },
+  // brighter and zoomed in, in the shape of the login page's left side, so the terrain is a real picture there
+  auth: { file: "terrain-still-auth.webp", width: 1200, height: 1100, options: { intensity: 0.95, fov: 26 } },
+};
+const variant = VARIANTS[process.env.VARIANT ?? "landing"];
+if (!variant) throw new Error(`Unknown VARIANT "${process.env.VARIANT}" (use landing or auth)`);
+const { width: WIDTH, height: HEIGHT } = variant;
+
+const outFile = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "src", "assets", variant.file);
 // Optional: PREVIEW_FILE=some/where.png also saves the picture on the page's real background colour, to judge it by eye
 const previewFile = process.env.PREVIEW_FILE;
 
@@ -30,12 +41,12 @@ try {
 
   // Runs inside the browser: draw frame 0 of the scene on an offscreen canvas and read it back as a WebP
   const dataUrl = await page.evaluate(
-    async ({ width, height, quality }) => {
+    async ({ width, height, quality, options }) => {
       const { createTerrainScene } = await import("/src/features/landing/components/TerrainScene.js");
       const { readThemeColors } = await import("/src/features/landing/utils/themeColors.js");
 
       const canvas = document.createElement("canvas");
-      const scene = createTerrainScene(canvas, { colors: readThemeColors(), pixelRatioCap: 1 });
+      const scene = createTerrainScene(canvas, { colors: readThemeColors(), pixelRatioCap: 1, ...options });
 
       scene.resize(width, height);
       scene.renderOnce();
@@ -45,7 +56,7 @@ try {
       scene.dispose();
       return url;
     },
-    { width: WIDTH, height: HEIGHT, quality: QUALITY }
+    { width: WIDTH, height: HEIGHT, quality: QUALITY, options: variant.options }
   );
 
   const bytes = Buffer.from(dataUrl.split(",")[1], "base64");

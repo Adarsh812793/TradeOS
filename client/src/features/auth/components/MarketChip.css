@@ -1,0 +1,29 @@
+/* A pill with its own background, because it sits over the terrain picture and must stay readable on any column behind it */
+.market-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: fit-content;
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-pill);
+
+  color: var(--color-text-body);
+  font-size: var(--font-size-sm);
+}
+
+.market-chip__dot {
+  width: 8px;
+  height: 8px;
+  background: var(--color-text-muted);
+  border-radius: 50%;
+}
+
+/* Open: the "ok" colour, with a soft ring */
+.market-chip__dot--open {
+  background: var(--color-success);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-success) 25%, transparent);
+}

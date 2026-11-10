@@ -32,8 +32,13 @@ const COLOUR_INTENSITY = 0.62; // dims every colour so the terrain stays a backg
 //   colors        { up, down, neutral, fog }: CSS colour strings (read from the theme tokens by the caller)
 //   seed          the same seed always gives the same first picture, which is what makes the still image match
 //   pixelRatioCap the most pixels per CSS pixel to draw: high-density screens would otherwise multiply the work
+//   intensity     how strong the colours are (default COLOUR_INTENSITY: dim, for a background behind text)
+//   fov           the camera's field of view in degrees (default BASE_FOV); a smaller one zooms in, giving bigger columns
 //   onContextLost called if the graphics card drops the scene (the page then falls back to the still image)
-export function createTerrainScene(canvas, { colors, seed = 7, pixelRatioCap = 1.5, onContextLost } = {}) {
+export function createTerrainScene(
+  canvas,
+  { colors, seed = 7, pixelRatioCap = 1.5, intensity = COLOUR_INTENSITY, fov = BASE_FOV, onContextLost } = {}
+) {
   const { columns, rows } = GRID;
   const state = createTerrainState({ columns, rows, seed });
 
@@ -42,7 +47,7 @@ export function createTerrainScene(canvas, { colors, seed = 7, pixelRatioCap = 1
 
   const scene = new Scene();
   const depth = rows * SPACING;
-  const camera = new PerspectiveCamera(BASE_FOV, 16 / 9, 0.1, 200);
+  const camera = new PerspectiveCamera(fov, 16 / 9, 0.1, 200);
   // x is half a column off-centre: with an even number of columns the exact middle is a GAP, and looking straight
   // down a gap showed up as a dark lane running up the picture
   const cameraHome = { x: SPACING / 2, y: depth * 0.55, z: depth / 2 + depth * 0.62 }; // above and behind the near edge
@@ -88,7 +93,7 @@ export function createTerrainScene(canvas, { colors, seed = 7, pixelRatioCap = 1
         placer.updateMatrix();
         mesh.setMatrixAt(index, placer.matrix);
 
-        tint.copy(neutral).lerp(mix >= 0 ? up : down, Math.abs(mix)).multiplyScalar(COLOUR_INTENSITY);
+        tint.copy(neutral).lerp(mix >= 0 ? up : down, Math.abs(mix)).multiplyScalar(intensity);
         mesh.setColorAt(index, tint);
       }
     }
@@ -174,7 +179,7 @@ export function createTerrainScene(canvas, { colors, seed = 7, pixelRatioCap = 1
 
     const aspect = width / height;
     camera.aspect = aspect;
-    camera.fov = aspect >= 1.5 ? BASE_FOV : BASE_FOV + (1.5 - aspect) * 26;
+    camera.fov = aspect >= 1.5 ? fov : fov + (1.5 - aspect) * 26;
     camera.updateProjectionMatrix();
   }
 

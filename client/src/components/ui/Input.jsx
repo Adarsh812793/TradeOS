@@ -17,7 +17,7 @@ export default function Input({
   onChange,
   error,
   hint, // helper text under the field (hidden while there is an error)
-  reserveErrorSpace = false, // keep room for one line of message under the field, so showing an error never moves what is below
+  animateMessage = false, // the message area under the field opens and closes smoothly (no room is kept when there is no message)
   disabled = false,
   required = false,
   autoComplete, // hint for browsers and password managers, e.g. "current-password" or "new-password"
@@ -101,11 +101,12 @@ export default function Input({
         )}
       </div>
 
-      {/* Validation error, or the hint. With reserveErrorSpace the message sits in a slot that is always one line tall:
-          otherwise an error appearing on blur pushes the next link or button down before the mouse is released, and
-          that click is lost. */}
-      {reserveErrorSpace ? (
-        <div className="form-field__message-slot">{message}</div>
+      {/* Validation error, or the hint. With animateMessage the area opens smoothly when there is something to say and
+          closes again when there is not, so fields sit at their normal distance while everything is fine. */}
+      {animateMessage ? (
+        <div className="form-field__message" data-open={Boolean(message)}>
+          <div className="form-field__message-inner">{message}</div>
+        </div>
       ) : (
         message
       )}

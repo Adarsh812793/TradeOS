@@ -11,7 +11,15 @@ import AuthMessage from "../features/auth/components/AuthMessage.jsx";
 import { loginSchema } from "../features/auth/login.validation.schema.js";
 import useAuth from "../features/auth/useAuth.js";
 import useAutoFocusField from "../features/auth/useAutoFocusField.js";
+import runAfterPointerRelease from "../features/auth/runAfterPointerRelease.js";
 import { IDLE_LIMIT_MINUTES } from "../features/auth/idleActivity.js";
+
+// The three rows on the brand side: what is waiting behind the login
+const LOGIN_HIGHLIGHTS = [
+  { title: "Portfolio", text: "Profit and loss, stock by stock, as prices move." },
+  { title: "Orders", text: "Every trade you have placed, in one history." },
+  { title: "Watchlist", text: "The stocks you follow, one click from a trade." },
+];
 
 // The login page: the shared auth frame around the sign-in form, plus the notices other flows send here
 // (just registered, account deleted, signed out after inactivity).
@@ -63,6 +71,9 @@ export default function LoginPage() {
     <AuthLayout
       title="Pick up where you left off."
       intro="Your portfolio, orders and watchlist are as you left them."
+      highlights={LOGIN_HIGHLIGHTS}
+      marketChip
+      brightScene
     >
       <Card padding="lg">
         <h2 className="auth-layout__heading">Log in</h2>
@@ -96,11 +107,11 @@ export default function LoginPage() {
                 placeholder="you@example.com"
                 value={field.value}
                 onChange={field.onChange}
-                onBlur={field.onBlur}
+                onBlur={() => runAfterPointerRelease(field.onBlur)}
                 ref={field.ref}
                 error={errors.email?.message}
                 autoComplete="email"
-                reserveErrorSpace
+                animateMessage
                 required
               />
             )}
@@ -117,11 +128,11 @@ export default function LoginPage() {
                 placeholder="Enter your password"
                 value={field.value}
                 onChange={field.onChange}
-                onBlur={field.onBlur}
+                onBlur={() => runAfterPointerRelease(field.onBlur)}
                 ref={field.ref}
                 error={errors.password?.message}
                 autoComplete="current-password"
-                reserveErrorSpace
+                animateMessage
                 required
               />
             )}
