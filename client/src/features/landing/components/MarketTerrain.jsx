@@ -128,7 +128,16 @@ export default function MarketTerrain({ className = "" }) {
       data-terrain-reason={support.ok ? undefined : support.reason}
       aria-hidden="true"
     >
-      <img className="market-terrain__still" src={stillImage} alt="" width="1600" height="900" decoding="async" />
+      {/* fetchPriority low: the picture is decoration, so the fonts and styles the headline needs download first */}
+      <img
+        className="market-terrain__still"
+        src={stillImage}
+        alt=""
+        width="1600"
+        height="900"
+        decoding="async"
+        fetchPriority="low"
+      />
 
       {support.ok && (
         <canvas

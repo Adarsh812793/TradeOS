@@ -1,25 +1,38 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
-import MarketTerrain from "../features/landing/components/MarketTerrain.jsx";
+import LandingHeader from "../features/landing/components/LandingHeader.jsx";
+import LandingHero from "../features/landing/components/LandingHero.jsx";
+import HowItWorks from "../features/landing/components/HowItWorks.jsx";
+import Features from "../features/landing/components/Features.jsx";
+import SimulatedNotice from "../features/landing/components/SimulatedNotice.jsx";
+import LandingFooter from "../features/landing/components/LandingFooter.jsx";
 import "./LandingPage.css";
 
-// PLACEHOLDER: the real landing page (hero copy, sections, styling) replaces this in step 4 of Phase 5.
-// For now it only hosts the terrain, so the terrain can be built and tested on a real page.
+// The public front page at "/", for visitors who are not logged in (logged-in users are sent to the dashboard).
+// It only puts the sections in order; each section lives in features/landing/components/.
 export default function LandingPage() {
+  // A tab title that says what the page is, restored when the visitor moves on
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = "TradeOS: practise trading with virtual money";
+
+    return () => {
+      document.title = previousTitle;
+    };
+  }, []);
+
   return (
-    <main className="landing-placeholder">
-      <section className="landing-placeholder__hero">
-        <MarketTerrain />
+    <div className="landing-page">
+      <LandingHeader />
 
-        <div className="landing-placeholder__content">
-          <h1>TradeOS</h1>
-          <p>Practise trading Indian stocks with ₹1,00,000 of virtual money.</p>
-          <Link to="/signup">Sign up</Link> <Link to="/login">Log in</Link>
-        </div>
-      </section>
+      <main>
+        <LandingHero />
+        <HowItWorks />
+        <Features />
+        <SimulatedNotice />
+      </main>
 
-      {/* Empty space below the hero, so the hero can be scrolled out of view (this is how the pause is tested) */}
-      <div className="landing-placeholder__spacer" aria-hidden="true" />
-    </main>
+      <LandingFooter />
+    </div>
   );
 }

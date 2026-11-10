@@ -3,11 +3,15 @@
    secondary = a neutral action (cancel, edit)
    ghost     = a quiet action next to other content
    success   = buy       danger = sell / delete
-   `loading` shows a spinner and blocks double clicks while a request runs; `block` makes it full width. */
+   `loading` shows a spinner and blocks double clicks while a request runs; `block` makes it full width.
+   `as` renders something other than a <button>, for navigation: <Button as={Link} to="/signup">. A link is the right
+   element for going to another page (it can be opened in a new tab and is announced as a link), but it looks the
+   same. `disabled` and `loading` only apply to real buttons. */
 
 import "./Button.css";
 
 export default function Button({
+  as: Component = "button", // "button" (default), or a Link / "a" to look like a button but navigate
   children,
   variant = "primary", // primary | secondary | ghost | success | danger
   size = "md", // sm | md | lg
@@ -30,17 +34,19 @@ export default function Button({
     .filter(Boolean)
     .join(" ");
 
+  // `type` and `disabled` exist only on real buttons; on a link they would be meaningless attributes
+  const buttonOnlyProps = Component === "button" ? { type, disabled: disabled || loading } : {};
+
   return (
-    <button
-      type={type}
+    <Component
       className={buttonClass}
-      disabled={disabled || loading}
       aria-busy={loading || undefined}
       onClick={onClick}
+      {...buttonOnlyProps}
       {...rest}
     >
       {loading && <span className="btn__spinner" aria-hidden="true" />}
       {children}
-    </button>
+    </Component>
   );
 }

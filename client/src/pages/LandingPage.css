@@ -1,15 +1,58 @@
-/* PLACEHOLDER styles: replaced in step 4 of Phase 5 */
-.landing-placeholder__hero {
-  position: relative;
+/* The landing page's shared scaffolding: the page, the centred column, and the section heading.
+   Each section's own look lives next to its component in features/landing/components/. */
+.landing-page {
+  position: relative; /* the header floats over the hero, so the page is its positioned parent */
   min-height: 100vh;
-  min-height: 100dvh;
+  background: var(--color-background);
+  color: var(--color-text-body);
+  font-family: var(--font-sans);
 }
 
-.landing-placeholder__content {
-  position: relative; /* above the terrain, which is positioned behind it */
-  padding: var(--space-8);
+/* The centred column every section uses: at most 1120px wide, with a gutter on each side */
+.landing-container {
+  width: min(1120px, 100% - var(--space-6) * 2);
+  margin-inline: auto;
 }
 
-.landing-placeholder__spacer {
-  height: 120vh;
+.landing-section {
+  padding-block: var(--space-16);
+  border-top: var(--border-width) solid var(--color-border-subtle);
+}
+
+.landing-section__title {
+  margin: 0;
+
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.landing-section__intro {
+  max-width: 34em;
+  margin: var(--space-3) 0 0;
+
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .landing-container {
+    width: min(1120px, 100% - var(--space-4) * 2);
+  }
+
+  .landing-section {
+    padding-block: var(--space-12);
+  }
+
+  .landing-section__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .landing-section__intro {
+    font-size: var(--font-size-base);
+  }
 }

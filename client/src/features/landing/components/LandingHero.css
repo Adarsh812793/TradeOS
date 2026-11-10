@@ -1,0 +1,105 @@
+/* The hero is a positioned box: the terrain fills it, a shade sits over the terrain, the text sits over both */
+.landing-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-start;
+  min-height: min(100vh, 860px);
+  min-height: min(100dvh, 860px);
+  overflow: hidden;
+}
+
+/* Three gradients in one layer:
+   - the top, so the header stays readable
+   - from the left, so the headline sits on dark and the terrain shows on the right
+   - the bottom, so the picture melts into the next section instead of ending on a hard edge */
+.landing-hero__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-background) 90%, transparent), transparent 30%),
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-background) 94%, transparent) 0%,
+      color-mix(in srgb, var(--color-background) 82%, transparent) 42%,
+      transparent 78%
+    ),
+    linear-gradient(to top, var(--color-background), transparent 26%);
+}
+
+.landing-hero__content {
+  position: relative;
+  padding-top: clamp(112px, 18vh, 176px);
+  padding-bottom: var(--space-16);
+}
+
+.landing-hero__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-5);
+}
+
+.landing-hero__title {
+  max-width: 16em;
+  margin: 0;
+
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance; /* evens out the lines, so a single word never sits alone on the last one */
+}
+
+.landing-hero__lead {
+  max-width: 34em;
+  margin: var(--space-5) 0 0;
+
+  color: var(--color-text-body);
+  font-size: var(--font-size-lg);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.landing-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+}
+
+.landing-hero__note {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-body); /* small text sits over the terrain, so it needs the brighter of the two greys */
+  font-size: var(--font-size-sm);
+}
+
+@media (max-width: 768px) {
+  /* The text spans the whole width on a phone, so the shade goes top to bottom instead of left to right:
+     solid behind the text, fading out below it so the terrain shows at the bottom of the screen */
+  .landing-hero__shade {
+    background:
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--color-background) 94%, transparent) 0%,
+        color-mix(in srgb, var(--color-background) 88%, transparent) 55%,
+        transparent 82%
+      ),
+      linear-gradient(to top, var(--color-background), transparent 14%);
+  }
+
+  .landing-hero__content {
+    padding-top: 104px;
+    padding-bottom: var(--space-12);
+  }
+
+  .landing-hero__title {
+    font-size: var(--font-size-3xl);
+  }
+
+  .landing-hero__lead {
+    font-size: var(--font-size-base);
+  }
+}

@@ -16,6 +16,7 @@
   font-weight: var(--font-weight-semibold);
   line-height: 1.2;
   white-space: nowrap;
+  text-decoration: none; /* when the button is really a link (<Button as={Link}>) */
 
   cursor: pointer;
   transition:
