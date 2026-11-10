@@ -1,0 +1,15 @@
+/* PLACEHOLDER styles: replaced in step 4 of Phase 5 */
+.landing-placeholder__hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.landing-placeholder__content {
+  position: relative; /* above the terrain, which is positioned behind it */
+  padding: var(--space-8);
+}
+
+.landing-placeholder__spacer {
+  height: 120vh;
+}
