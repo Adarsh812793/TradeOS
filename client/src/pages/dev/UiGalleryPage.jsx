@@ -6,6 +6,7 @@ import Avatar from "../../components/ui/Avatar.jsx";
 import Badge from "../../components/ui/Badge.jsx";
 import Button from "../../components/ui/Button.jsx";
 import Card from "../../components/ui/Card.jsx";
+import DataCard from "../../components/ui/DataCard.jsx";
 import EmptyState from "../../components/ui/EmptyState.jsx";
 import Input from "../../components/ui/Input.jsx";
 import LoadingSpinner from "../../components/ui/LoadingSpinner.jsx";
@@ -198,6 +199,31 @@ export default function UiGalleryPage() {
         <Card padding="sm">Small padding</Card>
         <Card padding="md">Medium padding</Card>
         <Card padding="lg" shadow>Large padding with shadow</Card>
+      </Section>
+
+      <Section id="data-card" title="DataCard" note="The phone version of a table row: title, subtitle and badge, label and value pairs (wide spans both columns, tone colours a signed amount), and a footer. Used by Orders, Transactions and the Watchlist.">
+        <DataCard
+          title="INFY"
+          subtitle="Infosys Limited"
+          badge={<Badge variant="danger">SELL</Badge>}
+          items={[
+            { label: "Quantity", value: 4 },
+            { label: "Price", value: "₹1,601.75" },
+            { label: "Amount", value: "+₹6,407.00", wide: true, tone: "profit" },
+          ]}
+          footer={<Badge variant="success">EXECUTED</Badge>}
+        />
+        <DataCard
+          title="SBIN"
+          subtitle="State Bank of India"
+          badge={<Badge variant="success">BUY</Badge>}
+          items={[
+            { label: "Quantity", value: 15 },
+            { label: "Price", value: "₹745.80" },
+            { label: "Amount", value: "-₹11,187.00", wide: true, tone: "loss" },
+          ]}
+          footer={<Button variant="secondary" size="sm">Details</Button>}
+        />
       </Section>
 
       <Section id="result" title="ResultState" note="Animated tick for success, cross for failure. Used in the order dialog.">

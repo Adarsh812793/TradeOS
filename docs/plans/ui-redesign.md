@@ -85,7 +85,8 @@ Portfolio and dashboard. **Done when** those sections pass and figures match the
 *Learn:* summary-before-detail layouts, reconstructing history from an event log, pure functions for testability.
 *Learn:* summary-before-detail layouts, hand-built SVG charts.
 
-### Phase 8. Remaining pages (`feature/ui-remaining-pages`)
+### Phase 8. Remaining pages (`feature/ui-remaining-pages`) - DONE 2026-11-13 (awaiting PR)
+Built, in seven commits: the shared `DataCard` (the phone version of a table row, on the `/dev/ui` gallery; the Orders and Transactions cards moved onto it, about 180 lines of near-duplicate CSS and three empty dead files removed) and the shared `PageHeader`; Orders (a plain count, a label and value details dialog, a page change keeps the rows on screen instead of flashing a skeleton, Try again, an Explore stocks action); Transactions on the shared `Table` with green sells and red buys; the Watchlist on `Table` and `DataCard` (fixes the table that scrolled sideways on phones), shared buttons, a proper empty and error state; Account with neutral icons, the shared header and the empty Preferences section hidden until it has content; a designed 404 (a rupee coin for the zero, swaying candlesticks, a scrolling ticker, buttons chosen by login state, one clear heading for screen readers, motion off for reduced motion, loaded on demand); docs. Checked before and after with the same test account: every figure on Orders, Transactions, Watchlist and Account is identical (text comparison on desktop and phone), no page errors, no sideways scroll (the Watchlist used to scroll), the order dialog (focus moves in, Esc closes, focus returns to the Details button), the empty state of every page for a new account, the 404 for a visitor and for a logged-in user on desktop and phone (buttons, links, the animation running, and every animation off with reduced motion), lint and build. Main bundle 110.03 kB gzipped (unchanged). Left out on purpose: the watchlist daily change (needs the API to send `previousClose`) and the Preferences contents. Original scope:
 Orders, transactions, watchlist, account, 404. **Done when** those sections pass.
 *Learn:* table-to-card responsive patterns, dialog accessibility.
 
@@ -255,22 +256,31 @@ Run the sections for the pages a phase touched. "Works" includes the loading sta
 - [ ] Table on wide screens, cards on narrow screens
 
 ### Orders (`/orders`)
-- [ ] List loads, pagination works
-- [ ] "View details" opens and closes the dialog, in table and card layouts
-- [ ] Empty and error states
+- [ ] List loads, pagination works; a page change keeps the rows on screen (dimmed) instead of a skeleton
+- [ ] "Details" opens the dialog in the table and card layouts; focus moves into it, Esc closes it and focus returns to the Details button
+- [ ] The dialog shows stock, type, quantity, price, total value, status and date
+- [ ] Empty state (with an Explore stocks button), error state (Try again) and a failed page change (a banner above the rows)
+- [ ] Phone: cards, nothing scrolls sideways
 
 ### Watchlist (`/watchlist`)
-- [ ] List loads with prices shown in rupees
-- [ ] "View" opens the stock; "Remove" removes it and shows the server's message on failure
-- [ ] Empty and error states
+- [ ] List loads with prices shown in rupees; the table on wide screens and cards on phones (no sideways scroll)
+- [ ] "View" opens the stock; "Remove" removes it (with a loading state) and shows the server's message on failure
+- [ ] Empty state (with an Explore stocks button) and error state (Try again)
+- [ ] Prices refresh every 30 s without a flash
 
 ### Transactions (`/transactions`)
-- [ ] Ledger loads; BUY shows `-₹`, SELL shows `+₹`
+- [ ] Ledger loads; BUY shows `-₹` in red, SELL shows `+₹` in green, in the table and in the cards
 - [ ] Pagination; a failed page change keeps the rows and shows the banner
 - [ ] Empty state's button and error state's Retry
 
+### 404 (any unknown address, new in Phase 8)
+- [ ] A visitor sees "Back to home" and "Log in"; a logged-in user sees "Go to Dashboard" and "Browse stocks"; every button goes where it says
+- [ ] The coin bobs and flips, the candlesticks sway and the ticker scrolls; with reduced motion in the system settings nothing moves
+- [ ] Phone: nothing scrolls sideways and the buttons are reachable
+- [ ] Screen readers hear one heading ("404, page not found") and the browser tab says "Page not found"
+
 ### Account (`/account`)
-- [ ] All five sections open and close independently
+- [ ] All four sections (Personal Information, Security, Trading Account, Danger Zone) open and close independently; there is no Preferences section; the icons are neutral and only the danger one is red
 - [ ] Personal: edit name, save, cancel, validation; navbar updates at once
 - [ ] Photo: pick, crop, confirm, cancel, remove, full-size preview, "Change photo", wrong type and too-large errors
 - [ ] Security: change password (wrong current, same password, success), other devices signed out, Log out

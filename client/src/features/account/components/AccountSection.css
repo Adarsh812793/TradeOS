@@ -43,8 +43,8 @@
   width: 36px;
   height: 36px;
   border-radius: var(--radius-md);
-  background: var(--color-success-tint);
-  color: var(--color-success);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-secondary); /* neutral: green is reserved for up, profit and buy */
 }
 
 .account-section--danger .account-section__icon {

@@ -18,6 +18,9 @@ export default function useOrders() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Changing this number re-runs the effect below, which reloads the current page (the Try again button)
+  const [refreshKey, setRefreshKey] = useState(0);
+
   const { page, limit } = pagination;
 
   useEffect(() => {
@@ -65,7 +68,7 @@ export default function useOrders() {
     return () => {
       isMounted = false;
     };
-  }, [page, limit]);
+  }, [page, limit, refreshKey]);
 
   function changePage(nextPage) {
     setPagination((prev) => ({
@@ -80,5 +83,6 @@ export default function useOrders() {
     loading,
     error,
     changePage,
+    retry: () => setRefreshKey((key) => key + 1),
   };
 }

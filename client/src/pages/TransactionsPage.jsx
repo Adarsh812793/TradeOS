@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import useTransactions from "../features/transactions/hooks/useTransactions.js";
 
-import TransactionsHeader from "../features/transactions/components/TransactionsHeader.jsx";
+import PageHeader from "../components/layout/PageHeader.jsx";
 import TransactionsTable from "../features/transactions/components/TransactionsTable.jsx";
 
 import Button from "../components/ui/Button.jsx";
@@ -57,7 +57,11 @@ export default function TransactionsPage() {
 
   return (
     <section className="transactions-page">
-      <TransactionsHeader totalItems={pagination.totalItems} />
+      <PageHeader
+        title="Transactions"
+        subtitle="A ledger of every buy and sell on your account"
+        aside={`${pagination.totalItems} ${pagination.totalItems === 1 ? "transaction" : "transactions"}`}
+      />
 
       {/* A failed page change keeps the old rows and shows this above them */}
       {error && (
@@ -68,7 +72,7 @@ export default function TransactionsPage() {
 
       {hasNothingToShow ? (
         <EmptyState
-          icon="orders"
+          icon="transactions"
           title="No transactions yet"
           description="Every buy and sell you make will be recorded here."
           actionLabel="Explore stocks"
