@@ -1,4 +1,4 @@
-
+import { toChartTime } from "../../../utils/chart.utils.js";
 
 // Today, 10:42 AM  /  01 Nov, 10:42 AM
 export function formatLastUpdated(date) {
@@ -89,4 +89,16 @@ export function getAllocation(holdings, maxSlices = 5) {
       percent: (restValue / total) * 100,
     },
   ];
+}
+
+
+// The account value history as the chart wants it: [{ time (UTC seconds), value }] (the value is holdings + cash).
+export function toAccountValueLine(points) {
+  return points.map((point) => ({ time: toChartTime(point.time), value: point.totalValue }));
+}
+
+// The wording under the chart when part of the line is not a certain price: true when any point is an estimate
+// (a stock had no price history yet, so the price of the user's own trade was used).
+export function hasEstimatedPoints(points) {
+  return points.some((point) => point.estimated);
 }
