@@ -12,3 +12,9 @@ export function formatSignedAmount(type, value, currency = "INR") {
 export function getTypeBadgeVariant(type) {
   return type === "BUY" ? "success" : "danger";
 }
+
+
+// Colour of an amount: a SELL puts money in (green), a BUY takes money out (red)
+export function getAmountTone(type) {
+  return type === "SELL" ? "profit" : "loss";
+}

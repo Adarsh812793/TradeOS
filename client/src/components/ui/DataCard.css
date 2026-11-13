@@ -1,106 +1,103 @@
-
-.order-card {
+/* The shared phone card: header, label and value grid, footer */
+.data-card {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-
-  padding: var(--space-4);
-
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-
   min-width: 0;
+  padding: var(--space-4);
+  box-sizing: border-box;
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
 }
 
-/* Header */
-
-.order-card__header {
+.data-card__header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-3);
 }
 
-.order-card__stock {
+.data-card__heading {
   min-width: 0;
 }
 
-.order-card__symbol {
+.data-card__title {
   margin: 0;
-
   color: var(--color-text-primary);
   font-size: var(--font-size-base);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
-.order-card__company {
+.data-card__subtitle {
   margin: var(--space-1) 0 0;
-
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
-
   overflow-wrap: anywhere;
 }
 
-/* Order details */
-
-.order-card__details {
+/* Label and value pairs, two per row */
+.data-card__items {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-3);
-
+  margin: 0;
   padding: var(--space-3) 0;
-
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
+  border-top: var(--border-width) solid var(--color-border-subtle);
+  border-bottom: var(--border-width) solid var(--color-border-subtle);
 }
 
-.order-card__item {
+.data-card__item {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-
   min-width: 0;
 }
 
-.order-card__item span {
+.data-card__item--wide {
+  grid-column: 1 / -1;
+}
+
+.data-card__item dt {
   color: var(--color-text-secondary);
   font-size: var(--font-size-xs);
 }
 
-.order-card__item strong {
+.data-card__item dd {
+  margin: 0;
   color: var(--color-text-primary);
+  font-family: var(--font-mono);
   font-size: var(--font-size-sm);
-  font-weight: 600;
-
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
 
-.order-card__item--total {
-  grid-column: 1 / -1;
+.data-card__value--profit {
+  color: var(--color-success) !important;
 }
 
-/* Footer */
+.data-card__value--loss {
+  color: var(--color-danger) !important;
+}
 
-.order-card__footer {
+.data-card__footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
 }
 
-.order-card__meta {
+/* A status badge and a date side by side in the footer, and a lone date */
+.data-card__meta {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-2);
-
-  min-width: 0;
 }
 
-.order-card__date {
+.data-card__date {
   color: var(--color-text-secondary);
   font-size: var(--font-size-xs);
-  line-height: 1.4;
 }

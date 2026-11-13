@@ -1,58 +1,35 @@
-
 import Badge from "../../../components/ui/Badge.jsx";
+import DataCard from "../../../components/ui/DataCard.jsx";
 
 import { formatCurrency } from "../../../utils/currency.utils.js";
 import { formatDateTime } from "../../../utils/date.utils.js";
 import {
   formatSignedAmount,
+  getAmountTone,
   getTypeBadgeVariant,
 } from "../utils/transactions.utils.js";
 
-import "./TransactionCard.css";
-
-// Tablet / phone version of a table row
+// Phone version of a Transactions table row, built on the shared DataCard
 export default function TransactionCard({ transaction }) {
   const stock = transaction.stockId;
   const currency = stock?.currency || "INR";
 
   return (
-    <article className="transaction-card">
-      <div className="transaction-card__header">
-        <div className="transaction-card__stock">
-          <h3 className="transaction-card__symbol">{stock?.symbol ?? "—"}</h3>
-
-          <p className="transaction-card__company">
-            {stock?.companyName ?? "Unknown stock"}
-          </p>
-        </div>
-
-        <Badge variant={getTypeBadgeVariant(transaction.type)}>
-          {transaction.type}
-        </Badge>
-      </div>
-
-      <div className="transaction-card__details">
-        <div className="transaction-card__item">
-          <span>Quantity</span>
-          <strong>{transaction.quantity}</strong>
-        </div>
-
-        <div className="transaction-card__item">
-          <span>Price</span>
-          <strong>{formatCurrency(transaction.executionPrice, currency)}</strong>
-        </div>
-
-        <div className="transaction-card__item transaction-card__item--wide">
-          <span>Amount</span>
-          <strong>
-            {formatSignedAmount(transaction.type, transaction.totalValue, currency)}
-          </strong>
-        </div>
-      </div>
-
-      <p className="transaction-card__date">
-        {formatDateTime(transaction.executedAt)}
-      </p>
-    </article>
+    <DataCard
+      title={stock?.symbol ?? "—"}
+      subtitle={stock?.companyName ?? "Unknown stock"}
+      badge={<Badge variant={getTypeBadgeVariant(transaction.type)}>{transaction.type}</Badge>}
+      items={[
+        { label: "Quantity", value: transaction.quantity },
+        { label: "Price", value: formatCurrency(transaction.executionPrice, currency) },
+        {
+          label: "Amount",
+          value: formatSignedAmount(transaction.type, transaction.totalValue, currency),
+          tone: getAmountTone(transaction.type),
+          wide: true,
+        },
+      ]}
+      footer={<span className="data-card__date">{formatDateTime(transaction.executedAt)}</span>}
+    />
   );
 }
