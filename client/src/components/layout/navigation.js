@@ -17,7 +17,7 @@ const WATCHLIST = { label: "Watchlist", path: "/watchlist", icon: Eye };
 const TRANSACTIONS = { label: "Transactions", path: "/transactions", icon: ReceiptText };
 export const ACCOUNT = { label: "Account", path: "/account", icon: UserRound };
 
-// Icon rail: the six main pages, with Account pinned at the bottom
+// Icon rail: the six main pages (Account is reached from the profile menu at the top right, and from More on phones)
 export const RAIL_ITEMS = [DASHBOARD, STOCKS, PORTFOLIO, ORDERS, WATCHLIST, TRANSACTIONS];
 
 // Phone bottom bar: the four most used pages, then "More"
