@@ -6,14 +6,12 @@ import PriceChange from "../../../../components/ui/PriceChange.jsx";
 import SegmentedControl from "../../../../components/ui/SegmentedControl.jsx";
 import Skeleton from "../../../../components/ui/Skeleton.jsx";
 import { formatCurrency } from "../../../../utils/currency.utils.js";
+import { RANGE_PHRASES, formatChartTime, toChartTime } from "../../../../utils/chart.utils.js";
 import useCandles from "../../hooks/useCandles.js";
 import {
-  RANGE_PHRASES,
-  formatCandleTime,
   getFirstLiveTime,
   getRangeChange,
   hasSyntheticCandles,
-  toChartTime,
 } from "../../utils/candles.utils.js";
 import "./StockPriceChart.css";
 
@@ -89,7 +87,7 @@ export default function StockPriceChart({ stock }) {
         {shown ? (
           <>
             <span className="price-chart__readout-time">
-              {formatCandleTime(shown.time, data.interval === "5m")}
+              {formatChartTime(shown.time, data.interval === "5m")}
             </span>
             {mode === "candles" ? (
               <>
@@ -140,7 +138,7 @@ export default function StockPriceChart({ stock }) {
         <span>
           {hasGenerated
             ? firstLive
-              ? `Prices before ${formatCandleTime(toChartTime(firstLive))} are generated history; live simulated prices start there.`
+              ? `Prices before ${formatChartTime(toChartTime(firstLive))} are generated history; live simulated prices start there.`
               : "These prices are generated history, not real market data."
             : "Prices are simulated, not real market data."}{" "}
           Chart by{" "}
