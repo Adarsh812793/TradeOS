@@ -49,6 +49,11 @@
   overflow-wrap: anywhere;
 }
 
+/* The card opens the stock when clicked (Buy and Sell keep their own action) */
+.holding-card.is-clickable-row {
+  cursor: pointer;
+}
+
 /* Buy / Sell share the card width */
 .holding-card .holding-actions {
   display: grid;

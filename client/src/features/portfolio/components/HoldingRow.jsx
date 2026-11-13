@@ -1,15 +1,22 @@
 
+import { useNavigate } from "react-router-dom";
+
 import HoldingStock from "./HoldingStock.jsx";
 import HoldingActions from "./HoldingActions.jsx";
 
 import PriceChange from "../../../components/ui/PriceChange.jsx";
 import { formatCurrency } from "../../../utils/currency.utils.js";
+import { handleRowClick } from "../../../components/ui/rowClick.js";
 
 export default function HoldingRow({ holding }) {
   const { stock } = holding;
+  const navigate = useNavigate();
 
   return (
-    <tr>
+    <tr
+      className="is-clickable-row"
+      onClick={(event) => handleRowClick(event, navigate, `/stocks/${stock._id}`)}
+    >
       <td>
         <HoldingStock stock={stock} />
       </td>

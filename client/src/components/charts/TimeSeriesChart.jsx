@@ -131,7 +131,12 @@ export default function TimeSeriesChart({
     }
 
     return () => {
-      chart.removeSeries(series);
+      // When the whole chart is leaving (the page changed), React runs effect 1's cleanup BEFORE this one: the chart is
+      // already destroyed (chartRef is null) and destroying a chart removes its series too. Asking a destroyed chart
+      // to remove a series it has forgotten throws "Value is undefined", which crashed the page. While the chart is
+      // alive (a new range, style or colour) the old series is removed as usual.
+      if (chartRef.current === chart) chart.removeSeries(series);
+
       seriesRef.current = null;
     };
   }, [data, kind, isUp, fitKey, priceFormat]);

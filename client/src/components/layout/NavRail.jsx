@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { ChartNoAxesCombined } from "lucide-react";
 
-import { ACCOUNT, RAIL_ITEMS } from "./navigation.js";
+import { RAIL_ITEMS } from "./navigation.js";
 import "./NavRail.css";
 
 // One icon link in the rail. The name shows as a tooltip on hover and keyboard focus, and is read out by screen readers.
@@ -40,10 +40,6 @@ export default function NavRail() {
           </li>
         ))}
       </ul>
-
-      <div className="nav-rail__account">
-        <RailLink item={ACCOUNT} />
-      </div>
     </nav>
   );
 }
