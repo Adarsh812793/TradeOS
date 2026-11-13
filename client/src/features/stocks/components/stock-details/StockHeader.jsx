@@ -1,6 +1,7 @@
 
 import { Bookmark} from "lucide-react";
 import { formatCurrency } from "../../../../utils/currency.utils.js";
+import Button from "../../../../components/ui/Button.jsx";
 import PriceChange from "../../../../components/ui/PriceChange.jsx";
 import MarketStatusBadge from "../../../market/components/MarketStatusBadge.jsx";
 import "./StockHeader.css";
@@ -87,21 +88,14 @@ export default function StockHeader({
         </div>
 
         <div className="stock-header__actions">
-          <button
-            type="button"
-            className="stock-header__action-button stock-header__action-button--buy"
-            onClick={() => onTradeAction("buy")}
-          >
+          {/* Green = buy, red = sell, here and in the order panel */}
+          <Button variant="success" onClick={() => onTradeAction("buy")}>
             Buy
-          </button>
+          </Button>
 
-          <button
-            type="button"
-            className="stock-header__action-button stock-header__action-button--sell"
-            onClick={() => onTradeAction("sell")}
-          >
+          <Button variant="danger" onClick={() => onTradeAction("sell")}>
             Sell
-          </button>
+          </Button>
         </div>
 
       </div>

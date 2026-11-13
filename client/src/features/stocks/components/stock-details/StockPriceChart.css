@@ -1,122 +1,133 @@
-/* ==========================================
-   Price Chart
-========================================== */
-
+/* The price chart card on the stock page */
 .price-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
   width: 100%;
   min-width: 0;
-  padding: 20px;
+  padding: var(--space-5);
   box-sizing: border-box;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   color: var(--color-text-primary);
 }
 
-/* Header */
-
 .price-chart__header {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 18px;
+  gap: var(--space-3);
 }
 
-.price-chart__header h2 {
+.price-chart__title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
 }
 
-.price-chart__advanced-btn {
+.price-chart__change {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 7px;
-  background: var(--color-surface);
-  color: var(--color-text-secondary);
-  font-size: 12px;
-  cursor: not-allowed;
-  opacity: 0.7;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: var(--space-1) 0 0;
 }
 
-/* Time ranges */
-
-.price-chart__ranges {
-  display: flex;
-  margin-bottom: 16px;
-  overflow-x: auto; /* the control scrolls inside, never the page */
+.price-chart__phrase {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
 }
 
-/* Empty state */
+/* Style and range switches: side by side, wrapping under each other on narrow screens */
+.price-chart__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  max-width: 100%;
+}
 
-.price-chart__empty {
+/* The line above the chart that follows the crosshair; a fixed height so the chart never moves */
+.price-chart__readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  min-height: 1.5em;
+  margin: 0;
+  color: var(--color-text-body);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.price-chart__readout-time {
+  color: var(--color-text-muted);
+}
+
+/* The chart box: states and the chart share one height */
+.price-chart__body {
+  position: relative;
+  height: 340px;
+  min-width: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* While another range loads, the old chart stays visible but dimmed */
+.price-chart__body--loading {
+  opacity: 0.55;
+}
+
+.price-chart__canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.price-chart__message {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 240px;
-  padding: 24px;
-  box-sizing: border-box;
-  border: 1px solid var(--color-border);
-  border-radius: 9px;
-  background: var(--color-surface-subtle);
+  gap: var(--space-3);
+  height: 100%;
+  border: var(--border-width) dashed var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
   text-align: center;
 }
 
-.price-chart__empty-icon {
+.price-chart__message p {
+  margin: 0;
+}
+
+.price-chart__note {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  margin-bottom: 18px;
-  border-radius: 50%;
-  background: var(--color-info-tint);
-  color: var(--color-info);
-}
-
-.price-chart__empty h3 {
-  margin: 0 0 8px;
-  color: var(--color-text-primary);
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.price-chart__empty p {
-  max-width: 480px;
+  align-items: flex-start;
+  gap: var(--space-2);
   margin: 0;
   color: var(--color-text-muted);
-  font-size: 13px;
-  line-height: 1.7;
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
 }
 
-/* Responsive */
+.price-chart__note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.price-chart__note a {
+  color: var(--color-text-secondary);
+}
 
 @media (max-width: 768px) {
   .price-chart {
-    padding: 16px;
+    padding: var(--space-4);
   }
 
-  .price-chart__header h2 {
-    font-size: 16px;
-  }
-
-  .price-chart__empty {
-    min-height: 200px;
-    padding: 20px 14px;
-  }
-
-  .price-chart__empty h3 {
-    font-size: 14px;
-  }
-
-  .price-chart__empty p {
-    font-size: 12px;
+  .price-chart__body {
+    height: 260px;
   }
 }

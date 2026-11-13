@@ -1,62 +1,22 @@
+/* The stock list only styles what the shared Table does not: the stock identity, exchange badge and row buttons */
 
-/* 1. Table container */
-.stock-table-wrapper {
-  width: 100%;
-  min-width: 0;
-  overflow-x: auto;
-  background: var(--color-surface);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-lg);
-}
-
-/* 2. Table structure */
-.stock-table {
-  width: 100%;
-  border-collapse: collapse;
-  color: var(--color-text-body);
-  font-family: var(--font-sans);
-  font-size: var(--font-size-sm);
-  text-align: left;
-}
-
-/* 3. Headers and cells */
-.stock-table th,
-.stock-table td {
-  padding: var(--space-3) var(--space-4);
-  border-bottom: var(--border-width) solid var(--color-border);
-  vertical-align: middle;
-}
-
-.stock-table th {
-  background: var(--color-surface-subtle);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
-.stock-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.stock-table tbody tr:hover {
-  background: var(--color-surface-subtle);
-}
-
-/* 4. Stock identity */
+/* Stock identity: icon square, symbol over company name */
 .stock-table__stock-link {
   display: inline-flex;
   align-items: center;
   gap: var(--space-3);
   color: var(--color-text-primary);
   text-decoration: none;
-  white-space: nowrap;
 }
 
 .stock-table__stock-link:hover .stock-table__symbol {
   text-decoration: underline;
+}
+
+.stock-table__stock-link:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
 }
 
 .stock-table__symbol-icon {
@@ -68,37 +28,38 @@
   height: 36px;
   border-radius: var(--radius-md);
   background: var(--color-surface-subtle);
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
 }
 
+.stock-table__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .stock-table__symbol {
+  color: var(--color-text-primary);
   font-weight: var(--font-weight-semibold);
 }
 
-/* 5. Company name */
 .stock-table__company {
   color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
 }
 
-/* 6. Price */
+/* Price: the big readable number of the row */
 .stock-table__price {
   color: var(--color-text-primary);
   font-weight: var(--font-weight-semibold);
-  text-align: right;
-  white-space: nowrap;
 }
 
-.stock-table__price-heading {
-  text-align: right;
-}
-
-/* 7. Exchange badge */
-.stock-table__exchange,
-.stock-table__exchange-heading {
-  text-align: center;
-  white-space: nowrap;
+/* PriceChange is inline-flex; as a block-level flex it right-aligns inside the cell without a text baseline lifting the arrow */
+.data-table .data-table__num .price-change {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .stock-table__exchange-badge {
@@ -110,28 +71,19 @@
   font-size: var(--font-size-xs);
 }
 
-/* 8. Actions — fixed alignment */
-.stock-table__actions,
-.stock-table__actions-heading {
-  width: 112px;
-  text-align: center;
-  white-space: nowrap;
-}
-
+/* Row buttons (watchlist, open details) */
 .stock-table__actions-group {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: var(--space-2);
 }
 
-.stock-table__bookmark,
-.stock-table__details-link {
+.stock-table__icon-button {
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 36px;
   width: 36px;
   height: 36px;
   padding: 0;
@@ -139,82 +91,43 @@
   border-radius: var(--radius-md);
   background: var(--color-surface);
   color: var(--color-text-secondary);
-}
-
-.stock-table__bookmark {
+  text-decoration: none;
   cursor: pointer;
 }
 
-.stock-table__bookmark:hover:not(:disabled) {
+.stock-table__icon-button:hover:not(:disabled) {
   background: var(--color-surface-subtle);
   color: var(--color-text-primary);
 }
 
-/* In the watchlist: filled icon (same look as the mobile card) */
-.stock-table__bookmark--saved {
-  background: var(--color-surface-subtle);
-  color: var(--color-text-primary);
-}
-
-.stock-table__bookmark:focus-visible {
+.stock-table__icon-button:focus-visible {
   outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }
 
-.stock-table__bookmark:disabled {
+.stock-table__icon-button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-.stock-table__details-link {
-  text-decoration: none;
+/* In the watchlist: marigold tint, like the saved bookmark elsewhere */
+.stock-table__icon-button--saved {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  color: var(--color-primary);
 }
 
-.stock-table__details-link:hover {
-  background: var(--color-surface-subtle);
-  color: var(--color-text-primary);
+/* The Actions heading is for screen readers only */
+.stock-table__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
 }
 
-.stock-table__details-link:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
-}
-
-/* 9. Empty state */
 .stock-table__empty {
   padding: var(--space-8);
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
   text-align: center;
-}
-
-/* 10. Smaller desktop/tablet widths */
-@media (max-width: 900px) {
-  .stock-table th,
-  .stock-table td {
-    padding: var(--space-3);
-  }
-
-  .stock-table__symbol-icon {
-    width: 32px;
-    height: 32px;
-  }
-
-  .stock-table__actions,
-  .stock-table__actions-heading {
-    width: 100px;
-  }
-}
-
-/* Today's change: right-aligned like the price beside it */
-.stock-table__change,
-.stock-table__change-heading {
-  text-align: right;
-  white-space: nowrap;
-}
-
-/* A block-level flex box (not the default inline one) so the cell centres it, like the price, instead of sitting on a text baseline that the arrow icon would lift */
-.stock-table__change .price-change {
-  display: flex;
-  justify-content: flex-end;
 }
