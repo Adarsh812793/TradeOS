@@ -13,6 +13,18 @@ const getUserPortfolio = asyncWrap(async (req, res, next) => {
 
 });
 
+// Returns the user's account value (holdings + cash) per trading day for the requested range
+const getPortfolioHistory = asyncWrap(async (req, res) => {
+    const history = await portfolioService.getPortfolioHistory(req.user.userId, req.query.range);
+
+    res.status(200).json({
+        success: true,
+        message: "Portfolio history retrieved successfully",
+        data: history
+    });
+});
+
 export default {
-    getUserPortfolio
+    getUserPortfolio,
+    getPortfolioHistory
 };
