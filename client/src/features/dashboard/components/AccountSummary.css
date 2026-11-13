@@ -1,187 +1,88 @@
-
-/* 1. Account Summary Layout */
+/* Account summary: a wide hero card (account value) and three smaller cards it is made of */
 .account-summary {
-  width: 100%;
-  color: var(--color-text-primary);
-}
-
-.account-summary__header {
-  margin-bottom: 20px;
-}
-
-.account-summary__title {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.3px;
-}
-
-.account-summary__subtitle {
-  margin: 6px 0 0;
-  color: var(--color-text-secondary);
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-/* 2. Summary Cards Grid */
-.account-summary__grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: minmax(0, 1.7fr) repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  min-width: 0;
 }
 
 .account-summary__card {
-  min-width: 0;
-  padding: 20px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease;
-}
-
-.account-summary__card:hover {
-  border-color: var(--color-border-strong);
-  box-shadow: var(--shadow-sm);
-}
-
-/* 3. Card Content */
-.account-summary__card-top {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
 }
 
 .account-summary__label {
   color: var(--color-text-secondary);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.5;
-}
-
-.account-summary__icon {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  font-size: 19px;
-  font-weight: 600;
-}
-
-.account-summary__icon--green {
-  color: var(--color-primary);
-  background: var(--color-primary-tint);
-}
-
-.account-summary__icon--blue {
-  color: var(--color-info);
-  background: var(--color-info-tint);
-}
-
-.account-summary__icon--purple {
-  color: var(--color-chart-2);
-  background: color-mix(in srgb, var(--color-chart-2) 16%, transparent);
-}
-
-.account-summary__icon--red {
-  color: var(--color-danger);
-  background: var(--color-danger-tint);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .account-summary__value {
-  margin: 20px 0 8px;
+  margin: 0;
   overflow-wrap: anywhere;
   color: var(--color-text-primary);
-  font-size: clamp(19px, 1.6vw, 25px);
-  font-weight: 650;
-  letter-spacing: -0.6px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-semibold);
   font-variant-numeric: tabular-nums;
 }
 
-.account-summary__value--green {
-  color: var(--color-success);
+.account-summary__value--hero {
+  font-family: var(--font-display);
+  font-size: clamp(var(--font-size-3xl), 4vw, var(--font-size-4xl));
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
 }
 
-.account-summary__value--red {
-  color: var(--color-danger);
+.account-summary__pnl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 0;
 }
 
 .account-summary__description {
   margin: 0;
-  color: var(--color-text-secondary);
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-/* 4. Loading and Error States */
-.account-summary__message,
-.account-summary__error {
-  margin: 0;
-  padding: 20px;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  background: var(--color-surface);
-  font-size: 14px;
-}
-
-.account-summary__message {
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
 }
 
 .account-summary__error {
-  color: var(--color-danger);
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--color-danger-border);
+  border-radius: var(--radius-lg);
   background: var(--color-danger-tint);
-  border-color: var(--color-danger-border);
+  color: var(--color-danger);
 }
 
-.account-summary__retry {
-  margin-top: 12px;
-  padding: 9px 14px;
-  border: 1px solid var(--color-border);
-  border-radius: 7px;
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  font: inherit;
-  font-size: 13px;
-  cursor: pointer;
+.account-summary__error p {
+  margin: 0;
 }
 
-.account-summary__retry:hover {
-  background: var(--color-surface-subtle);
-}
-
-/* 5. Responsive Layout */
+/* Tablet: the hero takes the first row, the three cards share the second */
 @media (max-width: 1100px) {
-  .account-summary__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .account-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .account-summary__card--hero {
+    grid-column: 1 / -1;
   }
 }
 
-@media (max-width: 520px) {
-  .account-summary__header {
-    margin-bottom: 16px;
-  }
-
-  .account-summary__grid {
+@media (max-width: 600px) {
+  .account-summary {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: var(--space-3);
   }
-
-  .account-summary__card {
-    padding: 16px;
-  }
-
-  .account-summary__value {
-    margin-top: 14px;
-    font-size: 23px;
-  }
-}
-
-.account-summary__market {
-  margin-top: 8px;
 }

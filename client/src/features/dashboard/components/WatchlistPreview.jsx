@@ -1,30 +1,31 @@
-
-/* 1. Imports */
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import { getWatchlist } from "../dashboard.api.js";
 import useVisiblePolling from "../../../hooks/useVisiblePolling.js";
 import { formatCurrency } from "../../../utils/currency.utils.js";
+import Button from "../../../components/ui/Button.jsx";
+import Card from "../../../components/ui/Card.jsx";
+import EmptyState from "../../../components/ui/EmptyState.jsx";
 import { SkeletonList, SkeletonRegion } from "../../../components/ui/Skeleton.jsx";
 import "./WatchlistPreview.css";
 
-// 3. Watchlist Preview Component
+// The dashboard's watchlist card: up to five saved stocks with their current price; each row opens the stock page.
+// Reloads quietly every 30 s so the prices stay fresh.
 export default function WatchlistPreview() {
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Changing this number re-runs the effect below, which reloads the watchlist (Retry button)
+  // Changing this number re-runs the effect below, which reloads the watchlist (Try again button)
   const [refreshKey, setRefreshKey] = useState(0);
 
   const navigate = useNavigate();
 
-  // 3.1 Fetch the user's watchlist when the component mounts and whenever refreshKey changes.
   useEffect(() => {
     // Prevents state updates after the component has been left
     let isMounted = true;
 
-    // Fetches the watchlist and fills the list (or the error message)
     async function loadWatchlist() {
       try {
         setLoading(true);
@@ -32,17 +33,11 @@ export default function WatchlistPreview() {
 
         const response = await getWatchlist();
 
-        if (isMounted) {
-          setStocks(response.data);
-        }
+        if (isMounted) setStocks(response.data);
       } catch (err) {
-        if (isMounted) {
-          setError(err.message || "Unable to load your watchlist.");
-        }
+        if (isMounted) setError(err.message || "Unable to load your watchlist.");
       } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+        if (isMounted) setLoading(false);
       }
     }
 
@@ -53,7 +48,7 @@ export default function WatchlistPreview() {
     };
   }, [refreshKey]);
 
-  // Keep prices fresh: a quiet reload every 30 s while the tab is visible (a failure keeps the list as it is)
+  // Keep prices fresh: a quiet reload (no skeleton; a failure keeps the list as it is)
   useVisiblePolling(async () => {
     try {
       const response = await getWatchlist();
@@ -63,99 +58,68 @@ export default function WatchlistPreview() {
     }
   });
 
-  // 3.2 Display loading and error states.
-  if (loading) {
-    return (
-      <section className="watchlist-preview">
-        <SkeletonRegion label="Loading watchlist">
-          <SkeletonList rows={3} rowHeight={64} />
-        </SkeletonRegion>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="watchlist-preview">
-        <p className="watchlist-preview__error">{error}</p>
-
-        <button
-          className="watchlist-preview__button"
-          onClick={() => setRefreshKey((key) => key + 1)}
-        >
-          Retry
-        </button>
-      </section>
-    );
-  }
-
-  // 3.3 Display the watchlist preview.
   return (
-    <section className="watchlist-preview">
+    <Card className="watchlist-preview" padding="lg" shadow>
       <div className="watchlist-preview__header">
-        <div>
-          <h2 className="watchlist-preview__title">
-            My Watchlist
-          </h2>
-          <p className="watchlist-preview__subtitle">
-            Stocks you're keeping an eye on
-          </p>
-        </div>
+        <h2 className="watchlist-preview__title">Watchlist</h2>
 
-        <button
-          className="watchlist-preview__button"
-          onClick={() => navigate("/watchlist")}
-        >
-          View all →
-        </button>
+        <Button as={Link} to="/watchlist" variant="ghost" size="sm">
+          View all
+        </Button>
       </div>
 
-      {stocks.length === 0 ? (
-        <div className="watchlist-preview__empty">
-          <p className="watchlist-preview__empty-title">
-            Your watchlist is empty
-          </p>
-          <p className="watchlist-preview__empty-description">
-            Add stocks to keep track of their current prices.
-          </p>
-          <button
-            className="watchlist-preview__button"
-            onClick={() => navigate("/stocks")}
-          >
-            Explore stocks →
-          </button>
+      {loading ? (
+        <SkeletonRegion label="Loading watchlist">
+          <SkeletonList rows={3} rowHeight={56} />
+        </SkeletonRegion>
+      ) : error ? (
+        <div className="watchlist-preview__error" role="alert">
+          <p>{error}</p>
+          <Button variant="secondary" size="sm" onClick={() => setRefreshKey((key) => key + 1)}>
+            Try again
+          </Button>
         </div>
+      ) : stocks.length === 0 ? (
+        <EmptyState
+          icon="watchlist"
+          title="Your watchlist is empty"
+          description="Add stocks to keep track of their prices."
+          actionLabel="Explore stocks"
+          onAction={() => navigate("/stocks")}
+        />
       ) : (
-        <div className="watchlist-preview__list">
+        <ul className="watchlist-preview__list">
           {stocks.slice(0, 5).map((item) => {
             const stock = item.stockId;
 
             return (
-              <article
-                className="watchlist-preview__item"
-                key={item._id}
-              >
-                <div className="watchlist-preview__icon" aria-hidden="true">
-                  ↗
-                </div>
-
-                <div className="watchlist-preview__details">
-                  <span className="watchlist-preview__symbol">
-                    {stock?.symbol ?? "Unknown stock"}
+              <li key={item._id}>
+                <Link
+                  to={stock ? `/stocks/${stock._id}` : "/watchlist"}
+                  className="watchlist-preview__item"
+                >
+                  <span className="watchlist-preview__avatar" aria-hidden="true">
+                    {(stock?.symbol ?? "?").slice(0, 2)}
                   </span>
-                  <p className="watchlist-preview__company">
-                    {stock?.companyName ?? ""}
-                  </p>
-                </div>
 
-                <p className="watchlist-preview__price">
-                  {formatCurrency(stock?.currentPrice)}
-                </p>
-              </article>
+                  <span className="watchlist-preview__details">
+                    <span className="watchlist-preview__symbol">
+                      {stock?.symbol ?? "Unknown stock"}
+                    </span>
+                    <span className="watchlist-preview__company">
+                      {stock?.companyName ?? ""}
+                    </span>
+                  </span>
+
+                  <span className="watchlist-preview__price">
+                    {formatCurrency(stock?.currentPrice)}
+                  </span>
+                </Link>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
-    </section>
+    </Card>
   );
 }

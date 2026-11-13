@@ -1,31 +1,30 @@
+import { TrendingUp } from "lucide-react";
 
-/* 1. Portfolio Performance Component */
+import Card from "../../../components/ui/Card.jsx";
 import "./PortfolioPerformance.css";
 
+// Placeholder until the history endpoint exists (PR 2 of Phase 7). The chart will show "account value": your holdings
+// plus your cash, day by day.
 export default function PortfolioPerformance() {
   return (
-    <section className="portfolio-performance">
-      {/* 1.1 Card Header */}
-      <div className="portfolio-performance__header">
-        <div>
-          <h2>Portfolio Performance</h2>
-          <p>Track your investment performance over time</p>
-        </div>
-      </div>
+    <Card className="portfolio-performance" padding="lg" shadow>
+      <h2 className="portfolio-performance__title">Account value</h2>
+      <p className="portfolio-performance__subtitle">
+        Your holdings plus your cash, over time.
+      </p>
 
-      {/* 1.2 Chart Empty State */}
       <div className="portfolio-performance__empty">
-        <div className="portfolio-performance__empty-icon">
-          📈
-        </div>
+        <span className="portfolio-performance__icon" aria-hidden="true">
+          <TrendingUp size={28} />
+        </span>
 
-        <h3>Performance Chart Under Development</h3>
+        <h3>History coming soon</h3>
 
         <p>
-          We're working on bringing you historical portfolio
-          performance and interactive charts. Stay tuned!
+          The chart will appear here once we can show how your account value
+          has changed day by day.
         </p>
       </div>
-    </section>
+    </Card>
   );
 }
