@@ -71,8 +71,18 @@ Built: `lightweight-charts` 5.3.0 (agreed with the user; the TradingView logo an
 Stocks list and stock details, with a real chart (library to be agreed; `lightweight-charts` requires a TradingView attribution) and the order panel beside it. **Done when** the Stocks and Stock details sections pass.
 *Learn:* chart libraries, information hierarchy, tabular numbers.
 
-### Phase 7. Money pages (`feature/ui-portfolio-dashboard`)
+### Phase 7. Money pages - split into two PRs
+**PR 1 (`feature/ui-portfolio-dashboard`) - DONE 2026-11-13 (awaiting PR):** Portfolio page: three summary cards with a hero "Current value" (green in profit, red in loss, white at zero), "Invested" and one "Total return" card through `PriceChange`; Buy and Sell on holdings are the shared `Button as={Link}`; the chart placeholder is renamed "Account value" with a neutral icon. Dashboard: an h1 with a welcome line and the market badges; a hero "Account value" (cash plus holdings) with the unrealised P&L under it and Cash, Holdings and Invested cards; the value placeholder beside the watchlist, recent activity below; Market Overview removed (the top strip shows NIFTY and SENSEX); watchlist rows link to the stock page; recent activity uses `Badge` and shows how long ago; shared `Card`, `Button`, `EmptyState` throughout. Checked with before/after runs of the same test account (5 holdings, one sell, 2 watchlist stocks): every figure on both pages is identical to before, the new Account value equals cash plus holdings (31,456.70 + 68,905.62 = 1,00,362.32), the hero colour was checked for profit (real), loss and zero (intercepted API answers), plus lint, build, desktop and phone screenshots, no page errors, no sideways scroll. Original scope:
 Portfolio and dashboard. **Done when** those sections pass and figures match the old version for the same account.
+
+**PR 2 (`feature/portfolio-history`) - the account value history chart.** Decisions (2026-11-13): chart the **account value** (holdings plus cash, so buying and selling alone never looks like a gain or loss), rebuilt on the server from the ledger and the daily candles; no snapshot collection.
+- *Calculation:* start from today's real state (the `Holding` quantities and the `Wallet` balance) and walk the trading days backwards. For each day: value = cash + sum of (shares x that day's daily close), then undo that day's transactions (undo a buy: shares minus quantity, cash plus `totalValue`; undo a sell: the opposite). Several trades on one day are undone together (one point per day). Today's point is NOT built from candles: it is `getUserPortfolio().summary.totalCurrentValue` plus the wallet balance, so it matches the existing calculation to the paisa.
+- *Edge cases:* no trades gives `firstTradeAt: null` and no points; a day with no candle for a stock uses that stock's latest earlier close; no candle at all before a day uses the latest trade price and marks the point `estimated: true`; weekends and holidays have no point; a deleted stock is left out (as the portfolio service does); the range starts no earlier than the first trade.
+- *Reuse:* `portfolioService.getUserPortfolio`, `utils/money.js` (`lineTotal`, `sumMoney`, `addMoney`, `subtractMoney`), `market.hours.js` (`getTradingDay`, `istMidnight`, `isTradingDay`), and the `Transaction`, `Holding`, `Wallet` and daily `Candle` models. No duplicated financial maths.
+- *Endpoint:* `GET /api/portfolio/history?range=1W|1M|3M|1Y|ALL` (protected, Joi, default 1M; no 1D). Response: `{ range, currency, firstTradeAt, points: [{ date, time, holdingsValue, cash, totalValue, estimated }], summary: { startValue, endValue, change, changePercent } }`. Three queries per request (the user's transactions, the daily candles of every stock they ever held, today's portfolio and wallet). The logic is a pure `rebuildHistory({ holdings, cash, transactions, closes, days })` in `portfolio.history.js`, with the queries in the service.
+- *Tests:* unit tests of the pure function (no trades, one buy, buy and sell on one day, buys on different days, missing candle, no candle, weekend, deleted stock, and a forward replay from 1,00,000 that must equal the backwards result); integration tests (401, 400 for a bad range, a new user, real orders then the last point equals wallet plus portfolio value, points use inserted candles); a mutation check (break the undo-sell rule and see a test fail).
+- *Commits:* 1 pure `rebuildHistory` + unit tests; 2 endpoint + integration tests; 3 frontend (`getPortfolioHistory`, `usePortfolioHistory`, chart on Portfolio and Dashboard, reusing the Phase 6 chart canvas); 4 docs.
+*Learn:* summary-before-detail layouts, reconstructing history from an event log, pure functions for testability.
 *Learn:* summary-before-detail layouts, hand-built SVG charts.
 
 ### Phase 8. Remaining pages (`feature/ui-remaining-pages`)
@@ -191,12 +201,14 @@ Run the sections for the pages a phase touched. "Works" includes the loading sta
 - [ ] Phone width: the daily change shows on cards, labels wrap, no sideways scroll
 
 ### Dashboard (`/dashboard`)
-- [ ] Account summary figures load (and follow price changes every 30 s), and the error state's reload works
-- [ ] "Market open/closed" and "Simulated" labels show under the Account Summary title
-- [ ] Portfolio performance section shows
-- [ ] Market overview shows NIFTY and SENSEX; Refresh and retry work
-- [ ] Watchlist preview: "View all", browse stocks when empty, Retry
-- [ ] Recent activity: "View all", browse stocks when empty, Retry
+- [ ] Heading "Dashboard" with "Welcome back, <first name>." and the "Market open/closed" and "Simulated" labels
+- [ ] Account value equals Cash + Holdings; the unrealised P&L under it (amount and percent) matches the Portfolio page
+- [ ] Cash, Holdings and Invested figures load, follow price changes every 30 s, and "Try again" works after a failed load
+- [ ] The "Account value" placeholder shows (until the history chart is built)
+- [ ] There is no Market Overview card; the top strip still shows NIFTY and SENSEX
+- [ ] Watchlist: "View all", each row opens its stock page, "Explore stocks" when empty, "Try again"
+- [ ] Recent activity: BUY / SELL and status badges, "x min ago", "View all", "Explore stocks" when empty, "Try again"
+- [ ] Phone: the cards stack, nothing scrolls sideways
 
 ### Stocks (`/stocks`)
 - [ ] List loads; search, exchange filter and sort work
@@ -230,7 +242,9 @@ Run the sections for the pages a phase touched. "Works" includes the loading sta
 - [ ] Company information shows
 
 ### Portfolio (`/portfolio`)
-- [ ] Summary cards correct, Refresh works without clearing the page
+- [ ] Summary cards correct (Current value, Invested, Total return with amount and percent), Refresh works without clearing the page
+- [ ] The Current value is green in profit, red in loss and white at exactly zero
+- [ ] The "Account value" placeholder shows beside the allocation donut
 - [ ] Allocation donut and legend match the holdings
 - [ ] Holdings search and sort work; Buy and Sell links open the right form
 - [ ] Empty state's button goes to Stocks; error state's Retry works
