@@ -212,7 +212,7 @@ return (
       <div className="stock-details-page__primary">
         <MarketSummary stock={stock} />
 
-        <StockPriceChart />
+        <StockPriceChart stock={stock} />
 
         {/* Bottom-left section */}
         <div className="stock-details-page__bottom">
