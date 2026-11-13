@@ -40,8 +40,8 @@
   height: 56px;
   margin-bottom: var(--space-4);
   border-radius: 50%;
-  background: var(--color-success-tint);
-  color: var(--color-success);
+  background: var(--color-surface-raised);
+  color: var(--color-text-secondary); /* neutral: green is reserved for up / profit / buy */
 }
 
 .portfolio-value-chart__empty h3 {

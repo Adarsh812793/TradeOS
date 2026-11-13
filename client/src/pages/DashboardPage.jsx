@@ -1,41 +1,39 @@
-
-/* 1. Dashboard Components */
 import AccountSummary from "../features/dashboard/components/AccountSummary.jsx";
 import PortfolioPerformance from "../features/dashboard/components/PortfolioPerformance.jsx";
 import RecentActivity from "../features/dashboard/components/RecentActivity.jsx";
 import WatchlistPreview from "../features/dashboard/components/WatchlistPreview.jsx";
-import MarketOverview from "../features/dashboard/components/MarketOverview.jsx";
+import MarketStatusBadge from "../features/market/components/MarketStatusBadge.jsx";
+import useCurrentUser from "../features/account/useCurrentUser.js";
 
 import "./DashboardPage.css";
 
-/* 2. Dashboard Page */
+// The dashboard: how the account is doing at a glance. Top to bottom: the account value and what it is made of,
+// the value history (a placeholder for now) beside the watchlist, then the latest orders.
 export default function DashboardPage() {
+  const { user } = useCurrentUser();
+  const firstName = user?.name?.trim().split(" ")[0];
+
   return (
     <div className="dashboard-page">
-      {/* 2.1 Account Summary */}
-      <section className="dashboard-page__account">
-        <AccountSummary />
-      </section>
+      <header className="dashboard-page__header">
+        <div>
+          <h1 className="dashboard-page__title">Dashboard</h1>
+          <p className="dashboard-page__subtitle">
+            {firstName ? `Welcome back, ${firstName}.` : "Your account at a glance."}
+          </p>
+        </div>
 
-      {/* 2.2 Portfolio Performance */}
-      <section className="dashboard-page__portfolio">
+        <MarketStatusBadge />
+      </header>
+
+      <AccountSummary />
+
+      <div className="dashboard-page__middle">
         <PortfolioPerformance />
-      </section>
-
-      {/* 2.3 Market Overview */}
-      <section className="dashboard-page__market">
-        <MarketOverview />
-      </section>
-
-      {/* 2.4 Watchlist Preview */}
-      <section className="dashboard-page__watchlist">
         <WatchlistPreview />
-      </section>
+      </div>
 
-      {/* 2.5 Recent Activity */}
-      <section className="dashboard-page__activity">
-        <RecentActivity />
-      </section>
+      <RecentActivity />
     </div>
   );
 }

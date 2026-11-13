@@ -1,280 +1,90 @@
-
-/* 1. Recent Activity Container */
+/* The dashboard recent activity card */
 .recent-activity {
-  width: 100%;
-  color: var(--color-text-primary);
+  min-width: 0;
 }
 
 .recent-activity__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 
 .recent-activity__title {
   margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.3px;
-}
-
-.recent-activity__subtitle {
-  margin: 6px 0 0;
-  color: var(--color-text-secondary);
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-/* 2. View All and Retry Actions */
-.recent-activity__view-all,
-.recent-activity__retry {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 9px 13px;
-  border: 1px solid var(--color-border);
-  border-radius: 7px;
-  background: var(--color-surface);
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  white-space: nowrap;
-  cursor: pointer;
-  transition:
-    background-color 160ms ease,
-    border-color 160ms ease;
 }
 
-.recent-activity__view-all:hover,
-.recent-activity__retry:hover {
-  background: var(--color-surface-subtle);
-  border-color: var(--color-border-strong);
-}
-
-.recent-activity__view-all:focus-visible,
-.recent-activity__retry:focus-visible {
-  outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
-}
-
-/* 3. Recent Orders List */
 .recent-activity__list {
-  overflow: hidden;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .recent-activity__item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 18px 20px;
-  transition: background-color 160ms ease;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-2);
 }
 
 .recent-activity__item + .recent-activity__item {
-  border-top: 1px solid var(--color-border-subtle);
+  border-top: var(--border-width) solid var(--color-border-subtle);
 }
 
-.recent-activity__item:hover {
-  background: var(--color-surface-subtle);
-}
-
-/* 4. Order Type Indicator */
-.recent-activity__type {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.recent-activity__type--buy {
-  color: var(--color-success);
-  background: var(--color-success-tint);
-}
-
-.recent-activity__type--sell {
-  color: var(--color-danger);
-  background: var(--color-danger-tint);
-}
-
-/* 5. Stock and Trade Details */
 .recent-activity__details {
-  flex: 1;
-  min-width: 0;
-}
-
-.recent-activity__stock-line {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 9px;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .recent-activity__symbol {
   color: var(--color-text-primary);
-  font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
-.recent-activity__trade-type {
-  padding: 3px 8px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-.recent-activity__trade-type--buy {
-  color: var(--color-success);
-  background: var(--color-success-tint);
-}
-
-.recent-activity__trade-type--sell {
-  color: var(--color-danger);
-  background: var(--color-danger-tint);
-}
-
-.recent-activity__company {
-  margin: 6px 0 0;
-  overflow: hidden;
+.recent-activity__meta {
   color: var(--color-text-secondary);
-  font-size: 12px;
-  line-height: 1.5;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: var(--font-size-xs);
 }
 
-/* 6. Order Value and Status */
 .recent-activity__right {
   display: flex;
-  flex-shrink: 0;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 7px;
+  align-items: center;
+  gap: var(--space-3);
 }
 
-.recent-activity__price {
-  margin: 0;
+.recent-activity__amount {
   color: var(--color-text-primary);
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   font-variant-numeric: tabular-nums;
 }
 
-.recent-activity__status {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 9px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-}
-
-.recent-activity__status--success {
-  color: var(--color-success);
-  background: var(--color-success-tint);
-}
-
-.recent-activity__status--warning {
-  color: var(--color-warning);
-  background: var(--color-warning-tint);
-}
-
-.recent-activity__status--danger {
-  color: var(--color-danger);
-  background: var(--color-danger-tint);
-}
-
-.recent-activity__status--neutral {
-  color: var(--color-text-body);
-  background: var(--color-surface-subtle);
-}
-
-/* 7. Loading, Error, and Empty States */
-.recent-activity__message,
 .recent-activity__error {
-  margin: 0;
-  padding: 20px;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  background: var(--color-surface);
-  font-size: 14px;
-}
-
-.recent-activity__message {
-  color: var(--color-text-secondary);
-}
-
-.recent-activity__error {
-  color: var(--color-danger);
-  background: var(--color-danger-tint);
-  border-color: var(--color-danger-border);
-}
-
-.recent-activity__empty {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 36px 20px;
-  border: 1px dashed var(--color-border-strong);
-  border-radius: 12px;
-  background: var(--color-surface);
-  text-align: center;
+  align-items: flex-start;
+  gap: var(--space-3);
+  color: var(--color-danger);
 }
 
-.recent-activity__empty-title {
+.recent-activity__error p {
   margin: 0;
-  color: var(--color-text-primary);
-  font-size: 15px;
-  font-weight: 600;
 }
 
-.recent-activity__empty-description {
-  margin: 8px 0 18px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-/* 8. Responsive Layout */
+/* Phone: the status badge drops under the amount so the row never overflows */
 @media (max-width: 520px) {
-  .recent-activity__header {
-    align-items: flex-start;
-  }
-
-  .recent-activity__item {
-    gap: 10px;
-    padding: 15px 12px;
-  }
-
-  .recent-activity__type {
-    width: 36px;
-    height: 36px;
-    font-size: 19px;
-  }
-
-  .recent-activity__price {
-    font-size: 12px;
-  }
-
-  .recent-activity__status {
-    padding: 4px 6px;
-    font-size: 9px;
-  }
-
-  .recent-activity__company {
-    max-width: 180px;
+  .recent-activity__right {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-1);
   }
 }

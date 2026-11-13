@@ -42,33 +42,10 @@
   font-weight: var(--font-weight-medium);
 }
 
-/* Buy / Sell links (reuse the base .btn look from Button.css) */
+/* Buy / Sell are the shared Button (see HoldingActions.jsx); this only lays the pair out */
 .holding-actions {
   display: inline-flex;
   gap: var(--space-2);
-}
-
-.holding-action {
-  background: var(--color-surface);
-  text-decoration: none;
-}
-
-.holding-action--buy {
-  color: var(--color-success);
-  border-color: var(--color-success);
-}
-
-.holding-action--buy:hover {
-  background: var(--color-success-tint);
-}
-
-.holding-action--sell {
-  color: var(--color-danger);
-  border-color: var(--color-danger);
-}
-
-.holding-action--sell:hover {
-  background: var(--color-danger-tint);
 }
 
 /* Cards are hidden on wide screens */

@@ -1,37 +1,37 @@
-
 import { useEffect, useState } from "react";
-import {
-  getWallet,
-  getPortfolio,
-} from "../dashboard.api.js";
+
+import { getWallet, getPortfolio } from "../dashboard.api.js";
 import { formatCurrency } from "../../../utils/currency.utils.js";
 import useVisiblePolling from "../../../hooks/useVisiblePolling.js";
-import MarketStatusBadge from "../../market/components/MarketStatusBadge.jsx";
+import Button from "../../../components/ui/Button.jsx";
+import Card from "../../../components/ui/Card.jsx";
+import PriceChange from "../../../components/ui/PriceChange.jsx";
 import { SkeletonRegion, SkeletonStats } from "../../../components/ui/Skeleton.jsx";
 import "./AccountSummary.css";
 
-const formatPercentage = (value) => {
-  return `${Number(value ?? 0).toFixed(2)}%`;
-};
-
-// Turns the wallet and portfolio answers into the four summary figures
+// Turns the wallet and portfolio answers into the figures the dashboard shows. Account value is cash plus what the
+// holdings are worth now (both are already rounded to paise, so the sum is rounded back to paise).
 const buildSummary = (walletResponse, portfolioResponse) => {
   const portfolioSummary = portfolioResponse.data.summary;
+  const cash = walletResponse.data.balance;
 
   return {
-    walletBalance: walletResponse.data.balance,
+    accountValue: Math.round((cash + portfolioSummary.totalCurrentValue) * 100) / 100,
+    cash,
     investedAmount: portfolioSummary.totalInvestedValue,
-    currentValue: portfolioSummary.totalCurrentValue,
+    holdingsValue: portfolioSummary.totalCurrentValue,
     unrealizedPnL: portfolioSummary.totalUnrealizedPnL,
     pnlPercentage: portfolioSummary.totalPnLPercentage,
   };
 };
 
-// 2. Account Summary
+// The top of the dashboard: the account value as a hero (cash plus holdings, with the unrealised profit or loss under
+// it), then the three figures it is made of. Reloads quietly every 30 s so the numbers follow the prices.
 export default function AccountSummary() {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     let isActive = true;
@@ -41,25 +41,16 @@ export default function AccountSummary() {
         setLoading(true);
         setError("");
 
-        const [walletResponse, portfolioResponse] =
-          await Promise.all([
-            getWallet(),
-            getPortfolio(),
-          ]);
+        const [walletResponse, portfolioResponse] = await Promise.all([
+          getWallet(),
+          getPortfolio(),
+        ]);
 
-        if (!isActive) return;
-
-        setSummary(buildSummary(walletResponse, portfolioResponse));
+        if (isActive) setSummary(buildSummary(walletResponse, portfolioResponse));
       } catch (err) {
-        if (isActive) {
-          setError(
-            err.message || "Unable to load your account summary."
-          );
-        }
+        if (isActive) setError(err.message || "Unable to load your account summary.");
       } finally {
-        if (isActive) {
-          setLoading(false);
-        }
+        if (isActive) setLoading(false);
       }
     }
 
@@ -68,9 +59,9 @@ export default function AccountSummary() {
     return () => {
       isActive = false;
     };
-  }, []);
+  }, [refreshKey]);
 
-  // Profit and loss follow the prices: reload quietly every 30 s while the tab is visible (a failure keeps the figures)
+  // Profit and loss follow the prices: a quiet reload (no skeleton; a failure keeps the figures)
   useVisiblePolling(async () => {
     try {
       const [walletResponse, portfolioResponse] = await Promise.all([getWallet(), getPortfolio()]);
@@ -80,7 +71,6 @@ export default function AccountSummary() {
     }
   });
 
-  // 3. Loading and Error States
   if (loading) {
     return (
       <section className="account-summary">
@@ -94,108 +84,44 @@ export default function AccountSummary() {
   if (error) {
     return (
       <section className="account-summary">
-        <p className="account-summary__error">{error}</p>
-        <button
-          className="account-summary__retry"
-          onClick={() => window.location.reload()}
-        >
-          Retry
-        </button>
+        <div className="account-summary__error" role="alert">
+          <p>{error}</p>
+          <Button variant="secondary" size="sm" onClick={() => setRefreshKey((key) => key + 1)}>
+            Try again
+          </Button>
+        </div>
       </section>
     );
   }
 
-  // 4. Summary Cards
-  const isProfit = summary.unrealizedPnL >= 0;
-
-  const cards = [
-    {
-      label: "Wallet Balance",
-      value: formatCurrency(summary.walletBalance),
-      description: "Available virtual cash",
-      icon: "wallet",
-      tone: "green",
-    },
-    {
-      label: "Invested Amount",
-      value: formatCurrency(summary.investedAmount),
-      description: "Cost of current holdings",
-      icon: "briefcase",
-      tone: "blue",
-    },
-    {
-      label: "Current Portfolio Value",
-      value: formatCurrency(summary.currentValue),
-      description: "Current value of holdings",
-      icon: "chart",
-      tone: "purple",
-    },
-    {
-      label: "Unrealized P&L",
-      value: `${isProfit ? "+" : "-"}${formatCurrency(
-        Math.abs(summary.unrealizedPnL)
-      )}`,
-      description: `${formatPercentage(summary.pnlPercentage)} return`,
-      icon: isProfit ? "↗" : "↘",
-      tone: isProfit ? "green" : "red",
-    },
+  const stats = [
+    { label: "Cash", value: summary.cash, description: "Available virtual money" },
+    { label: "Holdings", value: summary.holdingsValue, description: "What your shares are worth now" },
+    { label: "Invested", value: summary.investedAmount, description: "What your shares cost" },
   ];
 
   return (
-    <section className="account-summary">
-      <div className="account-summary__header">
-        <div>
-          <h2 className="account-summary__title">
-            Account Summary
-          </h2>
-          <p className="account-summary__subtitle">
-            An overview of your virtual trading account
-          </p>
-          <MarketStatusBadge className="account-summary__market" />
-        </div>
-      </div>
+    <section className="account-summary" aria-label="Account summary">
+      <Card className="account-summary__card account-summary__card--hero" padding="lg" shadow>
+        <span className="account-summary__label">Account value</span>
 
-      <div className="account-summary__grid">
-        {cards.map((card) => (
-          <article
-            className="account-summary__card"
-            key={card.label}
-          >
-            <div className="account-summary__card-top">
-              <span className="account-summary__label">
-                {card.label}
-              </span>
+        <p className="account-summary__value account-summary__value--hero">
+          {formatCurrency(summary.accountValue)}
+        </p>
 
-              <span
-                className={`account-summary__icon account-summary__icon--${card.tone}`}
-                aria-hidden="true"
-              >
-                {card.icon === "wallet"
-                  ? "₹"
-                  : card.icon === "briefcase"
-                    ? "▣"
-                    : card.icon === "chart"
-                      ? "▥"
-                      : card.icon}
-              </span>
-            </div>
+        <p className="account-summary__pnl">
+          <PriceChange amount={summary.unrealizedPnL} percent={summary.pnlPercentage} arrow />
+          <span className="account-summary__description">unrealised on your holdings</span>
+        </p>
+      </Card>
 
-            <p
-              className={`account-summary__value ${
-                card.label === "Unrealized P&L"
-                  ? `account-summary__value--${card.tone}`
-                  : ""
-              }`}
-            >
-              {card.value}
-            </p>
-
-            <p className="account-summary__description">
-              {card.description}
-            </p>
-          </article>
-        ))}
-      </div>
+      {stats.map((stat) => (
+        <Card key={stat.label} className="account-summary__card" padding="lg" shadow>
+          <span className="account-summary__label">{stat.label}</span>
+          <p className="account-summary__value">{formatCurrency(stat.value)}</p>
+          <p className="account-summary__description">{stat.description}</p>
+        </Card>
+      ))}
     </section>
   );
 }
