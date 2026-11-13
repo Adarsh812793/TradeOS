@@ -1,15 +1,27 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import watchlistApi from "../features/watchlist/watchlist.api";
 import useVisiblePolling from "../hooks/useVisiblePolling.js";
 import MarketStatusBadge from "../features/market/components/MarketStatusBadge.jsx";
 import WatchlistTable from "../features/watchlist/components/WatchlistTable";
+import PageHeader from "../components/layout/PageHeader.jsx";
+import Button from "../components/ui/Button.jsx";
+import EmptyState from "../components/ui/EmptyState.jsx";
 import { SkeletonHeading, SkeletonRegion, SkeletonTable } from "../components/ui/Skeleton.jsx";
 
+import "./WatchlistPage.css";
+
+// The Watchlist page: the stocks the user saved, with their current price. Reloads quietly every 30 s so prices stay fresh.
 export default function WatchlistPage() {
+  const navigate = useNavigate();
+
   const [watchlist, setWatchlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Changing this number re-runs the effect below, which reloads the list (the Try again button)
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
@@ -21,20 +33,11 @@ export default function WatchlistPage() {
 
         const response = await watchlistApi.getUserWatchlist();
 
-        // Adjust this according to your controller response.
-        const data = response.data;
-
-        if (isMounted) {
-          setWatchlist(data);
-        }
+        if (isMounted) setWatchlist(response.data);
       } catch (err) {
-        if (isMounted) {
-          setError(err.message || "Unable to load your watchlist.");
-        }
+        if (isMounted) setError(err.message || "Unable to load your watchlist.");
       } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+        if (isMounted) setLoading(false);
       }
     }
 
@@ -43,9 +46,9 @@ export default function WatchlistPage() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [refreshKey]);
 
-  // Keep prices fresh: a quiet reload every 30 s while the tab is visible (a failure keeps the list as it is)
+  // Keep prices fresh: a quiet reload (no skeleton; a failure keeps the list as it is)
   useVisiblePolling(async () => {
     try {
       const response = await watchlistApi.getUserWatchlist();
@@ -60,41 +63,45 @@ export default function WatchlistPage() {
       <section className="watchlist-page">
         <SkeletonRegion label="Loading your watchlist">
           <SkeletonHeading />
-          <SkeletonTable columns={5} rows={5} />
+          <SkeletonTable columns={5} rows={5} cardsBelow={768} />
         </SkeletonRegion>
       </section>
     );
   }
 
   if (error) {
-    return <p>{error}</p>;
-  }
-
-  if (watchlist.length === 0) {
     return (
       <section className="watchlist-page">
-        <h1>My Watchlist</h1>
-        <p>
-          Your watchlist is empty. Add stocks to keep track of them here.
-        </p>
+        <div className="watchlist-page__error" role="alert">
+          <p>{error}</p>
+
+          <Button variant="secondary" onClick={() => setRefreshKey((key) => key + 1)}>
+            Try again
+          </Button>
+        </div>
       </section>
     );
   }
 
   return (
     <section className="watchlist-page">
-      <header className="watchlist-page__header">
-        <div>
-          <h1>My Watchlist</h1>
-          <p>Track and monitor your favourite stocks</p>
-          <MarketStatusBadge className="watchlist-page__market" />
-        </div>
+      <PageHeader
+        title="My Watchlist"
+        subtitle="Track and monitor your favourite stocks"
+        aside={<MarketStatusBadge />}
+      />
 
-      </header>
-        <WatchlistTable
-        watchlist={watchlist}
-        setWatchlist={setWatchlist}
+      {watchlist.length === 0 ? (
+        <EmptyState
+          icon="watchlist"
+          title="Your watchlist is empty"
+          description="Add stocks to keep track of their prices here."
+          actionLabel="Explore stocks"
+          onAction={() => navigate("/stocks")}
         />
+      ) : (
+        <WatchlistTable watchlist={watchlist} setWatchlist={setWatchlist} />
+      )}
     </section>
   );
 }
