@@ -59,6 +59,11 @@
   text-align: right;
 }
 
+/* A row or card that opens a stock when clicked anywhere (see rowClick.js); the pointer shows it is clickable */
+.is-clickable-row {
+  cursor: pointer;
+}
+
 .data-table th:first-child,
 .data-table td:first-child {
   padding-left: var(--space-4);

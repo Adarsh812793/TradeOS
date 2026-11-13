@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Bookmark, ChevronRight } from "lucide-react";
 
 import { formatCurrency } from "../../../utils/currency.utils.js";
 import PriceChange from "../../../components/ui/PriceChange.jsx";
 import Table from "../../../components/ui/Table.jsx";
+import { handleRowClick } from "../../../components/ui/rowClick.js";
 import "./StockTable.css";
 
 // The desktop stock list: the shared Table with one row per stock (symbol over company name, price, today's move,
@@ -14,6 +15,8 @@ export default function StockTable({
   isBusy = () => false,
   onToggleWatchlist,
 }) {
+  const navigate = useNavigate();
+
   return (
     <Table caption="Stocks" minWidth={720}>
       <thead>
@@ -37,7 +40,11 @@ export default function StockTable({
           const saved = isSaved(stock._id);
 
           return (
-            <tr key={stock._id}>
+            <tr
+              key={stock._id}
+              className="is-clickable-row"
+              onClick={(event) => handleRowClick(event, navigate, `/stocks/${stock._id}`)}
+            >
               <td>
                 <Link
                   to={`/stocks/${stock._id}`}

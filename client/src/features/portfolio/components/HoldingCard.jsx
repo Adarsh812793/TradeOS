@@ -1,5 +1,8 @@
 
+import { useNavigate } from "react-router-dom";
+
 import Badge from "../../../components/ui/Badge.jsx";
+import { handleRowClick } from "../../../components/ui/rowClick.js";
 import PriceChange from "../../../components/ui/PriceChange.jsx";
 import HoldingStock from "./HoldingStock.jsx";
 import HoldingActions from "./HoldingActions.jsx";
@@ -23,6 +26,7 @@ const TONE_TO_BADGE = {
 // Buy/Sell links) live in HoldingsTable.css, which loads with the table.
 export default function HoldingCard({ holding }) {
   const { stock } = holding;
+  const navigate = useNavigate();
 
   const returnsTone = getPnlTone(holding.pnlPercentage);
 
@@ -39,7 +43,10 @@ export default function HoldingCard({ holding }) {
   ];
 
   return (
-    <article className="holding-card">
+    <article
+      className="holding-card is-clickable-row"
+      onClick={(event) => handleRowClick(event, navigate, `/stocks/${stock._id}`)}
+    >
       <div className="holding-card__header">
         <HoldingStock stock={stock} />
 
