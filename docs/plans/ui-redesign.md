@@ -265,12 +265,18 @@ Run the sections for the pages a phase touched. "Works" includes the loading sta
 - [ ] Empty and error states
 
 ### Transactions (`/transactions`)
-- [ ] Ledger loads; BUY shows `-₹`, SELL shows `+₹`
+- [ ] Ledger loads; BUY shows `-₹` in red, SELL shows `+₹` in green, in the table and in the cards
 - [ ] Pagination; a failed page change keeps the rows and shows the banner
 - [ ] Empty state's button and error state's Retry
 
+### 404 (any unknown address, new in Phase 8)
+- [ ] A visitor sees "Back to home" and "Log in"; a logged-in user sees "Go to Dashboard" and "Browse stocks"; every button goes where it says
+- [ ] The coin bobs and flips, the candlesticks sway and the ticker scrolls; with reduced motion in the system settings nothing moves
+- [ ] Phone: nothing scrolls sideways and the buttons are reachable
+- [ ] Screen readers hear one heading ("404, page not found") and the browser tab says "Page not found"
+
 ### Account (`/account`)
-- [ ] All five sections open and close independently
+- [ ] All four sections (Personal Information, Security, Trading Account, Danger Zone) open and close independently; there is no Preferences section; the icons are neutral and only the danger one is red
 - [ ] Personal: edit name, save, cancel, validation; navbar updates at once
 - [ ] Photo: pick, crop, confirm, cancel, remove, full-size preview, "Change photo", wrong type and too-large errors
 - [ ] Security: change password (wrong current, same password, success), other devices signed out, Log out
