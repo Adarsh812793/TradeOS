@@ -88,6 +88,8 @@
 
 .stock-card__price {
   color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   white-space: nowrap;
@@ -135,8 +137,9 @@
 }
 
 .stock-card__bookmark--saved {
-  color: var(--color-text-primary);
-  background: var(--color-surface-subtle);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
 .stock-card__bookmark:focus-visible {
