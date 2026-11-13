@@ -3,7 +3,9 @@
 .stock-filters {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 200px 200px;
-  align-items: center;
+  /* Bottom-aligned: the Exchange and Sort fields have a label above them, the search box does not, so centring
+     them put the search box higher. Aligning the bottoms puts all three 40px inputs on one line. */
+  align-items: end;
   gap: var(--space-3);
 
   width: 100%;
