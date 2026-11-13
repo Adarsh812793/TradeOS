@@ -4,31 +4,27 @@
 }
 
 .orders-page__error {
-  color: var(--color-danger);
+  margin: 0 0 var(--space-4);
   padding: var(--space-4);
   background: var(--color-danger-tint);
+  color: var(--color-danger);
   border-radius: var(--radius-md);
 }
 
-.order-details {
+/* Error with a retry button (when the first load failed) */
+.orders-page__error--blocking {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-3);
 }
 
-.order-details p {
+.orders-page__error--blocking p {
   margin: 0;
-  color: var(--color-text-body);
-  font-size: var(--font-size-sm);
-  line-height: 1.6;
 }
 
-.order-details strong {
-  color: var(--color-text-primary);
-}
-
-@media (max-width: 768px) {
-  .orders-page {
-    padding: var(--space-3);
-  }
+/* While another page is loading the current rows stay, slightly faded */
+.orders-page__content--busy {
+  opacity: 0.6;
+  pointer-events: none;
 }

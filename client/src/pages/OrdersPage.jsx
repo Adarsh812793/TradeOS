@@ -1,32 +1,33 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import useOrders from "../features/orders/hooks/useOrders.js";
 
-import OrdersHeader from "../features/orders/components/OrdersHeader.jsx";
+import PageHeader from "../components/layout/PageHeader.jsx";
 import OrdersTable from "../features/orders/components/OrdersTable.jsx";
+import OrderDetails from "../features/orders/components/OrderDetails.jsx";
 
+import Button from "../components/ui/Button.jsx";
 import EmptyState from "../components/ui/EmptyState.jsx";
 import Pagination from "../components/ui/Pagination.jsx";
 import Modal from "../components/ui/Modal.jsx";
 import { SkeletonHeading, SkeletonRegion, SkeletonTable } from "../components/ui/Skeleton.jsx";
 
-import { formatCurrency } from "../utils/currency.utils.js";
-import { formatDateTime } from "../utils/date.utils.js";
-
 import "./OrdersPage.css";
 
+// The Orders page: every executed order, 8 per page. A page change keeps the current rows on screen (dimmed) until the
+// next ones arrive; a failed page change keeps them and shows the error above.
 export default function OrdersPage() {
-  const {
-    orders,
-    pagination,
-    loading,
-    error,
-    changePage,
-  } = useOrders();
+  const navigate = useNavigate();
+
+  const { orders, pagination, loading, error, changePage, retry } = useOrders();
 
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  if (loading) {
+  const hasNothingToShow = orders.length === 0;
+
+  // First load
+  if (hasNothingToShow && loading) {
     return (
       <section className="orders-page">
         <SkeletonRegion label="Loading your orders">
@@ -37,26 +38,49 @@ export default function OrdersPage() {
     );
   }
 
-  if (error) {
+  // Nothing to show and the load failed
+  if (hasNothingToShow && error) {
     return (
       <section className="orders-page">
-        <p className="orders-page__error">{error}</p>
+        <div className="orders-page__error orders-page__error--blocking" role="alert">
+          <p>{error}</p>
+
+          <Button variant="secondary" onClick={retry}>
+            Try again
+          </Button>
+        </div>
       </section>
     );
   }
 
   return (
     <section className="orders-page">
-      <OrdersHeader totalItems={pagination.totalItems} />
+      <PageHeader
+        title="My Orders"
+        subtitle="View and track all your buy and sell orders"
+        aside={`${pagination.totalItems} ${pagination.totalItems === 1 ? "order" : "orders"}`}
+      />
 
-      {orders.length === 0 ? (
+      {/* A failed page change keeps the old rows and shows this above them */}
+      {error && (
+        <p className="orders-page__error" role="alert">
+          {error}
+        </p>
+      )}
+
+      {hasNothingToShow ? (
         <EmptyState
           icon="orders"
           title="No orders yet"
           description="Your executed orders will appear here once you start trading."
+          actionLabel="Explore stocks"
+          onAction={() => navigate("/stocks")}
         />
       ) : (
-        <>
+        <div
+          className={`orders-page__content ${loading ? "orders-page__content--busy" : ""}`}
+          aria-busy={loading}
+        >
           <OrdersTable
             orders={orders}
             page={pagination.page}
@@ -64,70 +88,16 @@ export default function OrdersPage() {
             onViewDetails={setSelectedOrder}
           />
 
-          {/* Pagination component will be added here */}
-        </>
+          <Pagination pagination={pagination} onPageChange={changePage} itemLabel="orders" />
+        </div>
       )}
-
-      <Pagination
-        pagination={pagination}
-        onPageChange={changePage}
-        itemLabel="orders"
-      />
 
       <Modal
         isOpen={Boolean(selectedOrder)}
         onClose={() => setSelectedOrder(null)}
-        title="Order Details"
+        title="Order details"
       >
-        {selectedOrder && (
-          <div className="order-details">
-            <p>
-              <strong>Stock:</strong>{" "}
-              {selectedOrder.stockId?.symbol}
-            </p>
-
-            <p>
-              <strong>Company:</strong>{" "}
-              {selectedOrder.stockId?.companyName}
-            </p>
-
-            <p>
-              <strong>Order Type:</strong>{" "}
-              {selectedOrder.type}
-            </p>
-
-            <p>
-              <strong>Quantity:</strong>{" "}
-              {selectedOrder.quantity}
-            </p>
-
-            <p>
-              <strong>Price:</strong>{" "}
-              {formatCurrency(
-                selectedOrder.price,
-                selectedOrder.stockId?.currency || "INR"
-              )}
-            </p>
-
-            <p>
-              <strong>Total Value:</strong>{" "}
-              {formatCurrency(
-                selectedOrder.totalValue,
-                selectedOrder.stockId?.currency || "INR"
-              )}
-            </p>
-
-            <p>
-              <strong>Status:</strong>{" "}
-              {selectedOrder.status}
-            </p>
-
-            <p>
-              <strong>Date:</strong>{" "}
-              {formatDateTime(selectedOrder.createdAt)}
-            </p>
-          </div>
-        )}
+        {selectedOrder && <OrderDetails order={selectedOrder} />}
       </Modal>
     </section>
   );

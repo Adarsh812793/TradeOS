@@ -1,0 +1,54 @@
+/* The order details dialog content: one label and value per row, with dividers */
+.order-details {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.order-details__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+}
+
+.order-details__row + .order-details__row {
+  border-top: var(--border-width) solid var(--color-border-subtle);
+}
+
+.order-details__row dt {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.order-details__row dd {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  text-align: right;
+}
+
+.order-details__symbol {
+  font-weight: var(--font-weight-semibold);
+}
+
+.order-details__company {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.order-details__number {
+  font-family: var(--font-mono);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The total is the figure that matters, so it stands out a little */
+.order-details__row--total .order-details__number {
+  font-size: var(--font-size-base);
+}
