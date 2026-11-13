@@ -155,40 +155,9 @@
   gap: var(--space-2);
 }
 
-.stock-header__action-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
+/* The Buy and Sell buttons are the shared Button, with a minimum width so they look equal */
+.stock-header__actions .btn {
   min-width: 80px;
-  min-height: 40px;
-  padding: var(--space-2) var(--space-4);
-
-  border: var(--border-width) solid transparent;
-  border-radius: var(--radius-md);
-
-  color: var(--color-on-solid);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.stock-header__action-button--buy {
-  background: var(--color-primary);
-}
-
-.stock-header__action-button--buy:hover {
-  background: var(--color-primary-hover);
-}
-
-.stock-header__action-button--sell {
-  background: var(--color-danger);
-}
-
-.stock-header__action-button--sell:hover {
-  background: var(--color-danger);
 }
 
 /* 10. Tablet layout */
@@ -243,7 +212,7 @@
     flex: 1;
   }
 
-  .stock-header__action-button {
+  .stock-header__actions .btn {
     flex: 1;
     min-width: 0;
   }

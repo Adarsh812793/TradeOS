@@ -84,11 +84,8 @@
 ========================================== */
 
 .stock-details-page__bottom {
-  display: grid;
-
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-4);
 
   min-width: 0;
@@ -133,10 +130,6 @@
     grid-template-columns: minmax(0, 1fr) 280px;
     gap: var(--space-4);
   }
-
-  .stock-details-page__bottom {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* ==========================================
@@ -160,9 +153,6 @@
     position: static;
   }
 
-  .stock-details-page__bottom {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 /* ==========================================
@@ -184,7 +174,6 @@
   }
 
   .stock-details-page__bottom {
-    grid-template-columns: 1fr;
     gap: var(--space-3);
   }
 }

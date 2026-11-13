@@ -1,214 +1,82 @@
-.stock-position-details {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    overflow: hidden;
-    color: var(--color-text-primary);
+/* "Your holding" panel of the stock page. Orders use the shared Table, so only the panel and the figures are styled here. */
+.stock-position {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-5);
+  box-sizing: border-box;
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
-/* -------------------------
-   Tabs
-------------------------- */
-
-.position-tabs {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    padding: 0 24px;
-    border-bottom: 1px solid var(--color-border);
+.stock-position__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
 }
 
-.position-tabs button {
-    position: relative;
-    padding: 18px 0;
-    border: none;
-    background: transparent;
-    color: var(--color-text-secondary);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: color 0.2s ease;
+.stock-position__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
 }
 
-.position-tabs button:hover {
-    color: var(--color-text-primary);
+/* Three figures per row on wide panels, two on narrow ones */
+.stock-position__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4) var(--space-5);
+  margin: 0;
 }
 
-.position-tabs button.active {
-    color: var(--color-text-primary);
-    font-weight: 600;
+.stock-position__figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
 }
 
-.position-tabs button.active::after {
-    content: "";
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--color-primary);
-    border-radius: 2px 2px 0 0;
+.stock-position__figure dt {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
-/* -------------------------
-   Position Content
-------------------------- */
-
-.position-content,
-.recent-orders-content {
-    padding: 24px;
+.stock-position__figure dd {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
-.position-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 28px 24px;
+.stock-position__message {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
 }
 
-.position-grid div {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 0;
+.stock-position__message--error {
+  color: var(--color-danger);
 }
 
-.position-grid span {
-    color: var(--color-text-secondary);
-    font-size: 12px;
-    font-weight: 500;
-}
+@media (max-width: 600px) {
+  .stock-position {
+    padding: var(--space-4);
+  }
 
-.position-grid strong {
-    color: var(--color-text-primary);
-    font-size: 15px;
-    font-weight: 600;
-    overflow-wrap: anywhere;
-}
-
-/* Profit and Loss */
-
-.position-grid .profit {
-    color: var(--color-success);
-}
-
-.position-grid .loss {
-    color: var(--color-danger);
-}
-
-/* -------------------------
-   Empty and Error States
-------------------------- */
-
-.position-empty {
-    margin: 0;
-    padding: 24px 12px;
-    color: var(--color-text-secondary);
-    font-size: 14px;
-    text-align: center;
-}
-
-.position-error {
-    margin: 0;
-    padding: 24px;
-    color: var(--color-danger);
-    font-size: 14px;
-}
-
-/* -------------------------
-   Recent Orders Table
-------------------------- */
-
-.orders-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.orders-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-    white-space: nowrap;
-}
-
-.orders-table th,
-.orders-table td {
-    padding: 16px;
-    text-align: left;
-    border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.orders-table th {
-    background: var(--color-surface-subtle);
-    color: var(--color-text-secondary);
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.orders-table td {
-    color: var(--color-text-body);
-}
-
-.orders-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.orders-table tbody tr:hover {
-    background: var(--color-surface-subtle);
-}
-
-/* BUY and SELL labels */
-
-.orders-table .buy,
-.orders-table .sell {
-    display: inline-block;
-    padding: 4px 9px;
-    border-radius: 5px;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-.orders-table .buy {
-    background: var(--color-success-tint);
-    color: var(--color-success);
-}
-
-.orders-table .sell {
-    background: var(--color-danger-tint);
-    color: var(--color-danger);
-}
-
-/* -------------------------
-   Responsive
-------------------------- */
-
-@media (max-width: 768px) {
-    .position-tabs {
-        gap: 22px;
-        padding: 0 16px;
-    }
-
-    .position-content,
-    .recent-orders-content {
-        padding: 16px;
-    }
-
-    .position-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 24px 16px;
-    }
-
-    .position-grid strong {
-        font-size: 14px;
-    }
-
-    .orders-table th,
-    .orders-table td {
-        padding: 12px;
-    }
-}
-
-@media (max-width: 420px) {
-    .position-grid {
-        grid-template-columns: 1fr 1fr;
-    }
+  .stock-position__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

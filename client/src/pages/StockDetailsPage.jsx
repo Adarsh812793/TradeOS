@@ -206,19 +206,20 @@ return (
     />
     </section>
 
+    {/* Day figures across the full width, so the chart and the order panel below start level */}
+    <MarketSummary stock={stock} />
+
     {/* Main trading area */}
     <div className="stock-details-page__main">
       {/* Left column */}
       <div className="stock-details-page__primary">
-        <MarketSummary stock={stock} />
-
         <StockPriceChart stock={stock} />
 
-        {/* Bottom-left section */}
+        {/* Holding and company details under the chart */}
         <div className="stock-details-page__bottom">
-          <CompanyInfo stock={stock} />
-
           <StockPositionOrders stock={stock} />
+
+          <CompanyInfo stock={stock} />
         </div>
       </div>
 

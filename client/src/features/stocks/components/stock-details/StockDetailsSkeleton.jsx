@@ -9,10 +9,12 @@ export default function StockDetailsSkeleton() {
           <Skeleton height={112} radius="var(--radius-lg)" />
         </section>
 
+        <Skeleton height={84} radius="var(--radius-lg)" />
+
         <div className="stock-details-page__main">
           <div className="stock-details-page__primary">
-            <Skeleton height={180} radius="var(--radius-lg)" />
-            <Skeleton height={320} radius="var(--radius-lg)" />
+            <Skeleton height={480} radius="var(--radius-lg)" />
+            <Skeleton height={200} radius="var(--radius-lg)" />
           </div>
 
           <aside className="stock-details-page__sidebar">

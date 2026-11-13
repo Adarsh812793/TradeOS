@@ -2,232 +2,163 @@ import { useEffect, useState } from "react";
 
 import stocksApi from "../../stocks.api.js";
 import useVisiblePolling from "../../../../hooks/useVisiblePolling.js";
-
+import Badge from "../../../../components/ui/Badge.jsx";
+import PriceChange from "../../../../components/ui/PriceChange.jsx";
+import SegmentedControl from "../../../../components/ui/SegmentedControl.jsx";
+import Skeleton, { SkeletonRegion } from "../../../../components/ui/Skeleton.jsx";
+import Table from "../../../../components/ui/Table.jsx";
 import { formatCurrency } from "../../../../utils/currency.utils.js";
+import { formatDateTime } from "../../../../utils/date.utils.js";
 import "./StockPositionOrders.css";
 
-const tabs = ["Your Position", "Recent Orders"];
+const TABS = [
+  { value: "position", label: "Position" },
+  { value: "orders", label: "Recent orders" },
+];
 
-export default function StockPositionDetails({ stock }) {
-    const [activeTab, setActiveTab] = useState("Your Position");
+// "Your holding" panel of the stock page: what the user owns of this stock (quantity, cost, value, profit or loss)
+// and their latest orders for it. Reloads quietly every 30 s so the profit follows the price.
+export default function StockPositionOrders({ stock }) {
+  const [activeTab, setActiveTab] = useState("position");
+  const [position, setPosition] = useState(null);
+  const [recentOrders, setRecentOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    const [position, setPosition] = useState(null);
-    const [recentOrders, setRecentOrders] = useState([]);
+  useEffect(() => {
+    let isMounted = true;
 
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    async function fetchStockPosition() {
+      try {
+        setLoading(true);
+        setError("");
 
-    useEffect(() => {
-        let isMounted = true;
+        const response = await stocksApi.getStockPosition(stock._id);
 
-        const fetchStockPosition = async () => {
-            try {
-                setLoading(true);
-                setError("");
+        if (!isMounted) return;
 
-                const response = await stocksApi.getStockPosition(stock._id);
-
-                if (!isMounted) return;
-
-                setPosition(response.data.position);
-                setRecentOrders(response.data.recentOrders);
-            } catch (err) {
-                if (!isMounted) return;
-
-                setError(
-                    err.message || "Failed to fetch stock position."
-                );
-            } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
-            }
-        };
-
-        fetchStockPosition();
-
-        return () => {
-            isMounted = false;
-        };
-    }, [stock._id]);
-
-    // Profit and loss follow the price: reload quietly every 30 s (no Loading flash; a failure keeps the old figures)
-    useVisiblePolling(async () => {
-        try {
-            const response = await stocksApi.getStockPosition(stock._id);
-            setPosition(response.data.position);
-            setRecentOrders(response.data.recentOrders);
-        } catch {
-            /* keep showing the figures we have */
-        }
-    });
-
-    if (loading) {
-        return (
-            <section className="stock-position-details">
-                <p>Loading position details...</p>
-            </section>
-        );
+        setPosition(response.data.position);
+        setRecentOrders(response.data.recentOrders);
+      } catch (err) {
+        if (isMounted) setError(err.message || "Failed to fetch stock position.");
+      } finally {
+        if (isMounted) setLoading(false);
+      }
     }
 
-    if (error) {
-        return (
-            <section className="stock-position-details">
-                <p className="position-error">{error}</p>
-            </section>
-        );
+    fetchStockPosition();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [stock._id]);
+
+  // Profit and loss follow the price: a quiet reload (no skeleton; a failure keeps the old figures)
+  useVisiblePolling(async () => {
+    try {
+      const response = await stocksApi.getStockPosition(stock._id);
+      setPosition(response.data.position);
+      setRecentOrders(response.data.recentOrders);
+    } catch {
+      /* keep showing the figures we have */
     }
+  });
 
-    return (
-        <section className="stock-position-details">
-            <div className="position-tabs">
-                {tabs.map((tab) => (
-                    <button
-                        key={tab}
-                        type="button"
-                        className={
-                            activeTab === tab ? "active" : ""
-                        }
-                        onClick={() => setActiveTab(tab)}
-                    >
-                        {tab}
-                    </button>
-                ))}
-            </div>
+  const money = (value) => formatCurrency(value, stock.currency);
 
-            {activeTab === "Your Position" && (
-                <div className="position-content">
-                    {position?.quantity > 0 ? (
-                        <div className="position-grid">
-                            <div>
-                                <span>Quantity</span>
-                                <strong>{position.quantity}</strong>
-                            </div>
+  return (
+    <section className="stock-position" aria-label="Your holding">
+      <div className="stock-position__header">
+        <h2 className="stock-position__title">Your holding</h2>
 
-                            <div>
-                                <span>Avg. Buy Price</span>
-                                <strong>
-                                    {formatCurrency(
-                                        position.averageBuyPrice,
-                                        stock.currency
-                                    )}
-                                </strong>
-                            </div>
+        <SegmentedControl
+          label="Holding view"
+          size="sm"
+          value={activeTab}
+          onChange={setActiveTab}
+          options={TABS}
+        />
+      </div>
 
-                            <div>
-                                <span>Current Price</span>
-                                <strong>
-                                    {formatCurrency(
-                                        position.currentPrice,
-                                        stock.currency
-                                    )}
-                                </strong>
-                            </div>
+      {loading ? (
+        <SkeletonRegion label="Loading your holding">
+          <div className="stock-position__grid">
+            {Array.from({ length: 6 }, (_, index) => (
+              <Skeleton key={index} height={40} />
+            ))}
+          </div>
+        </SkeletonRegion>
+      ) : error ? (
+        <p className="stock-position__message stock-position__message--error" role="alert">
+          {error}
+        </p>
+      ) : activeTab === "position" ? (
+        position?.quantity > 0 ? (
+          <dl className="stock-position__grid">
+            <Figure label="Quantity" value={position.quantity} />
+            <Figure label="Avg. buy price" value={money(position.averageBuyPrice)} />
+            <Figure label="Current price" value={money(position.currentPrice)} />
+            <Figure label="Invested" value={money(position.investedValue)} />
+            <Figure label="Current value" value={money(position.currentValue)} />
+            <Figure
+              label="Profit / loss"
+              value={
+                <PriceChange
+                  amount={position.profitLoss}
+                  percent={position.profitLossPercentage}
+                  currency={stock.currency}
+                />
+              }
+            />
+          </dl>
+        ) : (
+          <p className="stock-position__message">
+            You don&apos;t hold any shares of {stock.symbol}.
+          </p>
+        )
+      ) : recentOrders.length > 0 ? (
+        <Table caption={`Recent ${stock.symbol} orders`} minWidth={460}>
+          <thead>
+            <tr>
+              <th scope="col">Type</th>
+              <th scope="col" className="data-table__num">
+                Quantity
+              </th>
+              <th scope="col" className="data-table__num">
+                Price
+              </th>
+              <th scope="col">Date</th>
+            </tr>
+          </thead>
 
-                            <div>
-                                <span>Invested Value</span>
-                                <strong>
-                                    {formatCurrency(
-                                        position.investedValue,
-                                        stock.currency
-                                    )}
-                                </strong>
-                            </div>
+          <tbody>
+            {recentOrders.map((order) => (
+              <tr key={order._id}>
+                <td>
+                  <Badge variant={order.type === "BUY" ? "success" : "danger"}>
+                    {order.type}
+                  </Badge>
+                </td>
+                <td className="data-table__num">{order.quantity}</td>
+                <td className="data-table__num">{money(order.price)}</td>
+                <td>{formatDateTime(order.createdAt)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      ) : (
+        <p className="stock-position__message">No recent orders for {stock.symbol}.</p>
+      )}
+    </section>
+  );
+}
 
-                            <div>
-                                <span>Current Value</span>
-                                <strong>
-                                    {formatCurrency(
-                                        position.currentValue,
-                                        stock.currency
-                                    )}
-                                </strong>
-                            </div>
-
-                            <div>
-                                <span>P&L</span>
-                                <strong
-                                    className={
-                                        position.profitLoss >= 0
-                                            ? "profit"
-                                            : "loss"
-                                    }
-                                >
-                                    {formatCurrency(
-                                        position.profitLoss,
-                                        stock.currency
-                                    )}
-                                    {" "}
-                                    ({position.profitLossPercentage.toFixed(2)}%)
-                                </strong>
-                            </div>
-                        </div>
-                    ) : (
-                        <p className="position-empty">
-                            You don't hold any shares of {stock.symbol}.
-                        </p>
-                    )}
-                </div>
-            )}
-
-            {activeTab === "Recent Orders" && (
-                <div className="recent-orders-content">
-                    {recentOrders.length > 0 ? (
-                        <div className="orders-table-wrapper">
-                            <table className="orders-table">
-                                <thead>
-                                    <tr>
-                                        <th>Type</th>
-                                        <th>Quantity</th>
-                                        <th>Price</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {recentOrders.map((order) => (
-                                        <tr key={order._id}>
-                                            <td>
-                                                <span
-                                                    className={
-                                                        order.type === "BUY"
-                                                            ? "buy"
-                                                            : "sell"
-                                                    }
-                                                >
-                                                    {order.type}
-                                                </span>
-                                            </td>
-
-                                            <td>{order.quantity}</td>
-
-                                            <td>
-                                                {formatCurrency(
-                                                    order.price,
-                                                    stock.currency
-                                                )}
-                                            </td>
-
-                                            <td>{order.status}</td>
-
-                                            <td>
-                                                {new Date(
-                                                    order.createdAt
-                                                ).toLocaleDateString("en-IN")}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <p className="position-empty">
-                            No recent orders for {stock.symbol}.
-                        </p>
-                    )}
-                </div>
-            )}
-        </section>
-    );
+// One label and value pair of the holding grid
+function Figure({ label, value }) {
+  return (
+    <div className="stock-position__figure">
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  );
 }
