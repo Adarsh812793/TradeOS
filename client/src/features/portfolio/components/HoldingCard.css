@@ -55,6 +55,6 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.holding-card .holding-action {
+.holding-card .holding-actions .btn {
   width: 100%;
 }

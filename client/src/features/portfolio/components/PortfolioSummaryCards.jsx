@@ -1,87 +1,61 @@
-
-import {
-  Layers,
-  Percent,
-  TrendingDown,
-  TrendingUp,
-  Wallet,
-} from "lucide-react";
-
 import Card from "../../../components/ui/Card.jsx";
+import PriceChange from "../../../components/ui/PriceChange.jsx";
 import { formatCurrency } from "../../../utils/currency.utils.js";
-import {
-  formatSignedCurrency,
-  formatSignedPercent,
-  getPnlTone,
-} from "../../../utils/change.utils.js";
+import { getPnlTone } from "../../../utils/change.utils.js";
 
 import "./PortfolioSummaryCards.css";
 
+// The top of the Portfolio page: the one number that matters (what your holdings are worth now), then what you
+// put in, then what you made. Summary before detail: the table below only explains these three.
 export default function PortfolioSummaryCards({ summary }) {
   const pnlTone = getPnlTone(summary.totalUnrealizedPnL);
-  const returnsTone = getPnlTone(summary.totalPnLPercentage);
-
-  const cards = [
-    {
-      label: "Current Portfolio Value",
-      value: formatCurrency(summary.totalCurrentValue),
-      description: "Market value of your holdings",
-      Icon: Wallet,
-      tone: "neutral",
-    },
-    {
-      label: "Total Invested",
-      value: formatCurrency(summary.totalInvestedValue),
-      description: "Cost of your holdings",
-      Icon: Layers,
-      tone: "neutral",
-      iconTone: "info",
-    },
-    {
-      label: "Total P&L",
-      value: formatSignedCurrency(summary.totalUnrealizedPnL),
-      description: "Unrealized profit or loss",
-      Icon: pnlTone === "loss" ? TrendingDown : TrendingUp,
-      tone: pnlTone,
-    },
-    {
-      label: "Total Returns",
-      value: formatSignedPercent(summary.totalPnLPercentage),
-      description: "Return on invested value",
-      Icon: Percent,
-      tone: returnsTone,
-    },
-  ];
 
   return (
     <div className="portfolio-summary">
-      {cards.map(({ label, value, description, Icon, tone, iconTone = tone }) => (
-        <Card
-          key={label}
-          className="portfolio-summary__card"
-          padding="lg"
-          shadow
+      <Card
+        className="portfolio-summary__card portfolio-summary__card--hero"
+        padding="lg"
+        shadow
+      >
+        <span className="portfolio-summary__label">Current value</span>
+
+        {/* Green when you are in profit, red in loss, white at zero (same rule as every other P&L figure) */}
+        <p
+          className={`portfolio-summary__value portfolio-summary__value--hero portfolio-summary__value--${pnlTone}`}
         >
-          <div className="portfolio-summary__top">
-            <span
-              className={`portfolio-summary__icon portfolio-summary__icon--${iconTone}`}
-              aria-hidden="true"
-            >
-              <Icon size={20} />
-            </span>
+          {formatCurrency(summary.totalCurrentValue)}
+        </p>
 
-            <span className="portfolio-summary__label">{label}</span>
-          </div>
+        <p className="portfolio-summary__description">
+          Market value of your holdings
+        </p>
+      </Card>
 
-          <p
-            className={`portfolio-summary__value portfolio-summary__value--${tone}`}
-          >
-            {value}
-          </p>
+      <Card className="portfolio-summary__card" padding="lg" shadow>
+        <span className="portfolio-summary__label">Invested</span>
 
-          <p className="portfolio-summary__description">{description}</p>
-        </Card>
-      ))}
+        <p className="portfolio-summary__value">
+          {formatCurrency(summary.totalInvestedValue)}
+        </p>
+
+        <p className="portfolio-summary__description">Cost of your holdings</p>
+      </Card>
+
+      <Card className="portfolio-summary__card" padding="lg" shadow>
+        <span className="portfolio-summary__label">Total return</span>
+
+        <p className="portfolio-summary__value">
+          <PriceChange
+            amount={summary.totalUnrealizedPnL}
+            percent={summary.totalPnLPercentage}
+            arrow
+          />
+        </p>
+
+        <p className="portfolio-summary__description">
+          Unrealised profit or loss
+        </p>
+      </Card>
     </div>
   );
 }

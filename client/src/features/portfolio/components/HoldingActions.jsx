@@ -1,28 +1,33 @@
-
 import { Link } from "react-router-dom";
 
-// Real links (not buttons) so they can be opened in a new tab.
-// Sell opens the stock page on the Sell form. Styles live in HoldingsTable.css.
+import Button from "../../../components/ui/Button.jsx";
+
+// Buy and Sell for one holding: the shared Button rendered as real links (so they open in a new tab too).
+// Buy opens the stock page; Sell opens it on the Sell form. Green = buy, red = sell, as everywhere.
 export default function HoldingActions({ stock }) {
   const stockUrl = `/stocks/${stock._id}`;
 
   return (
     <div className="holding-actions">
-      <Link
+      <Button
+        as={Link}
         to={stockUrl}
-        className="btn holding-action holding-action--buy"
+        variant="success"
+        size="sm"
         aria-label={`Buy more ${stock.symbol}`}
       >
         Buy
-      </Link>
+      </Button>
 
-      <Link
+      <Button
+        as={Link}
         to={`${stockUrl}?action=sell`}
-        className="btn holding-action holding-action--sell"
+        variant="danger"
+        size="sm"
         aria-label={`Sell ${stock.symbol}`}
       >
         Sell
-      </Link>
+      </Button>
     </div>
   );
 }

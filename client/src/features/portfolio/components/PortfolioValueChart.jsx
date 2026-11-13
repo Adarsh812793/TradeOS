@@ -1,18 +1,17 @@
-
 import { TrendingUp } from "lucide-react";
 
 import Card from "../../../components/ui/Card.jsx";
 
 import "./PortfolioValueChart.css";
 
-// Placeholder: there is no value history yet (see docs/plans/portfolio-page.md, "Portfolio Value chart").
-// When the data exists, replace the empty panel below with the chart.
+// Placeholder until the history endpoint exists (PR 2 of Phase 7): the chart will show "account value", which is your
+// holdings plus your cash, so buying and selling shares alone never looks like a gain or a loss.
 export default function PortfolioValueChart() {
   return (
     <Card className="portfolio-value-chart" padding="lg" shadow>
-      <h2 className="portfolio-value-chart__title">Portfolio Value (7D)</h2>
+      <h2 className="portfolio-value-chart__title">Account value</h2>
       <p className="portfolio-value-chart__subtitle">
-        How your portfolio value has changed over the last 7 days.
+        Your holdings plus your cash, over time.
       </p>
 
       <div className="portfolio-value-chart__empty">
@@ -20,11 +19,11 @@ export default function PortfolioValueChart() {
           <TrendingUp size={28} />
         </span>
 
-        <h3>Value history coming soon</h3>
+        <h3>History coming soon</h3>
 
         <p>
-          Your portfolio value will be charted here once we start tracking it
-          over time.
+          The chart will appear here once we can show how your account value
+          has changed day by day.
         </p>
       </div>
     </Card>
