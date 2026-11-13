@@ -66,7 +66,8 @@ Built: `GuestRoute` (logged-in users are sent to `/dashboard` from `/`, `/login`
 3D terrain with Three.js and React Three Fiber, smooth scrolling on this page only, `/` becomes the landing page and logged-in visitors go to `/dashboard`, login and signup redesign. 3D loads only on this route, pauses off-screen, and shows a still image for weak devices or reduced-motion settings. **Done when** the Landing, Login and Signup sections pass and the app bundle does not include Three.js.
 *Learn:* WebGL basics, instanced rendering, lazy loading, performance budgets, `prefers-reduced-motion`.
 
-### Phase 6. Trading pages (`feature/ui-trading-pages`)
+### Phase 6. Trading pages (`feature/ui-trading-pages`) - DONE 2026-11-13 (awaiting PR)
+Built: `lightweight-charts` 5.3.0 (agreed with the user; the TradingView logo and a text credit stay on the chart); a real price chart on the stock page (Area and Candles, 1D to ALL, crosshair readout, range change line, loading / error / empty states, a note about generated history, labels in IST) drawn by `PriceChartCanvas`, the only file that imports the library, lazy-loaded in its own 172 kB (56 kB gzipped) chunk; `getCandles`, the `useCandles` hook (drops late answers, keeps old candles while a range loads, 30 s quiet refresh) and chart colours read from the theme tokens; the stock list on the shared `Table` (symbol over company, mono price, today's amount and percent); green Buy and red Sell as the shared `Button` on the stock page header; the new stock page layout (day figures full width, chart beside the order panel, holding and about under the chart); `StockPositionOrders` rebuilt on `SegmentedControl`, `PriceChange`, `Badge`, `Skeleton` and `Table` (removes the global `.orders-table-wrapper` clash). Pagination dots (Phase 2) were checked again at 34 pages: at most 7 buttons. Checked with lint, builds, and headless Edge runs against the test database (chart styles and ranges, crosshair readout, holding and Recent orders tabs, green Buy colour, desktop and phone, no page errors, no sideways scroll). Bundle: main JS 347.7 kB (109.9 kB gzipped, unchanged), chart chunk 172 kB (56 kB gzipped) only on stock pages. Left for later: `MarketSummary` still repeats the header (to be replaced by previous close, open and the day and 52-week ranges); price axis without Indian digit grouping; see CLAUDE.md Known issues. Original scope:
 Stocks list and stock details, with a real chart (library to be agreed; `lightweight-charts` requires a TradingView attribution) and the order panel beside it. **Done when** the Stocks and Stock details sections pass.
 *Learn:* chart libraries, information hierarchy, tabular numbers.
 
@@ -91,7 +92,7 @@ Motion, phone and tablet layouts, accessibility, performance, the full checklist
 
 - **Phase 2:** `<Button block>` passes `block` to the DOM and React warns ("non-boolean attribute"); make it a proper prop.
 - **Phase 3 (done):** the Sidebar and its collapse arrow are gone; Login's dead "Forgot password?" link was removed. Carried forward: Back opens pages at the top instead of the old scroll position (pages load their data after they appear); the market strip was only tested against mocked and unconnected FYERS, so check it once with a real FYERS connection; the dashboard's MarketOverview still fetches indices on its own (cheap because of the server cache).
-- **Phase 6:** the Stocks page pagination lists every page number and scrolls sideways once there are many pages (found with 34 pages); it needs ellipsis truncation. The header Buy button is marigold while the Place Order panel's Buy is green: pick one meaning (green = buy).
+- **Phase 6 (done; pagination was already fixed in Phase 2, the buy colour is now green):** the Stocks page pagination listed every page number and scrolls sideways once there are many pages (found with 34 pages); it needs ellipsis truncation. The header Buy button is marigold while the Place Order panel's Buy is green: pick one meaning (green = buy).
 - **Phase 4 (done):** the holiday list needs the next year added each January; the price chart (Phase 6) and portfolio performance chart (Phase 7) are still placeholders, and the candles and `/candles` endpoint are ready for the first; the job's cost grows linearly with the number of stocks (batch the writes if the list grows to hundreds); the test database holds ~1,400 leftover test stocks that slow any run of the price job against it.
 - **Phase 5 (done):** a terms-and-conditions checkbox on sign-up ("I understand the money is virtual and prices are simulated", wording from `SimulatedNotice.jsx`, maybe with a stored timestamp) and logging the user in right after sign-up are planned but not built; signup could adopt login's richer left side; the main bundle (110 kB gzipped) dominates the landing page's load on slow connections; the real NIFTY and SENSEX levels are mentioned on the landing page only in a footnote (the FYERS public-display licensing question stays open).
 - **All phases:** prices, tables and big numbers should use `--font-mono` / `--font-display` as each page is rebuilt; Phase 1 only changed the base fonts.
@@ -99,7 +100,7 @@ Motion, phone and tablet layouts, accessibility, performance, the full checklist
 ## Open questions
 
 1. **FYERS licensing.** Public display of the real indices should be checked against the vendor's terms before going public.
-2. **Chart library.** Agree on one in Phase 6.
+2. ~~**Chart library.**~~ Decided in Phase 6: `lightweight-charts` (with the TradingView credit).
 
 ## Known and left for later
 
@@ -199,7 +200,8 @@ Run the sections for the pages a phase touched. "Works" includes the loading sta
 
 ### Stocks (`/stocks`)
 - [ ] List loads; search, exchange filter and sort work
-- [ ] The "Today" column shows the daily change (colour, arrow and percent), aligned with the price
+- [ ] The "Today" column shows the daily change (amount, percent, colour and arrow), aligned with the price
+- [ ] Pagination with many pages (30+) shows at most 7 buttons with "…" and never scrolls sideways
 - [ ] `?search=` in the URL filters the list, and typing updates the URL
 - [ ] Pagination works and returns to page 1 when filters change
 - [ ] Watchlist bookmark adds and removes, in table and card layouts
@@ -215,8 +217,17 @@ Run the sections for the pages a phase touched. "Works" includes the loading sta
 - [ ] Confirmation dialog: cancel and confirm
 - [ ] Buy succeeds: success message with the execution price, wallet falls exactly, holding appears
 - [ ] Sell succeeds; selling too many and insufficient balance show the server's message
-- [ ] "Your Position" and "Recent Orders" tabs work and refresh after an order
-- [ ] Chart range buttons and company information show
+- [ ] "Position" and "Recent orders" tabs of "Your holding" work and refresh after an order
+- [ ] Header Buy is green and Sell is red, like the order panel
+- [ ] Price chart loads for the default 1M range; every range button (1D, 1W, 1M, 3M, 1Y, ALL) redraws it, and the old chart stays dimmed (not blank) while a range loads
+- [ ] Area and Candles styles both draw; green when the range is up, red when down
+- [ ] The crosshair shows a readout with the date (and time on 1D / 1W) and the price, or open / high / low / close in Candles; away from the chart it shows the newest candle
+- [ ] The TradingView logo and the "Chart by TradingView Lightweight Charts" link are visible
+- [ ] A stock with no candles shows the empty message, a failed request shows "Try again" and keeps the chart's height
+- [ ] The note says whether prices are generated history (with the date live prices start) or simulated
+- [ ] While the market is open the newest candle moves on its own (30 s refresh) without resetting the zoom
+- [ ] Loading state mirrors the new layout; chart, order panel and holding panel stack on a phone with nothing scrolling sideways
+- [ ] Company information shows
 
 ### Portfolio (`/portfolio`)
 - [ ] Summary cards correct, Refresh works without clearing the page
