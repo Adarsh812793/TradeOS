@@ -3,7 +3,7 @@ import usePortfolio from "../features/portfolio/hooks/usePortfolio.js";
 import PortfolioHeader from "../features/portfolio/components/PortfolioHeader.jsx";
 import PortfolioSummaryCards from "../features/portfolio/components/PortfolioSummaryCards.jsx";
 import PortfolioAllocation from "../features/portfolio/components/PortfolioAllocation.jsx";
-import PortfolioValueChart from "../features/portfolio/components/PortfolioValueChart.jsx";
+import AccountValueChart from "../features/portfolio/components/AccountValueChart.jsx";
 import HoldingsSection from "../features/portfolio/components/HoldingsSection.jsx";
 
 import Button from "../components/ui/Button.jsx";
@@ -73,12 +73,11 @@ export default function PortfolioPage() {
 
             <PortfolioSummaryCards summary={summary} />
 
-            {holdings.length > 0 && (
-                <div className="portfolio-overview">
-                    <PortfolioAllocation holdings={holdings} />
-                    <PortfolioValueChart />
-                </div>
-            )}
+            {/* The chart shows even with no holdings left: the history of a fully sold account is still real */}
+            <div className="portfolio-overview">
+                {holdings.length > 0 && <PortfolioAllocation holdings={holdings} />}
+                <AccountValueChart />
+            </div>
 
             <HoldingsSection holdings={holdings} />
         </section>

@@ -1,0 +1,145 @@
+/* The account value chart card (Portfolio and Dashboard) */
+.account-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.account-chart__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.account-chart__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.account-chart__subtitle {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.account-chart__change {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: var(--space-1) 0 0;
+}
+
+.account-chart__phrase {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+/* The line above the chart that follows the crosshair; a fixed height so the chart never moves */
+.account-chart__readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  min-height: 1.5em;
+  margin: 0;
+  color: var(--color-text-body);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.account-chart__readout-time {
+  color: var(--color-text-muted);
+}
+
+/* The chart box: states and the chart share one height, and it grows to fill a taller neighbour */
+.account-chart__body {
+  position: relative;
+  flex: 1;
+  min-height: 260px;
+  min-width: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* While another range loads, the old chart stays visible but dimmed */
+.account-chart__body--loading {
+  opacity: 0.55;
+}
+
+.account-chart__canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.account-chart__message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  height: 100%;
+  min-height: 260px;
+  padding: var(--space-4);
+  box-sizing: border-box;
+  border: var(--border-width) dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.account-chart__message p {
+  max-width: 340px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.account-chart__alert {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-xs);
+}
+
+.account-chart__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.account-chart__note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+}
+
+.account-chart__note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.account-chart__note a {
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+  .account-chart__body,
+  .account-chart__message {
+    min-height: 220px;
+  }
+}

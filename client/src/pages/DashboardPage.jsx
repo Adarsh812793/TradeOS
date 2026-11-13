@@ -1,5 +1,5 @@
 import AccountSummary from "../features/dashboard/components/AccountSummary.jsx";
-import PortfolioPerformance from "../features/dashboard/components/PortfolioPerformance.jsx";
+import AccountValueChart from "../features/portfolio/components/AccountValueChart.jsx";
 import RecentActivity from "../features/dashboard/components/RecentActivity.jsx";
 import WatchlistPreview from "../features/dashboard/components/WatchlistPreview.jsx";
 import MarketStatusBadge from "../features/market/components/MarketStatusBadge.jsx";
@@ -8,7 +8,7 @@ import useCurrentUser from "../features/account/useCurrentUser.js";
 import "./DashboardPage.css";
 
 // The dashboard: how the account is doing at a glance. Top to bottom: the account value and what it is made of,
-// the value history (a placeholder for now) beside the watchlist, then the latest orders.
+// the account value chart beside the watchlist, then the latest orders.
 export default function DashboardPage() {
   const { user } = useCurrentUser();
   const firstName = user?.name?.trim().split(" ")[0];
@@ -29,7 +29,7 @@ export default function DashboardPage() {
       <AccountSummary />
 
       <div className="dashboard-page__middle">
-        <PortfolioPerformance />
+        <AccountValueChart />
         <WatchlistPreview />
       </div>
 
