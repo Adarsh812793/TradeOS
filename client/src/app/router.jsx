@@ -10,8 +10,6 @@ import CurrentUserProvider from "../features/account/CurrentUserProvider.jsx";
 import NotificationsProvider from "../features/notifications/NotificationsProvider.jsx";
 import MarketStatusProvider from "../features/market/MarketStatusProvider.jsx";
 
-import NotFoundPage from "../pages/NotFoundPage.jsx";
-
 // Every page is its own file that downloads only when the page is first opened, so the first visit (for example the
 // login page) does not have to download the whole app. While a page downloads, the current page stays on screen and
 // AppLayout shows a thin progress bar (React Router reports that as navigation.state === "loading").
@@ -74,7 +72,7 @@ const router = createBrowserRouter([
           { path: "/signup", ...page(() => import("../pages/SignupPage.jsx")) },
         ],
       },
-      { path: "*", element: <NotFoundPage /> },
+      { path: "*", ...page(() => import("../pages/NotFoundPage.jsx")) },
     ],
   },
 ]);
