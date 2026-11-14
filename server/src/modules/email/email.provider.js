@@ -1,6 +1,7 @@
 import config from "../../config/env.js";
 import { createConsoleProvider } from "./console.provider.js";
 import { createMemoryProvider } from "./memory.provider.js";
+import { createResendProvider } from "./resend.provider.js";
 
 // The one place that decides how email is sent, like prices/price.provider.js decides where prices come from. A provider
 // has the shape { name, send({ to, subject, text, html }) } and answers { id }. To use another service, write a provider
@@ -14,8 +15,8 @@ export function getEmailProvider() {
         } else if (config.EMAIL_PROVIDER === "console") {
             provider = createConsoleProvider({ from: config.EMAIL_FROM });
         } else {
-            // "resend" is added in the next commit; the config has already checked that the name is valid
-            throw new Error(`Email provider "${config.EMAIL_PROVIDER}" is not available yet.`);
+            // "resend": the config has already checked that the name is valid and that the key and sender are set
+            provider = createResendProvider({ apiKey: config.RESEND_API_KEY, from: config.EMAIL_FROM });
         }
     }
 
