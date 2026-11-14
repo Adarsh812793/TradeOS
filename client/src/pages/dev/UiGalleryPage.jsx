@@ -6,6 +6,7 @@ import Avatar from "../../components/ui/Avatar.jsx";
 import Badge from "../../components/ui/Badge.jsx";
 import Button from "../../components/ui/Button.jsx";
 import Card from "../../components/ui/Card.jsx";
+import Checkbox from "../../components/ui/Checkbox.jsx";
 import DataCard from "../../components/ui/DataCard.jsx";
 import EmptyState from "../../components/ui/EmptyState.jsx";
 import Input from "../../components/ui/Input.jsx";
@@ -35,6 +36,7 @@ function Section({ id, title, note, children }) {
 export default function UiGalleryPage() {
   const [dialog, setDialog] = useState(null); // null | "confirm" | "success" | "error"
   const [page, setPage] = useState(3);
+  const [agreed, setAgreed] = useState(false);
   const [exchange, setExchange] = useState("all");
   const [side, setSide] = useState("buy");
   const [range, setRange] = useState("1D");
@@ -90,6 +92,40 @@ export default function UiGalleryPage() {
         <div className="ui-gallery__field">
           <Input label="Quantity" name="gallery-hint" placeholder="Enter quantity" hint="Whole numbers only" />
           <Input label="Smooth message (with a hint)" name="gallery-animated" placeholder="animateMessage" hint="This hint sits in the smoothly opening area" animateMessage />
+        </div>
+      </Section>
+
+      <Section id="checkbox" title="Checkbox" note="A tick box with a label for something the person must agree to. A real checkbox underneath (Tab, Space, screen readers); the whole label is clickable. Same error and hint area as Input. Used for the sign-up agreement.">
+        <div className="ui-gallery__field">
+          <Checkbox
+            name="gallery-agree"
+            label="I understand TradeOS uses virtual money and simulated prices. It is not real trading and not investment advice."
+            checked={agreed}
+            onChange={(event) => setAgreed(event.target.checked)}
+          />
+        </div>
+        <div className="ui-gallery__field">
+          <Checkbox name="gallery-checked" label="Ticked" checked onChange={() => {}} />
+          <Checkbox name="gallery-unchecked" label="Not ticked" checked={false} onChange={() => {}} />
+        </div>
+        <div className="ui-gallery__field">
+          <Checkbox
+            name="gallery-error"
+            label="I understand and agree"
+            checked={false}
+            onChange={() => {}}
+            error="Please tick this box to continue"
+          />
+        </div>
+        <div className="ui-gallery__field">
+          <Checkbox name="gallery-disabled" label="Disabled" checked={false} onChange={() => {}} disabled />
+          <Checkbox
+            name="gallery-hint"
+            label={<>Send me the weekly summary (you can change this in <a href="#checkbox">Account</a>)</>}
+            checked={false}
+            onChange={() => {}}
+            hint="A link inside the label does not tick the box"
+          />
         </div>
       </Section>
 
