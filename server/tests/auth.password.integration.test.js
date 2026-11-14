@@ -1,7 +1,7 @@
 
 import { describe, it, expect } from "vitest";
 
-import { request, app } from "./helpers/tradeosTestUtils.js";
+import { request, app, signUpUser } from "./helpers/tradeosTestUtils.js";
 
 const OLD_PASSWORD = "OldPassword@123";
 const NEW_PASSWORD = "BrandNewPass@456";
@@ -10,9 +10,7 @@ const NEW_PASSWORD = "BrandNewPass@456";
 const registerUser = async () => {
     const email = `pw-${Date.now()}-${Math.random().toString(36).slice(2)}@example.com`;
 
-    const response = await request(app)
-        .post("/api/auth/register")
-        .send({ name: "Password Tester", email, password: OLD_PASSWORD });
+    const response = await signUpUser({ name: "Password Tester", email, password: OLD_PASSWORD });
 
     expect(response.status).toBe(201);
 

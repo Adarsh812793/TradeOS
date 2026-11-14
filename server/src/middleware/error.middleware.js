@@ -6,7 +6,8 @@ const errorHandler = (err, req, res, next) => {
         return res.status(err.statusCode).json({
             success: false,         //HTTP error code
             message: err.message,   //Err message for the clients
-            errorCode: err.errorCode //Err message for programmers to understand (We use this in frontend)
+            errorCode: err.errorCode, //Err message for programmers to understand (We use this in frontend)
+            ...(err.details ? { details: err.details } : {}) //Optional extra facts, e.g. { retryAfterSeconds }
         });
     }
 

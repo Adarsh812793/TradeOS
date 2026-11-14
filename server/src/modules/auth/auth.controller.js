@@ -2,26 +2,66 @@
 import config from "../../config/env.js";
 
 import authService from "./auth.service.js"; //authService is an object containing many functions
+import registrationService from "./registration.service.js"; //email sign-up: start and resend
 
 import AppError from "../../utils/AppError.js";
 import ERROR_CODES from "../../utils/errorCodes.js";
 import asyncWrap from "../../utils/asyncWrap.js";
 
-//I. Function to register a user
-const register =asyncWrap(async (req, res, next) => {
+// Sends the refresh token to the browser as an httpOnly cookie (JavaScript on the page can never read it)
+const setRefreshCookie = (res, refreshToken) => {
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: config.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+};
+
+// I-b. Function to START an email sign-up: emails a 6-digit code, creates no account yet
+const startRegistration = asyncWrap(async (req, res, next) => {
 
         const { name, email, password } = req.body;
 
-        const user = await authService.registerUser({
-            name,
-            email,
-            password
+        const result = await registrationService.startRegistration({ name, email, password });
+
+        res.status(202).json({
+            success: true,
+            message: "We sent a verification code to your email",
+            data: result
         });
+
+});
+
+// I-c. Function to send a NEW code for a sign-up that is waiting for one
+const resendRegistrationCode = asyncWrap(async (req, res, next) => {
+
+        const result = await registrationService.resendRegistrationCode({ email: req.body.email });
+
+        res.status(200).json({
+            success: true,
+            message: "We sent a new verification code to your email",
+            data: result
+        });
+
+});
+
+// I-d. Function to confirm the emailed code: creates the account and logs the person straight in
+const verifyRegistration = asyncWrap(async (req, res, next) => {
+
+        const { email, code } = req.body;
+
+        const { accessToken, refreshToken, user } = await registrationService.verifyRegistration({ email, code });
+
+        setRefreshCookie(res, refreshToken);
 
         res.status(201).json({
             success: true,
-            message: "User registered successfully",
-            data: user
+            message: "Email verified. Your account is ready.",
+            data: {
+                accessToken,
+                user
+            }
         });
 
 });
@@ -38,12 +78,7 @@ const login = asyncWrap(async (req, res, next) => {
                 password
             });
 
-        res.cookie("refreshToken", refreshToken, { //Sends a cookie to clients browser with name:refreshToken and object passed for settings
-            httpOnly: true,
-            secure: config.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
+        setRefreshCookie(res, refreshToken);
 
         res.status(200).json({
             success: true,
@@ -76,15 +111,7 @@ const refresh =asyncWrap( async (req, res, next) => {
 
 
         // Replace old cookie with NEW refresh token
-        res.cookie(
-            "refreshToken",
-            newRefreshToken,
-            {
-                httpOnly: true,
-                secure:config.NODE_ENV === "production",
-                sameSite: "lax",
-                maxAge:7 * 24 * 60 * 60 * 1000
-            });
+        setRefreshCookie(res, newRefreshToken);
 
 
         // Send NEW access token to React
@@ -153,7 +180,9 @@ const changePassword = asyncWrap(async (req, res, next) => {
 });
 
 export default {
-    register,
+    startRegistration,
+    verifyRegistration,
+    resendRegistrationCode,
     login,
     refresh,
     logout,

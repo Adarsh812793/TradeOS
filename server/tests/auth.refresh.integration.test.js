@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import jwt from "jsonwebtoken";
 
-import { request, app } from "./helpers/tradeosTestUtils.js";
+import { request, app, signUpUser } from "./helpers/tradeosTestUtils.js";
 
 import config from "../src/config/env.js";
 import RefreshSession from "../src/modules/auth/refreshSession.model.js";
@@ -13,9 +13,7 @@ const PASSWORD = "TestPassword@123";
 const loginFreshUser = async () => {
     const email = `refresh-${Date.now()}-${Math.random().toString(36).slice(2)}@example.com`;
 
-    await request(app)
-        .post("/api/auth/register")
-        .send({ name: "Refresh Tester", email, password: PASSWORD });
+    await signUpUser({ name: "Refresh Tester", email, password: PASSWORD });
 
     const response = await request(app)
         .post("/api/auth/login")
