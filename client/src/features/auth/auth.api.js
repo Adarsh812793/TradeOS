@@ -3,10 +3,6 @@
 import api from "../../lib/api.js";
 
 const authApi = {
-  register(credentials) {
-    return api.post("/api/auth/register", credentials);
-  },
-
   // Email sign-up, step 1: sends a 6-digit code to the email. Nothing is created yet. Answers { email, resendAvailableInSeconds, codeExpiresInMinutes }.
   startRegistration(details) {
     return api.post("/api/auth/register/start", details);

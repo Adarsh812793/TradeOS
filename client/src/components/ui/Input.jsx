@@ -18,6 +18,7 @@ export default function Input({
   error,
   hint, // helper text under the field (hidden while there is an error)
   animateMessage = false, // the message area under the field opens and closes smoothly (no room is kept when there is no message)
+  inputClassName = "", // an extra class for the <input> itself (for example the large sign-up code field)
   disabled = false,
   required = false,
   autoComplete, // hint for browsers and password managers, e.g. "current-password" or "new-password"
@@ -78,7 +79,7 @@ export default function Input({
           aria-describedby={describedBy}
           className={`form-field__input ${
             isPassword ? "form-field__input--password" : ""
-          } ${error ? "form-field__input--error" : ""}`.trim()}
+          } ${error ? "form-field__input--error" : ""} ${inputClassName}`.trim()}
         />
 
         {isPassword && (
