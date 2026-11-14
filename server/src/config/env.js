@@ -5,6 +5,7 @@
 import dotenv from "dotenv";
 
 import { resolveEmailConfig } from "./emailConfig.js";
+import { resolveOtpSecret } from "./otpConfig.js";
 
 const envFile = process.env.NODE_ENV === "test"
     ? ".env.test"
@@ -45,8 +46,15 @@ const email = resolveEmailConfig({
     from: process.env.EMAIL_FROM
 });
 
+// The secret that protects the sign-up codes in the database (see config/otpConfig.js)
+const otpSecret = resolveOtpSecret({
+    secret: process.env.OTP_SECRET,
+    jwtSecret: process.env.JWT_ACCESS_SECRET
+});
+
 export default {
     PORT: process.env.PORT || 8080,
+    OTP_SECRET: otpSecret,
     EMAIL_PROVIDER: email.provider,
     RESEND_API_KEY: email.resendApiKey,
     EMAIL_FROM: email.from,
