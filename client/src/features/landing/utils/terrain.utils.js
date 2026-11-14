@@ -132,6 +132,11 @@ export function stepWalk(state) {
 // colour follow. `1 - exp(-dt * k)` is a smoothing factor that is frame-rate independent (a slow and a fast
 // computer end up at the same place after the same real time).
 export function advance(state, dt) {
+  // A frame in which no time passed (the browser sometimes delivers two frames with the same timestamp) has nothing to
+  // simulate, and the speed below divides by dt: 0 / 0 is NaN, which spread to every column, turned the colours black
+  // and never washed out. A negative or NaN dt is just as meaningless, so they are all skipped.
+  if (!(dt > 0)) return;
+
   const { count, value, height, velocity, mix } = state;
 
   const glide = 1 - Math.exp(-dt * GLIDE_SPEED);
@@ -139,6 +144,12 @@ export function advance(state, dt) {
   const colourEasing = 1 - Math.exp(-dt * COLOUR_EASING);
 
   for (let i = 0; i < count; i++) {
+    // Self-healing: if a NaN ever got into a column for any other reason, start that column over instead of letting
+    // it poison every later frame (NaN never washes out by itself)
+    if (!Number.isFinite(height[i])) height[i] = value[i];
+    if (!Number.isFinite(velocity[i])) velocity[i] = 0;
+    if (!Number.isFinite(mix[i])) mix[i] = 0;
+
     const before = height[i];
     height[i] += (value[i] - before) * glide;
 

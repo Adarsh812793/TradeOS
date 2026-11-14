@@ -119,6 +119,10 @@ export function createTerrainScene(
   let frameCount = 0;
 
   function frame(dt) {
+    // No time passed (the browser can deliver two frames with the same timestamp) or the time is not a number:
+    // skip the frame. The simulation divides by dt, and 0 / 0 once turned every column black for good.
+    if (!(dt > 0)) return;
+
     // A long gap (a throttled background tab, a debugger pause) must not make the terrain lurch forward
     dt = Math.min(dt, 0.1);
 
