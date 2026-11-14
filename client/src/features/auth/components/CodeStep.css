@@ -1,0 +1,48 @@
+/* The code step of the sign-up (see CodeStep.jsx). The code is one wide field in the mono face, so the digits line up and
+   one paste or one autofill from the phone's keyboard fills all of it. */
+.code-step__lead {
+  overflow-wrap: anywhere; /* a long email never pushes the card wider than the screen */
+}
+
+.code-step__email {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.form-field__input.code-step__input {
+  min-height: 56px;
+  padding-inline: var(--space-4);
+
+  font-family: var(--font-mono);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.4em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The placeholder zeros are a quiet hint of the shape, not a value */
+.form-field__input.code-step__input::placeholder {
+  letter-spacing: 0.4em;
+  opacity: 0.5;
+}
+
+.code-step__login {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+.code-step__login a {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* "Send a new code" on the left, "Use a different email" on the right (they wrap under each other on a very narrow screen) */
+.code-step__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}

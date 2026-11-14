@@ -1,0 +1,120 @@
+/* The tick box field (see Checkbox.jsx). The real checkbox is kept, invisible but still focusable and clickable, and the
+   drawn box next to it follows its state through the sibling selectors below. */
+.checkbox-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.checkbox-field__row {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-1) 0; /* with the text, a comfortable height to tap */
+  cursor: pointer;
+}
+
+.checkbox-field__row--disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Invisible, on top of the drawn box, so a click, a tap and the keyboard all reach the real checkbox */
+.checkbox-field__input {
+  position: absolute;
+  top: var(--space-1);
+  left: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+/* Like the text fields, the box is a slightly darker slot on the panel */
+.checkbox-field__box {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px; /* lines the box up with the first line of text */
+  box-sizing: border-box;
+
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-background);
+  color: var(--color-on-primary);
+
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+/* The tick is there but invisible until the box is checked */
+.checkbox-field__box svg {
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.checkbox-field__row:hover .checkbox-field__input:not(:disabled) + .checkbox-field__box {
+  border-color: var(--color-text-secondary);
+}
+
+.checkbox-field__input:checked + .checkbox-field__box {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+.checkbox-field__input:checked + .checkbox-field__box svg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Keyboard focus shows the same ring as the text fields */
+.checkbox-field__input:focus-visible + .checkbox-field__box {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
+}
+
+.checkbox-field__box--error {
+  border-color: var(--color-danger);
+}
+
+.checkbox-field__input:focus-visible + .checkbox-field__box--error {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px var(--color-danger-tint);
+}
+
+.checkbox-field__label {
+  color: var(--color-text-body);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+/* The error and the hint line up with the label's text, not with the box: the box is 20px wide plus the 12px gap */
+.checkbox-field > .form-field__error,
+.checkbox-field > .form-field__hint,
+.checkbox-field .form-field__message-inner > * {
+  padding-left: calc(20px + var(--space-3));
+}
+
+/* A link inside the label is a normal link, not part of the tick target's colour */
+.checkbox-field__label a {
+  color: var(--color-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checkbox-field__box,
+  .checkbox-field__box svg {
+    transition: none;
+  }
+}

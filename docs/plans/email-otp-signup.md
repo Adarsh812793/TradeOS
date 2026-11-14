@@ -69,7 +69,7 @@ Errors the page uses: `OTP_RESEND_TOO_SOON` (429, `details.retryAfterSeconds`), 
 
 Checked with unit and integration tests (about 100 new ones, with mutation checks on every security rule) and the whole suite (355 tests) now signing users up through the emailed code.
 
-## PR 2: frontend (`feature/email-otp-frontend`), next
+## PR 2: frontend (`feature/email-otp-frontend`), done
 
 - `auth.api.js`: `startRegistration`, `resendCode`, `verifyRegistration` (remove `register`).
 - `AuthContext`: a `verifyRegistration` that stores the access token like `login` does (the session then restores through `refreshSession()` as usual).
@@ -78,6 +78,9 @@ Checked with unit and integration tests (about 100 new ones, with mutation check
 - Notice wording that other flows rely on stays exact.
 - Move `client/scripts/screenshots.mjs` off the removed route (create its user directly in the test database).
 - Checks in the browser by reading the code from the test server's log (`EMAIL_PROVIDER=console`).
+- A required terms checkbox on step 1 ("I understand TradeOS uses virtual money and simulated prices..."): Create account stays disabled until it is ticked. Enforced in the browser only; storing when the user agreed would be a later backend change.
+
+As built: `registration.errors.js` (every server answer in plain words plus the next action), a shared `Checkbox`, `CodeStep.jsx` with one wide code field (digits only, sends itself at the sixth digit, `readOnly` while checking so the cursor stays), `useCountdown` (counts to an end time), and `signupProgress.js` (only the email, in `sessionStorage`, 30 minutes, so a reload returns to the code step). `server/scripts/screenshot-user.js` creates the screenshot tool's user through the real sign-up in the test database (the server's `OTP_SECRET` goes on the command line because `.env.test` has none).
 
 ## Later
 
@@ -96,3 +99,18 @@ Checked with unit and integration tests (about 100 new ones, with mutation check
 - [ ] A failed email (503) keeps the sign-up and does not start a cooldown
 - [ ] `POST /api/auth/register` answers 404
 - [ ] The server refuses to start with `console` or `memory` email in production, or without a long `OTP_SECRET`
+
+## Regression checklist (frontend)
+
+- [ ] Create account is disabled until the terms box is ticked; unticking again shows "Please tick this box to continue"
+- [ ] Step 1 sends the details and shows step 2 with the email address; nothing is created yet
+- [ ] The code field has the cursor, numeric keypad (`inputmode`) and one-time-code autofill
+- [ ] A pasted "123 456" is cleaned to digits and sent by itself at the sixth digit
+- [ ] A wrong code says how many attempts are left, clears the field and keeps the cursor in it; the fifth says to send a new code
+- [ ] Resend is locked for 60 s with a countdown; a too-early resend restarts the countdown with the server's wait; a new code makes the old one stop working
+- [ ] "Use a different email" returns to the form with the typed details and the tick kept
+- [ ] A reload on step 2 returns to step 2; a reload after "Use a different email" or a finished sign-up shows the form
+- [ ] A right code logs the person in and opens the dashboard (no detour through the login page)
+- [ ] An email that already has an account says so with a Log in link
+- [ ] No sideways scroll on a phone, on either step
+- [ ] Nothing about the password is ever in `sessionStorage`

@@ -22,7 +22,7 @@ const LOGIN_HIGHLIGHTS = [
 ];
 
 // The login page: the shared auth frame around the sign-in form, plus the notices other flows send here
-// (just registered, account deleted, signed out after inactivity).
+// (account deleted, signed out after inactivity).
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -31,7 +31,6 @@ export default function LoginPage() {
   const [serverError, setServerError] = useState("");
 
   // Notices passed in through the navigation state by the flows that send the user here
-  const registrationSuccess = location.state?.registrationSuccess;
   const accountDeleted = location.state?.accountDeleted; // set after deleting the account from the Account page
   const sessionEndReason = location.state?.sessionEndReason; // "idle" or "expired": set when the app signed the user out
 
@@ -78,8 +77,6 @@ export default function LoginPage() {
       <Card padding="lg">
         <h2 className="auth-layout__heading">Log in</h2>
         <p className="auth-layout__subheading">Use your TradeOS account.</p>
-
-        {registrationSuccess && <AuthMessage variant="success">Account created successfully. Please sign in.</AuthMessage>}
 
         {accountDeleted && (
           <AuthMessage variant="info">Your account has been deleted. We&apos;re sorry to see you go.</AuthMessage>

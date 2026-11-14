@@ -23,6 +23,11 @@ const signupSchema = z
     confirmPassword: z
       .string()
       .min(1, "Please confirm your password"),
+
+    // The person must tick "I understand ...": the button stays disabled until they do, and this is the safety net behind it
+    acceptedTerms: z.boolean().refine((value) => value === true, {
+      message: "Please tick this box to continue",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",

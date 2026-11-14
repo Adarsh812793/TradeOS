@@ -2,7 +2,8 @@
 // It also reports page errors, failed requests and pages that scroll sideways.
 //
 // Needs two things running first (use the TEST database so real data is never touched):
-//   server:  cd server && NODE_ENV=test PORT=8081 node src/server.js
+//   server:  cd server && OTP_SECRET=<any long random string> NODE_ENV=test PORT=8081 node src/server.js
+//            (OTP_SECRET is also needed in the shell that runs this script: it creates the test user through the real sign-up)
 //   client:  cd client && VITE_API_BASE_URL=http://localhost:8081 npx vite --port 5173
 // Then:      cd client && node scripts/screenshots.mjs <label>        (label example: before, after)
 //   Optional env: BASE_URL (default http://localhost:5173), API_URL (default http://localhost:8081)
@@ -43,7 +44,10 @@ async function prepareData() {
     cwd: serverDir, env: { ...process.env, NODE_ENV: "test" }, stdio: "inherit",
   });
 
-  await api("POST", "/api/auth/register", { name: "Aarav Mehta", email, password: PASSWORD });
+  // Sign-up needs an emailed code that this script cannot read, so the user is created by the server's own helper
+  execFileSync("node", ["scripts/screenshot-user.js", email, "Aarav Mehta", PASSWORD], {
+    cwd: serverDir, env: { ...process.env, NODE_ENV: "test" }, stdio: "inherit",
+  });
   const login = await api("POST", "/api/auth/login", { email, password: PASSWORD });
   const token = login.data.accessToken;
 
