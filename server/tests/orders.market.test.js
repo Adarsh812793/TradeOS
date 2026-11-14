@@ -118,8 +118,12 @@ describe("MARKET_ALWAYS_OPEN startup guard", () => {
         vi.resetModules();
     });
 
+    // These tests start the config under other environments, where the test-only memory email provider is refused and
+    // production needs real email settings, so every start here carries a valid email setup
+    const validEmailEnv = { EMAIL_PROVIDER: "resend", RESEND_API_KEY: "re_test_key", EMAIL_FROM: "TradeOS <onboarding@resend.dev>" };
+
     const loadConfig = async (env) => {
-        process.env = { ...original, ...env };
+        process.env = { ...original, ...validEmailEnv, ...env };
         vi.resetModules();
         return (await import("../src/config/env.js")).default;
     };

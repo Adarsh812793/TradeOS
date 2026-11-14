@@ -4,6 +4,8 @@
 //Make sure to configure correct .env file we have two of them ,the other one is for testing purpose.
 import dotenv from "dotenv";
 
+import { resolveEmailConfig } from "./emailConfig.js";
+
 const envFile = process.env.NODE_ENV === "test"
     ? ".env.test"
     : ".env";
@@ -35,8 +37,19 @@ if (marketAlwaysOpen && !["development", "test"].includes(process.env.NODE_ENV))
     );
 }
 
+// Which email provider sends the sign-up codes (see config/emailConfig.js for the rules)
+const email = resolveEmailConfig({
+    nodeEnv: process.env.NODE_ENV,
+    provider: process.env.EMAIL_PROVIDER,
+    resendApiKey: process.env.RESEND_API_KEY,
+    from: process.env.EMAIL_FROM
+});
+
 export default {
     PORT: process.env.PORT || 8080,
+    EMAIL_PROVIDER: email.provider,
+    RESEND_API_KEY: email.resendApiKey,
+    EMAIL_FROM: email.from,
     MARKET_ALWAYS_OPEN: marketAlwaysOpen,
     NODE_ENV: process.env.NODE_ENV || "development",
     MONGODB_URI: process.env.MONGODB_URI,
