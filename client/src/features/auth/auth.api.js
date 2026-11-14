@@ -7,6 +7,22 @@ const authApi = {
     return api.post("/api/auth/register", credentials);
   },
 
+  // Email sign-up, step 1: sends a 6-digit code to the email. Nothing is created yet. Answers { email, resendAvailableInSeconds, codeExpiresInMinutes }.
+  startRegistration(details) {
+    return api.post("/api/auth/register/start", details);
+  },
+
+  // Sends a NEW code for a sign-up that is waiting (the old code stops working).
+  resendCode(details) {
+    return api.post("/api/auth/register/resend", details);
+  },
+
+  // Email sign-up, step 2: the code from the email. On success the account exists and the person is logged in:
+  // answers { accessToken, user } and sets the refresh cookie.
+  verifyRegistration(details) {
+    return api.post("/api/auth/register/verify", details);
+  },
+
   login(credentials) {
     return api.post("/api/auth/login", credentials);
   },

@@ -119,15 +119,29 @@ export function AuthProvider({ children }) {
     onIdle: () => endSession("idle"),
   });
 
-  // 8. Log in the user and store the returned access token.
-  async function login(credentials) {
-    const response = await authApi.login(credentials);
-    const token = response.data.accessToken;
-
+  // 8. Starts a logged-in session from an access token the server just gave: used after a password login and after a
+  // verified sign-up (the server also set the refresh cookie in the same answer).
+  function beginSession(token) {
     isEndingSessionRef.current = false;
     setSessionEndReason(null);
     writeLastActivity();
     applyToken(token);
+  }
+
+  // Log in the user and store the returned access token.
+  async function login(credentials) {
+    const response = await authApi.login(credentials);
+
+    beginSession(response.data.accessToken);
+
+    return response.data;
+  }
+
+  // Confirm the emailed code: the account is created and the person is logged in straight away.
+  async function verifyRegistration(details) {
+    const response = await authApi.verifyRegistration(details);
+
+    beginSession(response.data.accessToken);
 
     return response.data;
   }
@@ -156,6 +170,7 @@ export function AuthProvider({ children }) {
         isLoading,
         sessionEndReason,
         login,
+        verifyRegistration,
         logout,
       }}
     >
