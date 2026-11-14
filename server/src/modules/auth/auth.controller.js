@@ -2,6 +2,7 @@
 import config from "../../config/env.js";
 
 import authService from "./auth.service.js"; //authService is an object containing many functions
+import registrationService from "./registration.service.js"; //email sign-up: start and resend
 
 import AppError from "../../utils/AppError.js";
 import ERROR_CODES from "../../utils/errorCodes.js";
@@ -22,6 +23,34 @@ const register =asyncWrap(async (req, res, next) => {
             success: true,
             message: "User registered successfully",
             data: user
+        });
+
+});
+
+// I-b. Function to START an email sign-up: emails a 6-digit code, creates no account yet
+const startRegistration = asyncWrap(async (req, res, next) => {
+
+        const { name, email, password } = req.body;
+
+        const result = await registrationService.startRegistration({ name, email, password });
+
+        res.status(202).json({
+            success: true,
+            message: "We sent a verification code to your email",
+            data: result
+        });
+
+});
+
+// I-c. Function to send a NEW code for a sign-up that is waiting for one
+const resendRegistrationCode = asyncWrap(async (req, res, next) => {
+
+        const result = await registrationService.resendRegistrationCode({ email: req.body.email });
+
+        res.status(200).json({
+            success: true,
+            message: "We sent a new verification code to your email",
+            data: result
         });
 
 });
@@ -154,6 +183,8 @@ const changePassword = asyncWrap(async (req, res, next) => {
 
 export default {
     register,
+    startRegistration,
+    resendRegistrationCode,
     login,
     refresh,
     logout,

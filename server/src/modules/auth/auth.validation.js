@@ -19,6 +19,20 @@ export const registerSchema = Joi.object({
     password: passwordSchema
 });
 
+//Resend-code Schema (POST /api/auth/register/resend): the email of the sign-up that is waiting for its code
+export const resendCodeSchema = Joi.object({
+    email: Joi.string()
+        .trim()
+        .lowercase()
+        .email()
+        .required()
+        .messages({
+            "string.empty": "Email is required",
+            "string.email": "Please provide a valid email",
+            "any.required": "Email is required"
+        })
+});
+
 //Login Schema
 export const loginSchema = Joi.object({
     email: Joi.string()
