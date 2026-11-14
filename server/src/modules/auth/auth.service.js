@@ -19,7 +19,7 @@ import { welcomeTemplate, passwordChangedTemplate } from "../notifications/notif
 import { createAccessToken,createRefreshToken,hashRefreshToken,createTokenFamilyId } from "./auth.tokens.js";
 
 // Virtual money every new account starts with
-const STARTING_BALANCE = 100000;
+export const STARTING_BALANCE = 100000;
 
 //I. Function that creates a user and also wallet at the same time using transactional properties
 const registerUser = async ({ name, email, password }) => {
@@ -164,36 +164,8 @@ const loginUser = async ({ email, password }) => {
         throw new AppError("Invalid email or password",401,ERROR_CODES.INVALID_CREDENTIALS);
     }
 
-    // 3. Create access JWT
-    const accessToken = createAccessToken(user);
-
-    // 4. Create family id for refresh tokens
-    const familyId=createTokenFamilyId();
-
-    // 5. Create random refresh token
-    const refreshToken = createRefreshToken();
-
-    // 6. Hash refresh token for DB
-    const tokenHash = hashRefreshToken(refreshToken);
-
-    // 7. Set expiry
-    const expiresAt = new Date(
-        Date.now() + 7 * 24 * 60 * 60 * 1000 //Refresh token stored for 7 days
-    );
-
-    // 8. Store refresh session
-    await RefreshSession.create({
-        userId: user._id,
-        tokenHash,
-        familyId,
-        expiresAt
-    });
-
-    // 9. Return both
-    return {
-        accessToken,
-        refreshToken
-    };
+    // 3. Start a login session: access token, refresh token and the stored (hashed) refresh session
+    return startLoginSession(user);
 };
 
 // A refresh token that was rotated less than this long ago may legitimately be presented once more by the
@@ -214,6 +186,14 @@ const createSessionTokens = async (user, familyId) => {
     });
 
     return { accessToken, refreshToken, sessionId: session._id };
+};
+
+// A brand new login for this user (a new refresh-token family): used after a password login and after a verified sign-up.
+// Returns the raw tokens; only the hash of the refresh token is stored.
+const startLoginSession = async (user) => {
+    const { accessToken, refreshToken } = await createSessionTokens(user, createTokenFamilyId());
+
+    return { accessToken, refreshToken };
 };
 
 //III. Function to create a new session (new access and refresh token), rotating the old refresh token.
@@ -429,6 +409,7 @@ const changePassword = async (userId, { currentPassword, newPassword }, currentR
 export default {
     registerUser,
     loginUser,
+    startLoginSession,
     refreshAccessToken,
     logoutUser,
     changePassword

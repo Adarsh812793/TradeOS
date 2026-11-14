@@ -6,7 +6,7 @@ import validate from "../../middleware/validate.middleware.js";
 import authRateLimiter, { passwordChangeRateLimiter, refreshRateLimiter, signupRateLimiter } from "../../middleware/rateLimit.middleware.js";
 import protect from "../../middleware/auth.middleware.js";
 import checkRefreshCookie from "../../middleware/checkRefreshCookie.middleware.js";
-import {registerSchema,loginSchema,changePasswordSchema,resendCodeSchema} from "./auth.validation.js";
+import {registerSchema,loginSchema,changePasswordSchema,resendCodeSchema,verifyCodeSchema} from "./auth.validation.js";
 
 
 const router = express.Router();
@@ -19,6 +19,9 @@ router.post("/register/start",signupRateLimiter,validate(registerSchema,"body"),
 
 //Route for sending a new code: POST /api/auth/register/resend -> updates the pending_registrations record of this email (new code hash, attempts back to 0, resend counter +1) and emails the new code; returns { email, resendAvailableInSeconds, codeExpiresInMinutes }, or 429 with details.retryAfterSeconds while the cooldown runs
 router.post("/register/resend",signupRateLimiter,validate(resendCodeSchema,"body"),authController.resendRegistrationCode);
+
+//Route for confirming the emailed code: POST /api/auth/register/verify -> counts the guess on the pending_registrations record (max 5 per code), and on the right code creates the user (email verified), the wallet and the welcome notification in ONE transaction while deleting the pending record, then starts a login: refresh token cookie + returns 201 { accessToken, user }
+router.post("/register/verify",signupRateLimiter,validate(verifyCodeSchema,"body"),authController.verifyRegistration);
 
 //Route for login
 router.post("/login",authRateLimiter,validate(loginSchema,"body") ,authController.login);

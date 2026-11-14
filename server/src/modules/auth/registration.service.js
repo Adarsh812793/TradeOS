@@ -1,23 +1,32 @@
-// Email sign-up, steps 1 and 2: START a sign-up and RE-SEND its code. Nothing here creates a User or a Wallet: the person
-// only becomes a real account later, when the right code is confirmed. Until then everything lives in one
-// PendingRegistration record per email (see pendingRegistration.model.js).
+// Email sign-up: START a sign-up, RE-SEND its code and VERIFY it. Starting and re-sending create no User and no Wallet:
+// the person only becomes a real account when the right code is confirmed (verifyRegistration). Until then everything
+// lives in one PendingRegistration record per email (see pendingRegistration.model.js).
 import argon2 from "argon2";
+import mongoose from "mongoose";
 
 import User from "../users/user.model.js";
+import Wallet from "../wallet/wallet.model.js";
 import PendingRegistration from "./pendingRegistration.model.js";
+import authService, { STARTING_BALANCE } from "./auth.service.js";
+
+import notificationService from "../notifications/notification.service.js";
+import { welcomeTemplate } from "../notifications/notification.templates.js";
 
 import AppError from "../../utils/AppError.js";
 import ERROR_CODES from "../../utils/errorCodes.js";
+import retryTransaction from "../../utils/retryTransaction.js";
 
 import { sendEmail } from "../email/email.provider.js";
 import { otpEmail } from "../email/email.templates.js";
 import {
+    OTP_MAX_ATTEMPTS,
     OTP_MAX_RESENDS,
     OTP_TTL_MINUTES,
     PENDING_TTL_MINUTES,
     RESEND_COOLDOWN_SECONDS,
     generateOtp,
-    hashOtp
+    hashOtp,
+    verifyOtp
 } from "./otp.utils.js";
 
 const MINUTE_MS = 60 * 1000;
@@ -193,7 +202,154 @@ const resendRegistrationCode = async ({ email }) => {
     return sentAnswer(email);
 };
 
+// When a guess could not be counted: work out why, as an error. Used only after the attempt could not be taken.
+async function explainVerifyRefusal(email, now) {
+    const pending = await PendingRegistration.findOne({ email });
+
+    // No live sign-up: either it was already completed (the account exists now) or there never was one
+    if (!pending || pending.expiresAt <= now) {
+        if (await User.exists({ email })) {
+            return new AppError("This email is already verified. Please log in.", 409, ERROR_CODES.USER_ALREADY_EXISTS);
+        }
+
+        return new AppError(
+            "We couldn't find a sign-up in progress for this email. Please start again.",
+            404,
+            ERROR_CODES.NO_PENDING_REGISTRATION
+        );
+    }
+
+    if (pending.codeExpiresAt <= now) {
+        return new AppError("This code has expired. Ask for a new one.", 400, ERROR_CODES.OTP_EXPIRED);
+    }
+
+    return new AppError("Too many wrong codes. Ask for a new code.", 429, ERROR_CODES.OTP_ATTEMPTS_EXCEEDED);
+}
+
+// Turns a confirmed pending sign-up into a real account: the user (email verified), the wallet and the welcome
+// notification, together in ONE transaction, or none of them. The same transaction DELETES the pending record, and that
+// delete is the single-use lock: only the request that deletes it can create the account, so two simultaneous requests
+// with the right code make exactly one account. (MongoDB aborts the loser for a write conflict, retryTransaction runs it
+// again, and by then the record is gone.)
+async function createVerifiedAccount(pending) {
+    return retryTransaction(async () => {
+        const session = await mongoose.startSession();
+
+        try {
+            session.startTransaction();
+
+            // Single use. The code hash is part of the match, so a newer code sent in the meantime is not used up by an old one
+            const claimed = await PendingRegistration.findOneAndDelete(
+                { _id: pending._id, codeHash: pending.codeHash },
+                { session }
+            );
+
+            if (!claimed) {
+                if (await User.exists({ email: pending.email }).session(session)) {
+                    throw new AppError("This email is already verified. Please log in.", 409, ERROR_CODES.USER_ALREADY_EXISTS);
+                }
+
+                throw new AppError(
+                    "A newer code was sent. Please use the newest code in your email.",
+                    400,
+                    ERROR_CODES.OTP_EXPIRED
+                );
+            }
+
+            // Someone may have made an account with this email by another way in the meantime
+            if (await User.exists({ email: pending.email }).session(session)) {
+                throw new AppError("User already exists", 409, ERROR_CODES.USER_ALREADY_EXISTS);
+            }
+
+            const [user] = await User.create(
+                [
+                    {
+                        name: pending.name,
+                        email: pending.email,
+                        passwordHash: pending.passwordHash,
+                        emailVerified: true,
+                        emailVerifiedAt: new Date()
+                    }
+                ],
+                { session }
+            );
+
+            await Wallet.create([{ userId: user._id, balance: STARTING_BALANCE, currency: "INR" }], { session });
+
+            await notificationService.createNotification(
+                user._id,
+                welcomeTemplate({ startingBalance: STARTING_BALANCE }),
+                { session }
+            );
+
+            await session.commitTransaction();
+
+            return user;
+
+        } catch (error) {
+            await session.abortTransaction();
+
+            throw error;
+
+        } finally {
+            await session.endSession();
+        }
+    });
+}
+
+// III. Confirms the emailed code. On the right code the account is created and the person is logged in straight away
+// (the same access token and refresh-token cookie as a password login).
+//   - Each guess first TAKES one of the code's 5 attempts in a single atomic update, so any number of simultaneous
+//     guesses can only ever try 5 codes in total.
+//   - A wrong code answers how many attempts are left; after the 5th the code is dead until a new one is requested.
+const verifyRegistration = async ({ email, code }) => {
+    const now = new Date();
+
+    // 1. Take one attempt (only possible while the sign-up and the code are alive and attempts remain)
+    const pending = await PendingRegistration.findOneAndUpdate(
+        {
+            email,
+            expiresAt: { $gt: now },
+            codeExpiresAt: { $gt: now },
+            attempts: { $lt: OTP_MAX_ATTEMPTS }
+        },
+        { $inc: { attempts: 1 } },
+        { returnDocument: "after" }
+    );
+
+    if (!pending) {
+        throw await explainVerifyRefusal(email, now);
+    }
+
+    // 2. Is it the right code? (compared in constant time against the stored keyed hash)
+    if (!verifyOtp(code, email, pending.codeHash)) {
+        const attemptsLeft = OTP_MAX_ATTEMPTS - pending.attempts;
+
+        throw new AppError(
+            attemptsLeft > 0
+                ? "That code is not correct."
+                : "That code is not correct and you have no attempts left. Ask for a new code.",
+            400,
+            ERROR_CODES.OTP_INVALID,
+            { attemptsLeft }
+        );
+    }
+
+    // 3. Right code: create the account (user + wallet + welcome notification) in one transaction
+    const user = await createVerifiedAccount(pending);
+
+    // 4. Log the person in with the existing session code (access token, hashed refresh session)
+    const { accessToken, refreshToken } = await authService.startLoginSession(user);
+
+    return {
+        accessToken,
+        refreshToken,
+        user: { id: user._id, name: user.name, email: user.email }
+    };
+};
+
 export default {
     startRegistration,
-    resendRegistrationCode
+    resendRegistrationCode,
+    verifyRegistration
 };

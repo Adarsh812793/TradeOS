@@ -8,6 +8,16 @@ import AppError from "../../utils/AppError.js";
 import ERROR_CODES from "../../utils/errorCodes.js";
 import asyncWrap from "../../utils/asyncWrap.js";
 
+// Sends the refresh token to the browser as an httpOnly cookie (JavaScript on the page can never read it)
+const setRefreshCookie = (res, refreshToken) => {
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: config.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+};
+
 //I. Function to register a user
 const register =asyncWrap(async (req, res, next) => {
 
@@ -55,6 +65,26 @@ const resendRegistrationCode = asyncWrap(async (req, res, next) => {
 
 });
 
+// I-d. Function to confirm the emailed code: creates the account and logs the person straight in
+const verifyRegistration = asyncWrap(async (req, res, next) => {
+
+        const { email, code } = req.body;
+
+        const { accessToken, refreshToken, user } = await registrationService.verifyRegistration({ email, code });
+
+        setRefreshCookie(res, refreshToken);
+
+        res.status(201).json({
+            success: true,
+            message: "Email verified. Your account is ready.",
+            data: {
+                accessToken,
+                user
+            }
+        });
+
+});
+
 // II.Function to log in a user
 const login = asyncWrap(async (req, res, next) => {
 
@@ -67,12 +97,7 @@ const login = asyncWrap(async (req, res, next) => {
                 password
             });
 
-        res.cookie("refreshToken", refreshToken, { //Sends a cookie to clients browser with name:refreshToken and object passed for settings
-            httpOnly: true,
-            secure: config.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
+        setRefreshCookie(res, refreshToken);
 
         res.status(200).json({
             success: true,
@@ -105,15 +130,7 @@ const refresh =asyncWrap( async (req, res, next) => {
 
 
         // Replace old cookie with NEW refresh token
-        res.cookie(
-            "refreshToken",
-            newRefreshToken,
-            {
-                httpOnly: true,
-                secure:config.NODE_ENV === "production",
-                sameSite: "lax",
-                maxAge:7 * 24 * 60 * 60 * 1000
-            });
+        setRefreshCookie(res, newRefreshToken);
 
 
         // Send NEW access token to React
@@ -184,6 +201,7 @@ const changePassword = asyncWrap(async (req, res, next) => {
 export default {
     register,
     startRegistration,
+    verifyRegistration,
     resendRegistrationCode,
     login,
     refresh,
