@@ -5,7 +5,8 @@ import {
     request,
     app,
     createAuthenticatedUser,
-    createTestStock
+    createTestStock,
+    signUpUser
 } from "./helpers/tradeosTestUtils.js";
 
 import User from "../src/modules/users/user.model.js";
@@ -222,9 +223,7 @@ describe("DELETE /api/users/me", () => {
 
         await deleteAccount(user, { password: PASSWORD });
 
-        const register = await request(app)
-            .post("/api/auth/register")
-            .send({ name: "Back Again", email: user.email, password: PASSWORD });
+        const register = await signUpUser({ name: "Back Again", email: user.email, password: PASSWORD });
 
         expect(register.status).toBe(201);
     });

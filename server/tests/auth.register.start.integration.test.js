@@ -122,6 +122,7 @@ describe("POST /api/auth/register/start", () => {
 
     it("refuses an email that already has an account with 409, and sends and stores nothing", async () => {
         const existing = await createAuthenticatedUser();
+        clearOutbox(); // creating that user sent its own verification email; only what happens next is being checked
 
         const response = await start(newSignup(existing.email));
 

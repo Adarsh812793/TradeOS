@@ -18,25 +18,6 @@ const setRefreshCookie = (res, refreshToken) => {
     });
 };
 
-//I. Function to register a user
-const register =asyncWrap(async (req, res, next) => {
-
-        const { name, email, password } = req.body;
-
-        const user = await authService.registerUser({
-            name,
-            email,
-            password
-        });
-
-        res.status(201).json({
-            success: true,
-            message: "User registered successfully",
-            data: user
-        });
-
-});
-
 // I-b. Function to START an email sign-up: emails a 6-digit code, creates no account yet
 const startRegistration = asyncWrap(async (req, res, next) => {
 
@@ -199,7 +180,6 @@ const changePassword = asyncWrap(async (req, res, next) => {
 });
 
 export default {
-    register,
     startRegistration,
     verifyRegistration,
     resendRegistrationCode,

@@ -1,3 +1,4 @@
+import argon2 from "argon2";
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 
 import Notification from "../src/modules/notifications/notification.model.js";
@@ -268,9 +269,8 @@ describe("POST /api/auth/register/verify: one account, all or nothing", () => {
 
     it("an account made another way in the meantime wins: 409, and no second user", async () => {
         const { email, code } = await signUp();
-        // The old direct sign-up route (still present in this commit) takes the email first
-        const direct = await request(app).post("/api/auth/register").send({ name: "Direct", email, password: PASSWORD });
-        expect(direct.status).toBe(201);
+        // Another way of creating an account (here straight into the database) takes the email first
+        await User.create({ name: "Direct", email, passwordHash: await argon2.hash(PASSWORD) });
 
         const response = await verify(email, code);
 

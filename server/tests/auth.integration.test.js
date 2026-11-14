@@ -4,7 +4,8 @@ import { describe, it, expect } from "vitest";
 import {
     request,
     app,
-    createAuthenticatedUser
+    createAuthenticatedUser,
+    signUpUser
 } from "./helpers/tradeosTestUtils.js";
 
 import User from "../src/modules/users/user.model.js";
@@ -18,11 +19,9 @@ const createTestUser = () => ({
     password: "TestPassword123!"
 });
 
-// Registers a test user through the actual API.
+// Signs a test user up through the actual API: start, read the emailed code, verify.
 const registerTestUser = async (user = createTestUser()) => {
-    const response = await request(app)
-        .post("/api/auth/register")
-        .send(user);
+    const response = await signUpUser(user);
 
     return { user, response };
 };
@@ -51,15 +50,13 @@ const getRefreshCookie = (response) => {
 describe("Auth Integration Tests", () => {
 
     // ============================================================
-    // 1. Tests on auth/register route
+    // 1. Tests on the email sign-up (register/start, then register/verify)
     // ============================================================
 
     it("1.1 should register a new user successfully", async () => {
         const user = createTestUser();
 
-        const response = await request(app)
-            .post("/api/auth/register")
-            .send(user);
+        const response = await signUpUser(user);
 
         expect(response.status).toBe(201);
         expect(response.body.success).toBe(true);
@@ -94,20 +91,29 @@ describe("Auth Integration Tests", () => {
     it("1.4 should reject registration with an already registered email", async () => {
         const user = createTestUser();
 
-        const firstResponse = await request(app)
-            .post("/api/auth/register")
-            .send(user);
+        const firstResponse = await signUpUser(user);
 
         expect(firstResponse.status).toBe(201);
 
-        const duplicateResponse = await request(app)
-            .post("/api/auth/register")
-            .send(user);
+        // The second sign-up is refused at the start, before any email is sent
+        const duplicateResponse = await signUpUser(user);
 
         expect(duplicateResponse.status).toBe(409);
 
         const users = await User.countDocuments({ email: user.email });
         expect(users).toBe(1);
+    });
+
+    it("1.6 should no longer offer the old direct register route (every account must verify its email)", async () => {
+        const user = createTestUser();
+
+        const response = await request(app)
+            .post("/api/auth/register")
+            .send(user);
+
+        expect(response.status).toBe(404);
+        expect(response.body.errorCode).toBe("ROUTE_NOT_FOUND");
+        expect(await User.countDocuments({ email: user.email })).toBe(0);
     });
 
     it("1.5 should reject missing or invalid registration fields", async () => {
@@ -122,7 +128,7 @@ describe("Auth Integration Tests", () => {
 
         for (const payload of invalidRequests) {
             const response = await request(app)
-                .post("/api/auth/register")
+                .post("/api/auth/register/start")
                 .send(payload);
 
             expect(response.status).toBe(400);

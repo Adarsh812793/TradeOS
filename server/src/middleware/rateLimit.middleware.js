@@ -1,7 +1,7 @@
 import rateLimit from "express-rate-limit";
 import config from "../config/env.js";
 
-//Login and register: at most 10 requests per IP in 15 minutes (slows down password guessing)
+//Login: at most 10 requests per IP in 15 minutes (slows down password guessing)
 export const AUTH_RATE_LIMIT = 10;
 
 //The email sign-up routes (start, resend and later verify) get their OWN counter. One sign-up uses several requests, and
@@ -32,7 +32,7 @@ export const createIpRateLimiter = ({
         }
     });
 
-//POST /api/auth/register and /api/auth/login
+//POST /api/auth/login (the email sign-up routes have their own limiter below)
 const authRateLimiter = createIpRateLimiter({
     limit: AUTH_RATE_LIMIT,
     message: "Too many authentication attempts. Please try again later."

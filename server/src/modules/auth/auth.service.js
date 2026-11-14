@@ -1,11 +1,10 @@
-// File contains 4 functions (register,login,refreshToken,logout)
+// Login, token refresh, logout and change password. Signing up is in registration.service.js (email code verification).
 import argon2 from "argon2";
 import crypto from "crypto";
 import mongoose from "mongoose";
 
 //Models
 import User from "../users/user.model.js";
-import Wallet from "../wallet/wallet.model.js";
 import RefreshSession from "./refreshSession.model.js";
 
 //utils
@@ -14,135 +13,12 @@ import ERROR_CODES from "../../utils/errorCodes.js";
 
 //notifications
 import notificationService from "../notifications/notification.service.js";
-import { welcomeTemplate, passwordChangedTemplate } from "../notifications/notification.templates.js";
+import { passwordChangedTemplate } from "../notifications/notification.templates.js";
 
 import { createAccessToken,createRefreshToken,hashRefreshToken,createTokenFamilyId } from "./auth.tokens.js";
 
 // Virtual money every new account starts with
 export const STARTING_BALANCE = 100000;
-
-//I. Function that creates a user and also wallet at the same time using transactional properties
-const registerUser = async ({ name, email, password }) => {
-
-    // ==========================================
-    // Start MongoDB session
-    // ==========================================
-
-    const session = await mongoose.startSession();
-
-
-    try {
-
-        // ==========================================
-        // Start transaction
-        // ==========================================
-
-        session.startTransaction();
-
-
-        // ==========================================
-        // Check if user already exists
-        // ==========================================
-
-        const existingUser = await User.findOne({
-            email
-        }).session(session);
-
-
-        if (existingUser) {
-            throw new AppError("User already exists",409,ERROR_CODES.USER_ALREADY_EXISTS);
-        }
-
-
-        // ==========================================
-        // Hash password
-        // ==========================================
-
-        const passwordHash = await argon2.hash(password);
-
-
-        // ==========================================
-        // Create user
-        // ==========================================
-
-        const [user] = await User.create(
-            [
-                {
-                    name,
-                    email,
-                    passwordHash
-                }
-            ],
-            {
-                session
-            }
-        );
-
-
-        // ==========================================
-        // Create wallet
-        // ==========================================
-
-        await Wallet.create(
-            [
-                {
-                    userId: user._id,
-                    balance: STARTING_BALANCE,
-                    currency: "INR"
-                }
-            ],
-            {
-                session
-            }
-        );
-
-
-        // ==========================================
-        // Create welcome notification (same transaction as the user)
-        // ==========================================
-
-        await notificationService.createNotification(
-            user._id,
-            welcomeTemplate({ startingBalance: STARTING_BALANCE }),
-            { session }
-        );
-
-
-        // ==========================================
-        // Everything succeeded
-        // Commit transaction
-        // ==========================================
-
-        await session.commitTransaction();
-
-
-        return {
-            id: user._id,
-            name: user.name,
-            email: user.email
-        };
-
-
-    } catch (error) {
-
-        // ==========================================
-        // Something failed
-        // Roll back everything
-        // ==========================================
-
-        await session.abortTransaction();
-
-        throw error;
-
-    } finally {
-
-        // ==========================================
-        // Always close session
-        // ==========================================
-
-        await session.endSession();
-    }
-};
 
 //II. Function to login user and returns access and refresh token
 const loginUser = async ({ email, password }) => {
@@ -407,7 +283,6 @@ const changePassword = async (userId, { currentPassword, newPassword }, currentR
 };
 
 export default {
-    registerUser,
     loginUser,
     startLoginSession,
     refreshAccessToken,

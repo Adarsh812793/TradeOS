@@ -12,6 +12,9 @@ export default defineConfig({
         },
         // The tests talk to a remote database and many files run at once, so 5 s (the default) is too tight
         testTimeout: 20000,
+        // The same allowance for the setup hooks (beforeEach / beforeAll): they do the same remote-database work (sign a user
+        // up through the emailed code, place orders ...) and their default of 10 s was crossed now and then under load
+        hookTimeout: 20000,
         setupFiles: ["./test/setup.js"]
     }
 });

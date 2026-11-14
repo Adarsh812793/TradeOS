@@ -11,9 +11,6 @@ import {registerSchema,loginSchema,changePasswordSchema,resendCodeSchema,verifyC
 
 const router = express.Router();
 
-//Route for register
-router.post("/register",authRateLimiter,validate(registerSchema,"body"), authController.register); 
-
 //Route for starting an email sign-up: POST /api/auth/register/start -> reads users (is the email taken?), writes ONE pending_registrations record (name, email, argon2 password hash, HMAC of the code) and emails the 6-digit code; creates no User or Wallet; returns 202 { email, resendAvailableInSeconds, codeExpiresInMinutes } and never the code
 router.post("/register/start",signupRateLimiter,validate(registerSchema,"body"),authController.startRegistration);
 
