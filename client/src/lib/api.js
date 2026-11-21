@@ -1,5 +1,7 @@
 /* 1. API Configuration */
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+// Put in front of every API path. Empty means "the same address as the page" (in production the host forwards /api to the
+// backend). Vite writes this value into the built files, so changing it needs a new build.
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
 /* 2. Authentication hooks */
 // AuthContext fills these in (see configureAuth). The API client never imports AuthContext itself.

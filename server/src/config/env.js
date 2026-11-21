@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 
 import { resolveEmailConfig } from "./emailConfig.js";
 import { resolveOtpSecret } from "./otpConfig.js";
+import { resolveTrustProxyHops } from "./proxyConfig.js";
 
 const envFile = process.env.NODE_ENV === "test"
     ? ".env.test"
@@ -52,8 +53,21 @@ const otpSecret = resolveOtpSecret({
     jwtSecret: process.env.JWT_ACCESS_SECRET
 });
 
+// How many proxies are in front of the server (see config/proxyConfig.js)
+const trustProxyHops = resolveTrustProxyHops(process.env.TRUST_PROXY_HOPS);
+
+// Two quiet mistakes on a host. They do not stop the server (the settings are valid), so they are warned about loudly.
+if (!process.env.NODE_ENV) {
+    console.warn("WARNING: NODE_ENV is not set, so the server runs as 'development' (the login cookie is not marked secure). Set NODE_ENV=production on the host.");
+}
+
+if (process.env.NODE_ENV === "production" && trustProxyHops === 0) {
+    console.warn("WARNING: TRUST_PROXY_HOPS is 0 in production. Behind a host's proxy every visitor then shares one rate-limit counter. Set it to the number of proxies in front of the server.");
+}
+
 export default {
     PORT: process.env.PORT || 8080,
+    TRUST_PROXY_HOPS: trustProxyHops,
     OTP_SECRET: otpSecret,
     EMAIL_PROVIDER: email.provider,
     RESEND_API_KEY: email.resendApiKey,

@@ -107,6 +107,14 @@ const stocks = [
 // ==========================================
 // SEED DATABASE
 // ==========================================
+//   node src/modules/stocks/stock.seed.js
+//       SAFE: adds the stocks that are missing (matched by symbol) and never changes or deletes anything else.
+//       Run it on a new database, or any time; running it twice does nothing the second time.
+//   node src/modules/stocks/stock.seed.js --reset --confirm-db=<database name>
+//       DESTRUCTIVE: wipes the whole stocks collection and inserts the list again. Every order and holding points at a
+//       stock's id, so after this they point at nothing. Meant for a throwaway development database only, and it refuses
+//       unless you type the name of the database it is connected to.
+// It connects with the MONGODB_URI of server/.env (a MONGODB_URI given on the command line wins), so check which database it names.
 
 const seedStocks = async () => {
 
@@ -114,17 +122,37 @@ const seedStocks = async () => {
 
         await connectDB();
 
-        // Remove existing stock documents
-        await Stock.deleteMany({});
+        const databaseName = mongoose.connection.name;
 
-        // Insert dummy stocks
-        await Stock.insertMany(stocks);
+        if (process.argv.includes("--reset")) {
+            const confirmed = process.argv.includes(`--confirm-db=${databaseName}`);
 
-        console.log("Stock data seeded successfully");
+            if (!confirmed) {
+                throw new Error(`--reset wipes every stock in the database "${databaseName}". Add --confirm-db=${databaseName} to confirm.`);
+            }
+
+            await Stock.deleteMany({});
+            await Stock.insertMany(stocks);
+
+            console.log(`Stocks reset in "${databaseName}": ${stocks.length} inserted.`);
+        } else {
+            const result = await Stock.bulkWrite(
+                stocks.map((stock) => ({
+                    updateOne: {
+                        filter: { symbol: stock.symbol },
+                        update: { $setOnInsert: stock },
+                        upsert: true
+                    }
+                }))
+            );
+
+            console.log(`Stocks in "${databaseName}": ${result.upsertedCount} added, ${stocks.length - result.upsertedCount} already there (left untouched).`);
+        }
 
     } catch (error) {
 
-        console.error("Stock seeding failed:", error);
+        console.error("Stock seeding failed:", error.message);
+        process.exitCode = 1;
 
     } finally {
 

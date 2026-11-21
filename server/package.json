@@ -4,6 +4,9 @@
   "description": "Backend application for Trade OS",
   "main": "src/server.js",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
