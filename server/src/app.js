@@ -25,7 +25,11 @@ import errorHandler from "./middleware/error.middleware.js";
 // 2. Express
 const app=express();
 
-//3. Global Middlewares ->CONFIGS 
+// Behind a host's proxy(ies) the visitor's real address is in X-Forwarded-For. This says how many proxies to believe, so
+// the login and sign-up rate limiters count each visitor separately (0 = none, local development; see config/proxyConfig.js)
+app.set("trust proxy", config.TRUST_PROXY_HOPS);
+
+//3. Global Middlewares ->CONFIGS
 app.use(express.json({limit:"10kb"})); //Size of json payload for any route cannot exceed 10 kb
 app.use(cors({
     origin:config.CORS_ORIGIN,
@@ -39,6 +43,12 @@ app.use(helmet());
 app.get('/',(req,res)=>{
     res.send("Get request was sent on root endpoint");
 })
+
+// Health check for the hosting platform: "the process is up". It deliberately does NOT touch the database, so a short
+// database hiccup cannot make the host think the server is dead and restart it.
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok" });
+});
 
 //auth related requests
 app.use('/api/auth',authRoutes);
