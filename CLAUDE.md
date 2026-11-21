@@ -16,7 +16,7 @@ Server:
 - `npm run test:run`: run all tests once (`npm test` runs vitest in watch mode)
 - `npx vitest run tests/orders.integrated.test.js`: run a single test file
 - `npx vitest run -t "should buy a stock successfully"`: run a single test by name
-- `node src/modules/stocks/stock.seed.js`: wipe and reseed the `stocks` collection with dummy data
+- `node src/modules/stocks/stock.seed.js`: SAFE: adds the stocks that are missing (by symbol) and touches nothing else, so it is how a new database (production) gets its stocks. `--reset --confirm-db=<database name>` is the old wipe-and-reseed, for a throwaway development database only (orders and holdings point at stock ids). It reads `server/.env` unless `MONGODB_URI` is given on the command line: check the database name it prints
 - `node scripts/backfill-market-history.js`: DRY RUN of the one-time price-history backfill (prints the connection and a plan, writes nothing). `--apply --confirm-db=<database name>` writes. It only inserts, skips stocks that already have candles, never touches prices or user data, and refuses to run in production. `NODE_ENV=test` targets the test database.
 
 Client:
