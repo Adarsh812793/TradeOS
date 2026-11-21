@@ -50,6 +50,21 @@ app.get("/health", (req, res) => {
     res.status(200).json({ status: "ok" });
 });
 
+// TEMPORARY (removed again in the next commit of this branch): shows who Express believes the caller is, so TRUST_PROXY_HOPS
+// can be measured on the real host. It only echoes the caller's OWN connection details back to them. Under /api so it is
+// reachable through the Vercel forwarding as well as directly on the Railway address.
+app.get("/api/debug/ip", (req, res) => {
+    res.status(200).json({
+        trustProxyHops: config.TRUST_PROXY_HOPS,
+        ip: req.ip,
+        ips: req.ips,
+        socketAddress: req.socket.remoteAddress,
+        xForwardedFor: req.headers["x-forwarded-for"] ?? null,
+        xRealIp: req.headers["x-real-ip"] ?? null,
+        xVercelForwardedFor: req.headers["x-vercel-forwarded-for"] ?? null
+    });
+});
+
 //auth related requests
 app.use('/api/auth',authRoutes);
 
