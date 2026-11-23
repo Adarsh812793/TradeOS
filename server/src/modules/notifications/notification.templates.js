@@ -47,3 +47,11 @@ export const passwordChangedTemplate = () => ({
     message: "Your password was changed and your other devices were signed out. If this was not you, contact support.",
     link: "/account"
 });
+
+// The password was reset with the emailed code (forgot password): every device was signed out
+export const passwordResetTemplate = () => ({
+    type: NOTIFICATION_TYPES.PASSWORD_CHANGED,
+    title: "Password reset",
+    message: "Your password was reset with a code sent to your email and every device was signed out. If this was not you, reset it again and secure your email.",
+    link: "/account"
+});
