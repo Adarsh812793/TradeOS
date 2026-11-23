@@ -1,6 +1,6 @@
 # Email OTP sign-up
 
-Every new account must prove it owns its email before it exists. This is step one of three: **(1) email OTP sign-up**, (2) forgot password (reuses the same OTP machinery), (3) Google Sign-In (verified emails make account linking safe). Zerodha integration is out of scope.
+Every new account must prove it owns its email before it exists. This is step one of three: **(1) email OTP sign-up**, (2) forgot password (reuses the same OTP machinery; DONE, see `forgot-password.md`), (3) Google Sign-In (verified emails make account linking safe). Zerodha integration is out of scope.
 
 ## Why first
 
@@ -84,7 +84,7 @@ As built: `registration.errors.js` (every server answer in plain words plus the 
 
 ## Later
 
-- **Forgot password:** the same OTP machinery (a reset code, same limits and hashing), and it gives a way out for an account taken over before this change.
+- **Forgot password (done, see `forgot-password.md`):** the same OTP machinery (a reset code, same limits and hashing), and it gives a way out for an account taken over before this change.
 - **Google Sign-In:** Google Identity Services ID token verified on the server (`google-auth-library`), an `AuthIdentity` collection keyed by Google's `sub` (never the email), a link ticket signed with its own key (so it can never pass `protect`), `passwordHash` made optional for Google-only users. Because TradeOS emails are now verified, a Google sign-in for the same verified email can be linked safely.
 
 ## Regression checklist (backend)
