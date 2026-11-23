@@ -63,6 +63,8 @@ const router = createBrowserRouter([
       ...(import.meta.env.DEV
         ? [{ path: "/dev/ui", ...page(() => import("../pages/dev/UiGalleryPage.jsx")) }]
         : []),
+      // Forgot password works logged in or out (it is linked from the Account page too), so it sits outside GuestRoute
+      { path: "/forgot-password", ...page(() => import("../pages/ForgotPasswordPage.jsx")) },
       {
         // The pages made for visitors: a user who is already logged in is sent to the dashboard instead
         element: <GuestRoute />,

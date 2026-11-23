@@ -33,6 +33,7 @@ export default function LoginPage() {
   // Notices passed in through the navigation state by the flows that send the user here
   const accountDeleted = location.state?.accountDeleted; // set after deleting the account from the Account page
   const sessionEndReason = location.state?.sessionEndReason; // "idle" or "expired": set when the app signed the user out
+  const passwordReset = location.state?.passwordReset; // set after a password was reset with the emailed code
 
   const {
     control,
@@ -80,6 +81,10 @@ export default function LoginPage() {
 
         {accountDeleted && (
           <AuthMessage variant="info">Your account has been deleted. We&apos;re sorry to see you go.</AuthMessage>
+        )}
+
+        {passwordReset && (
+          <AuthMessage variant="success">Your password was reset. Log in with your new password.</AuthMessage>
         )}
 
         {sessionEndReason && (
@@ -134,6 +139,10 @@ export default function LoginPage() {
               />
             )}
           />
+
+          <p className="auth-layout__forgot">
+            <Link to="/forgot-password">Forgot password?</Link>
+          </p>
 
           <Button type="submit" block loading={isSubmitting}>
             {isSubmitting ? "Logging in..." : "Log in"}

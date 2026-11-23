@@ -296,6 +296,29 @@
   gap: var(--space-4);
 }
 
+/* "Forgot password?" under the password field, on the right */
+.auth-layout__forgot {
+  margin: calc(var(--space-2) * -1) 0 0;
+  font-size: var(--font-size-sm);
+  text-align: right;
+}
+
+.auth-layout__forgot a {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+}
+
+.auth-layout__forgot a:hover {
+  text-decoration: underline;
+}
+
+.auth-layout__forgot a:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
 /* "Don't have an account? Create an account" */
 .auth-layout__switch {
   margin: var(--space-6) 0 0;
