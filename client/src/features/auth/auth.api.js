@@ -19,6 +19,18 @@ const authApi = {
     return api.post("/api/auth/register/verify", details);
   },
 
+  // Forgot password, step 1: asks for an emailed 6-digit code (and, when called again, for a new one). The server answers
+  // the same whether or not the email has an account. Answers { email, resendAvailableInSeconds, codeExpiresInMinutes }.
+  forgotPassword(details) {
+    return api.post("/api/auth/password/forgot", details);
+  },
+
+  // Forgot password, step 2: the code and the new password. On success every device is signed out (this one is NOT
+  // logged in: the person logs in with the new password).
+  resetPassword(details) {
+    return api.post("/api/auth/password/reset", details);
+  },
+
   login(credentials) {
     return api.post("/api/auth/login", credentials);
   },

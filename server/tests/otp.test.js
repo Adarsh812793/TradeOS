@@ -9,6 +9,7 @@ import {
     OTP_TTL_MINUTES,
     PENDING_TTL_MINUTES,
     RESEND_COOLDOWN_SECONDS,
+    RESET_PURPOSE,
     generateOtp,
     hashOtp,
     verifyOtp
@@ -79,6 +80,23 @@ describe("hashOtp", () => {
 
     it("treats the email the way the database does (trimmed, any letter case)", () => {
         expect(hashOtp("482913", "  Asha@Example.COM ", SECRET)).toBe(hashOtp("482913", "asha@example.com", SECRET));
+    });
+});
+
+describe("the purpose of a code (sign-up code or forgot-password code)", () => {
+    it("gives a different hash for the same code and email, so a hash from one flow never matches in the other", () => {
+        expect(hashOtp("123456", "a@b.com", SECRET)).not.toBe(hashOtp("123456", "a@b.com", SECRET, RESET_PURPOSE));
+    });
+
+    it("verifies only under the purpose it was made for", () => {
+        const resetHash = hashOtp("123456", "a@b.com", SECRET, RESET_PURPOSE);
+
+        expect(verifyOtp("123456", "a@b.com", resetHash, SECRET, RESET_PURPOSE)).toBe(true);
+        expect(verifyOtp("123456", "a@b.com", resetHash, SECRET)).toBe(false);
+    });
+
+    it("keeps the sign-up hash exactly as before when no purpose is given", () => {
+        expect(hashOtp("123456", "a@b.com", SECRET)).toBe(hashOtp("123456", "a@b.com", SECRET, "otp:v1"));
     });
 });
 

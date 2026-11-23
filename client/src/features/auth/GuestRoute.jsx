@@ -12,12 +12,12 @@ export default function GuestRoute() {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
 
-  // One exception: "Delete account" navigates to /login while the user is still logged in (and logs out right
-  // after) so that its "your account was deleted" message survives. Without this line the guard would bounce
-  // that navigation to the dashboard and the message would be lost.
-  const isLeavingAfterDeletion = Boolean(location.state?.accountDeleted);
+  // One exception: "Delete account" and a finished password reset navigate to /login while the user is still logged in
+  // (and log out right after) so that their message ("your account was deleted", "password reset") survives. Without
+  // this line the guard would bounce that navigation to the dashboard and the message would be lost.
+  const isLeavingWithMessage = Boolean(location.state?.accountDeleted || location.state?.passwordReset);
 
-  if (isAuthenticated && !isLeavingAfterDeletion) {
+  if (isAuthenticated && !isLeavingWithMessage) {
     return <Navigate to="/dashboard" replace />;
   }
 

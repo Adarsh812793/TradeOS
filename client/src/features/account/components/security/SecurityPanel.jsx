@@ -1,9 +1,8 @@
 
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { KeyRound, LogOut, Mail } from "lucide-react";
 
-import Badge from "../../../../components/ui/Badge.jsx";
 import Button from "../../../../components/ui/Button.jsx";
 import useAuth from "../../../auth/useAuth.js";
 import ChangePasswordForm from "./ChangePasswordForm.jsx";
@@ -17,7 +16,7 @@ function getChangedMessage(count) {
   return `Password changed. Your ${count} other devices have been signed out.`;
 }
 
-// Body of the Security section: change password, forgot password (coming soon) and log out.
+// Body of the Security section: change password, forgot password (a link to the reset page) and log out.
 export default function SecurityPanel() {
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -106,7 +105,7 @@ export default function SecurityPanel() {
           )}
         </li>
 
-        {/* Forgot password: needs the email code system, built later */}
+        {/* Forgot password: the emailed-code reset (it signs every device out, this one included) */}
         <li className="security-panel__item">
           <div className="security-panel__row">
             <span className="security-panel__icon" aria-hidden="true">
@@ -114,13 +113,11 @@ export default function SecurityPanel() {
             </span>
 
             <div className="security-panel__text">
-              <h3>
-                Forgot password <Badge variant="neutral">Coming soon</Badge>
-              </h3>
-              <p>Reset a forgotten password with a code sent to your email.</p>
+              <h3>Forgot password</h3>
+              <p>Reset it with a code sent to your email. This signs you out of every device.</p>
             </div>
 
-            <Button variant="secondary" disabled>
+            <Button as={Link} to="/forgot-password" variant="secondary">
               Reset password
             </Button>
           </div>

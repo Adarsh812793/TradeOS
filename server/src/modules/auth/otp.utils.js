@@ -12,6 +12,7 @@ export const OTP_MAX_ATTEMPTS = 5;          // wrong guesses allowed per code be
 export const RESEND_COOLDOWN_SECONDS = 60;  // the shortest wait between two emails
 export const OTP_MAX_RESENDS = 5;           // emails that can be re-sent for one pending sign-up
 export const PENDING_TTL_MINUTES = 30;      // an unfinished sign-up is forgotten after this long
+export const RESET_PURPOSE = "reset:v1";    // keeps forgot-password codes apart from sign-up codes (see hashOtp)
 
 // A random 6-digit code as TEXT, with leading zeros kept ("004217"). crypto.randomInt uses the operating system's
 // cryptographic random source and picks every number equally likely; Math.random is predictable and must never be used
@@ -31,19 +32,21 @@ function isWellFormed(code) {
 //   - The email is mixed in, so the same code for two different sign-ups hashes differently and a hash copied from one
 //     record is useless on another.
 // `secret` can be passed for tests; the app always uses the one from the environment.
-export function hashOtp(code, email, secret = config.OTP_SECRET) {
+// `purpose` keeps the codes of different flows apart: a hash made for one flow never matches in another. The default is
+// the sign-up code; the forgot-password code passes RESET_PURPOSE.
+export function hashOtp(code, email, secret = config.OTP_SECRET, purpose = "otp:v1") {
     return crypto
         .createHmac("sha256", secret)
-        .update(`otp:v1:${String(email).trim().toLowerCase()}:${code}`)
+        .update(`${purpose}:${String(email).trim().toLowerCase()}:${code}`)
         .digest("hex");
 }
 
 // True when `code` is the code that `storedHash` was made from. The comparison is CONSTANT TIME: an ordinary === stops
 // at the first different character, so how long it takes could leak how much of a guess was right.
-export function verifyOtp(code, email, storedHash, secret = config.OTP_SECRET) {
+export function verifyOtp(code, email, storedHash, secret = config.OTP_SECRET, purpose = "otp:v1") {
     if (!isWellFormed(code) || typeof storedHash !== "string") return false;
 
-    const expected = Buffer.from(hashOtp(code, email, secret), "hex");
+    const expected = Buffer.from(hashOtp(code, email, secret, purpose), "hex");
     const actual = Buffer.from(storedHash, "hex");
 
     // timingSafeEqual throws when the lengths differ (a damaged or foreign hash), which is simply "not equal"
