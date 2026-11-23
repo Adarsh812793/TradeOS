@@ -3,6 +3,7 @@ import config from "../../config/env.js";
 
 import authService from "./auth.service.js"; //authService is an object containing many functions
 import registrationService from "./registration.service.js"; //email sign-up: start and resend
+import passwordResetService from "./passwordReset.service.js"; //forgot password: ask for a code, reset with it
 
 import AppError from "../../utils/AppError.js";
 import ERROR_CODES from "../../utils/errorCodes.js";
@@ -179,7 +180,35 @@ const changePassword = asyncWrap(async (req, res, next) => {
         });
 });
 
+// Function to ask for a forgot-password code (or a new one): the answer is the same whether or not the email has an account
+const forgotPassword = asyncWrap(async (req, res, next) => {
+
+        const result = await passwordResetService.requestPasswordReset({ email: req.body.email });
+
+        res.status(202).json({
+            success: true,
+            message: "If that email has a TradeOS account, we sent a code to it",
+            data: result
+        });
+});
+
+// Function to set a new password with the emailed code: signs every device out, does NOT log the person in
+const resetPassword = asyncWrap(async (req, res, next) => {
+
+        const { email, code, newPassword } = req.body;
+
+        await passwordResetService.resetPassword({ email, code, newPassword });
+
+        res.status(200).json({
+            success: true,
+            message: "Your password was reset. Please log in with your new password.",
+            data: null
+        });
+});
+
 export default {
+    forgotPassword,
+    resetPassword,
     startRegistration,
     verifyRegistration,
     resendRegistrationCode,

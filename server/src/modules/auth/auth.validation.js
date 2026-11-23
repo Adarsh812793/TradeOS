@@ -95,3 +95,17 @@ export const changePasswordSchema = Joi.object({
         "any.required": "New password is required"
     })
 });
+
+//Forgot-password Schema (POST /api/auth/password/forgot): the email of the account that forgot its password
+export const forgotPasswordSchema = resendCodeSchema;
+
+//Reset-password Schema (POST /api/auth/password/reset): the email, the 6-digit code from the email and the new password.
+//A code that is not exactly 6 digits is refused here, so it never uses up one of the 5 guesses.
+export const resetPasswordSchema = verifyCodeSchema.keys({
+    newPassword: passwordSchema.messages({
+        "string.empty": "New password is required",
+        "string.min": "New password must be at least 8 characters",
+        "string.max": "New password cannot exceed 128 characters",
+        "any.required": "New password is required"
+    })
+});

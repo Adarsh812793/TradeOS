@@ -9,6 +9,7 @@ import Transaction from "../transactions/transaction.model.js";
 import Watchlist from "../watchlist/watchlist.model.js";
 import Notification from "../notifications/notification.model.js";
 import RefreshSession from "../auth/refreshSession.model.js";
+import PasswordReset from "../auth/passwordReset.model.js";
 
 import AppError from "../../utils/AppError.js";
 import ERROR_CODES from "../../utils/errorCodes.js";
@@ -145,6 +146,7 @@ const deleteAccount = async (userId, password) => {
         await Notification.deleteMany({ userId }, { session });
         await Wallet.deleteMany({ userId }, { session });
         await RefreshSession.deleteMany({ userId }, { session });
+        await PasswordReset.deleteMany({ userId }, { session });
         await User.deleteOne({ _id: userId }, { session });
 
         await session.commitTransaction();
