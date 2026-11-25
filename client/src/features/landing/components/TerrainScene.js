@@ -27,6 +27,7 @@ const BASE_FOV = 35; // camera field of view in degrees (a narrow one makes the 
 const COLUMN_SIZE = 0.78; // a column is a little narrower than its cell, so there are thin gaps between them
 const HEIGHT_SCALE = 0.5; // simulation height units -> world units: keeps the columns low, like terrain, not skyscrapers
 const COLOUR_INTENSITY = 0.62; // dims every colour so the terrain stays a background and text on top stays readable
+const PORTRAIT_SHIFT = 7.5; // how far (world units) the camera moves into the grid on the tallest screens, see resize()
 
 // Creates the terrain on a <canvas> and returns the handle MarketTerrain.jsx works with.
 //   colors        { up, down, neutral, fog }: CSS colour strings (read from the theme tokens by the caller)
@@ -34,10 +35,11 @@ const COLOUR_INTENSITY = 0.62; // dims every colour so the terrain stays a backg
 //   pixelRatioCap the most pixels per CSS pixel to draw: high-density screens would otherwise multiply the work
 //   intensity     how strong the colours are (default COLOUR_INTENSITY: dim, for a background behind text)
 //   fov           the camera's field of view in degrees (default BASE_FOV); a smaller one zooms in, giving bigger columns
+//   portraitShift how far the camera moves into the grid on a tall (phone) screen (default PORTRAIT_SHIFT); 0 = no move
 //   onContextLost called if the graphics card drops the scene (the page then falls back to the still image)
 export function createTerrainScene(
   canvas,
-  { colors, seed = 7, pixelRatioCap = 1.5, intensity = COLOUR_INTENSITY, fov = BASE_FOV, onContextLost } = {}
+  { colors, seed = 7, pixelRatioCap = 1.5, intensity = COLOUR_INTENSITY, fov = BASE_FOV, portraitShift = PORTRAIT_SHIFT, onContextLost } = {}
 ) {
   const { columns, rows } = GRID;
   const state = createTerrainState({ columns, rows, seed });
@@ -107,11 +109,15 @@ export function createTerrainScene(
   const pointer = { x: 0, y: 0 };
   const pointerTarget = { x: 0, y: 0 };
 
+  // How far the camera has moved along the grid (towards the far side) for the current screen shape; set by resize().
+  let shiftZ = 0;
+
   // Moves the camera for this moment: a slow sideways sway, plus the mouse offset (eased so it never jerks).
   function placeCamera() {
     camera.position.x = cameraHome.x + Math.sin(elapsed * 0.07) * 2.2 + pointer.x * 1.6;
     camera.position.y = cameraHome.y + pointer.y * 0.8;
-    camera.lookAt(lookAt.x, lookAt.y, lookAt.z);
+    camera.position.z = cameraHome.z - shiftZ;
+    camera.lookAt(lookAt.x, lookAt.y, lookAt.z - shiftZ);
   }
 
   // Advances the terrain by `dt` seconds and draws one frame.
@@ -176,7 +182,10 @@ export function createTerrainScene(
   }
 
   // Matches the drawing size to the space it is shown in. Narrow (portrait) screens get a wider field of view so the
-  // terrain still fills the width instead of showing only the middle slice.
+  // terrain still fills the width instead of showing only the middle slice. A wider view also looks further DOWN, past
+  // the grid's near edge, where there are no columns: that showed as an empty band at the bottom of a phone screen. So
+  // as the screen gets taller the whole camera also moves forward into the grid, by up to `portraitShift`, which brings
+  // the near edge down to the bottom of the screen (the landscape view, aspect 1.5 and wider, is not moved at all).
   function resize(width, height) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, pixelRatioCap));
     renderer.setSize(width, height, false); // false: the stylesheet decides the canvas's CSS size
@@ -184,6 +193,7 @@ export function createTerrainScene(
     const aspect = width / height;
     camera.aspect = aspect;
     camera.fov = aspect >= 1.5 ? fov : fov + (1.5 - aspect) * 26;
+    shiftZ = portraitShift * Math.min(1, Math.max(0, (1.5 - aspect) / 1.04)); // 1.04 = 1.5 minus a typical phone's 0.46
     camera.updateProjectionMatrix();
   }
 
