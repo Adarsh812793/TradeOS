@@ -3,7 +3,8 @@
 // Because it is drawn by the same code with the same seed, it matches the first frame of the live scene exactly,
 // so the cross-fade from picture to 3D is seamless. Run it again whenever the scene's look changes.
 //
-// Two pictures can be made (VARIANT=landing is the default; VARIANT=auth is the brighter, closer one for the login page):
+// Three pictures can be made (VARIANT=landing is the default; VARIANT=landing-phone is the tall one phones get on the
+// landing page; VARIANT=auth is the brighter, closer one for the login page):
 //   VARIANT=auth BASE_URL=http://localhost:5174 node scripts/make-terrain-still.mjs
 //
 // Needs the Vite dev server running (it serves the scene's source files to the browser):
@@ -22,11 +23,14 @@ const QUALITY = 0.8; // WebP quality, 0 to 1
 // What each variant looks like. `options` go straight to createTerrainScene.
 const VARIANTS = {
   landing: { file: "terrain-still.webp", width: 1600, height: 900, options: {} },
+  // the same scene in a phone's tall shape (a phone screen is about 0.46 wide to high). The scene widens its view for tall
+  // spaces, so drawing it at this shape gives the picture the live scene has on a phone, instead of a cropped landscape one
+  "landing-phone": { file: "terrain-still-phone.webp", width: 720, height: 1560, options: {} },
   // brighter and zoomed in, in the shape of the login page's left side, so the terrain is a real picture there
   auth: { file: "terrain-still-auth.webp", width: 1200, height: 1100, options: { intensity: 0.95, fov: 26 } },
 };
 const variant = VARIANTS[process.env.VARIANT ?? "landing"];
-if (!variant) throw new Error(`Unknown VARIANT "${process.env.VARIANT}" (use landing or auth)`);
+if (!variant) throw new Error(`Unknown VARIANT "${process.env.VARIANT}" (use landing, landing-phone or auth)`);
 const { width: WIDTH, height: HEIGHT } = variant;
 
 const outFile = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "src", "assets", variant.file);
