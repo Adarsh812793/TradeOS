@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import canRender3D from "../utils/canRender3D.js";
 import { readThemeColors } from "../utils/themeColors.js";
 import stillImage from "../../../assets/terrain-still.webp";
+import phoneStillImage from "../../../assets/terrain-still-phone.webp";
 import "./MarketTerrain.css";
 
 // The landing page's decorative 3D market terrain, as a background that fills its parent (the parent must be
@@ -128,16 +129,21 @@ export default function MarketTerrain({ className = "" }) {
       data-terrain-reason={support.ok ? undefined : support.reason}
       aria-hidden="true"
     >
-      {/* fetchPriority low: the picture is decoration, so the fonts and styles the headline needs download first */}
-      <img
-        className="market-terrain__still"
-        src={stillImage}
-        alt=""
-        width="1600"
-        height="900"
-        decoding="async"
-        fetchPriority="low"
-      />
+      {/* fetchPriority low: the picture is decoration, so the fonts and styles the headline needs download first.
+          Phones (the app's one phone breakpoint, 768px) get a tall picture drawn in their own shape: the live scene frames
+          itself differently on a tall screen, and a landscape picture cropped to fit would not match it. */}
+      <picture>
+        <source media="(max-width: 768px)" srcSet={phoneStillImage} width="720" height="1560" />
+        <img
+          className="market-terrain__still"
+          src={stillImage}
+          alt=""
+          width="1600"
+          height="900"
+          decoding="async"
+          fetchPriority="low"
+        />
+      </picture>
 
       {support.ok && (
         <canvas
