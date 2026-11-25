@@ -18,6 +18,15 @@
 .market-terrain__still {
   object-fit: cover;
   object-position: center;
+  transition: opacity 900ms ease; /* the same length as the canvas fade, so the hand-over is one smooth cross-fade */
+}
+
+/* Once the live scene has taken over, the picture goes away. The scene is drawn on a transparent background, so if the
+   picture stayed underneath it would show through every gap between the live columns: a second, motionless terrain
+   (cropped differently, which on a phone shows most) under the moving one. If the scene is lost (the graphics card
+   drops it) the component goes back to "still" and the picture fades back in. */
+.market-terrain[data-terrain="3d"] .market-terrain__still {
+  opacity: 0;
 }
 
 /* The live scene starts invisible on top of the picture and fades in once it has drawn its first frame */
